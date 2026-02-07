@@ -41,7 +41,7 @@ public class WynnSpellsRunnable implements Runnable {
 
                 switch (intent) {
                     case MELEE:
-                        sendAttackPacket(client);
+                        sendInteractPacket(client);
                         break;
                     case FIRST_SPELL:
                         sendAttackPacket(client);
