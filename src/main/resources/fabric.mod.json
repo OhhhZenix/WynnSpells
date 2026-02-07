@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "wynnspells",
+  "version": "${version}",
+  "name": "WynnSpells",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "GPL-3.0",
+  "icon": "assets/wynnspells/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-datagen": ["dev.zenix.wynnspells.client.WynnSpellsDataGenerator"],
+    "client": ["dev.zenix.wynnspells.client.WynnSpellsClient"],
+    "main": ["dev.zenix.wynnspells.WynnSpells"]
+  },
+  "mixins": [
+    "wynnspells.mixins.json",
+    {
+      "config": "wynnspells.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
