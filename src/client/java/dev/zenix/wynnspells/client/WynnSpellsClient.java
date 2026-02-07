@@ -78,14 +78,14 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     private void onClientEndTick(MinecraftClient client) {
-        processKeyBinding(firstSpellKey, Intent.FIRST_SPELL);
-        processKeyBinding(secondSpellKey, Intent.SECOND_SPELL);
-        processKeyBinding(thirdSpellKey, Intent.THIRD_SPELL);
-        processKeyBinding(fourthSpellKey, Intent.FOURTH_SPELL);
-        processKeyBinding(meleeKey, Intent.MELEE);
+        processIntentKey(firstSpellKey, Intent.FIRST_SPELL);
+        processIntentKey(secondSpellKey, Intent.SECOND_SPELL);
+        processIntentKey(thirdSpellKey, Intent.THIRD_SPELL);
+        processIntentKey(fourthSpellKey, Intent.FOURTH_SPELL);
+        processIntentKey(meleeKey, Intent.MELEE);
     }
 
-    private void processKeyBinding(KeyBinding key, Intent intent) {
+    private void processIntentKey(KeyBinding key, Intent intent) {
         if (key == null)
             return;
 
