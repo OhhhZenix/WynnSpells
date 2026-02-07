@@ -38,26 +38,31 @@ public class WynnSpellsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         instance = this;
+        final String category = "key.category.wynnspells";
         firstSpellKey = KeyBindingHelper
                 .registerKeyBinding(
                         new KeyBinding("key.wynnspells.first", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
-                                "key.category.wynnspells"));
+                                category));
         secondSpellKey = KeyBindingHelper
                 .registerKeyBinding(
                         new KeyBinding("key.wynnspells.second", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
-                                "key.category.wynnspells"));
+                                category));
         thirdSpellKey = KeyBindingHelper
                 .registerKeyBinding(
                         new KeyBinding("key.wynnspells.third", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
-                                "key.category.wynnspells"));
+                                category));
         fourthSpellKey = KeyBindingHelper
                 .registerKeyBinding(
                         new KeyBinding("key.wynnspells.fourth", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
-                                "key.category.wynnspells"));
+                                category));
         meleeKey = KeyBindingHelper
                 .registerKeyBinding(
                         new KeyBinding("key.wynnspells.melee", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
-                                "key.category.wynnspells"));
+                                category));
+        configKey = KeyBindingHelper
+                .registerKeyBinding(
+                        new KeyBinding("key.wynnspells.config", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
+                                category));
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> onClientStart(client));
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> onClientStop(client));
         ClientTickEvents.END_CLIENT_TICK.register(client -> onClientEndTick(client));
