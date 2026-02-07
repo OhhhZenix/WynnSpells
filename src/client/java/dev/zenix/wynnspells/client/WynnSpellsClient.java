@@ -28,7 +28,7 @@ public class WynnSpellsClient implements ClientModInitializer {
     private static WynnSpellsClient instance;
     private BlockingQueue<Intent> intentQueue = new LinkedBlockingQueue<>();
     private AtomicBoolean running = new AtomicBoolean(true);
-    // private HashSet<String> lastKeyPressed = new HashSet<>();
+    private HashSet<String> lastKeyPressed = new HashSet<>();
 
     private KeyBinding firstSpellKey;
     private KeyBinding secondSpellKey;
@@ -91,22 +91,16 @@ public class WynnSpellsClient implements ClientModInitializer {
         if (key == null)
             return;
 
-        if (!key.isPressed())
-            return;
-
-        intentQueue.add(intent);
-        key.setPressed(false);
-
-        // String keyId = key.getTranslationKey();
-        // boolean pressed = key.isPressed();
-        // if (pressed) {
-        // if (!lastKeyPressed.contains(keyId)) {
-        // intentQueue.add(intent);
-        // lastKeyPressed.add(keyId);
-        // }
-        // } else {
-        // lastKeyPressed.remove(keyId);
-        // }
+        String keyId = key.getTranslationKey();
+        boolean pressed = key.isPressed();
+        if (pressed) {
+            if (!lastKeyPressed.contains(keyId)) {
+                intentQueue.add(intent);
+                lastKeyPressed.add(keyId);
+            }
+        } else {
+            lastKeyPressed.remove(keyId);
+        }
     }
 
 }
