@@ -83,6 +83,7 @@ public class WynnSpellsClient implements ClientModInitializer {
         processIntentKey(thirdSpellKey, Intent.THIRD_SPELL);
         processIntentKey(fourthSpellKey, Intent.FOURTH_SPELL);
         processIntentKey(meleeKey, Intent.MELEE);
+        processConfigKey();
     }
 
     private void processIntentKey(KeyBinding key, Intent intent) {
@@ -94,6 +95,17 @@ public class WynnSpellsClient implements ClientModInitializer {
 
         intentQueue.add(intent);
         key.setPressed(false);
+    }
+
+    private void processConfigKey() {
+        if (configKey == null)
+            return;
+
+        if (!configKey.isPressed())
+            return;
+
+        // TODO: Open config screen
+        configKey.setPressed(false);
     }
 
 }
