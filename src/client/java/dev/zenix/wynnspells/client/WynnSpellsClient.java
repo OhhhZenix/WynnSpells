@@ -1,6 +1,5 @@
 package dev.zenix.wynnspells.client;
 
-import java.util.HashSet;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,7 +27,6 @@ public class WynnSpellsClient implements ClientModInitializer {
     private static WynnSpellsClient instance;
     private BlockingQueue<Intent> intentQueue = new LinkedBlockingQueue<>();
     private AtomicBoolean running = new AtomicBoolean(true);
-    private HashSet<String> lastKeyPressed = new HashSet<>();
 
     private KeyBinding firstSpellKey;
     private KeyBinding secondSpellKey;
@@ -91,16 +89,11 @@ public class WynnSpellsClient implements ClientModInitializer {
         if (key == null)
             return;
 
-        String keyId = key.getTranslationKey();
-        boolean pressed = key.isPressed();
-        if (pressed) {
-            if (!lastKeyPressed.contains(keyId)) {
-                intentQueue.add(intent);
-                lastKeyPressed.add(keyId);
-            }
-        } else {
-            lastKeyPressed.remove(keyId);
-        }
+        if (!key.isPressed())
+            return;
+
+        intentQueue.add(intent);
+        key.setPressed(false);
     }
 
 }
