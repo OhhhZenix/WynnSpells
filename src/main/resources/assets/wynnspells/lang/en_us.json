@@ -1,8 +1,9 @@
 {
   "key.category.wynnspells": "WynnSpells",
-  "key.wynnspells.melee": "Melee hit",
   "key.wynnspells.first": "Cast 1st Spell",
   "key.wynnspells.second": "Cast 2nd Spell",
   "key.wynnspells.third": "Cast 3rd Spell",
-  "key.wynnspells.fourth": "Cast 4th Spell"
+  "key.wynnspells.fourth": "Cast 4th Spell",
+  "key.wynnspells.melee": "Melee hit",
+  "key.wynnspells.config": "Open Config"
 }
