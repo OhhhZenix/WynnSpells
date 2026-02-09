@@ -83,23 +83,36 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     private void onClientEndTick(MinecraftClient client) {
-        processIntentKey(firstSpellKey, Intent.FIRST_SPELL);
-        processIntentKey(secondSpellKey, Intent.SECOND_SPELL);
-        processIntentKey(thirdSpellKey, Intent.THIRD_SPELL);
-        processIntentKey(fourthSpellKey, Intent.FOURTH_SPELL);
-        processIntentKey(meleeKey, Intent.MELEE);
+        processIntentKey(firstSpellKey, Intent.FIRST_SPELL, false);
+        processIntentKey(secondSpellKey, Intent.SECOND_SPELL, false);
+        processIntentKey(thirdSpellKey, Intent.THIRD_SPELL, false);
+        processIntentKey(fourthSpellKey, Intent.FOURTH_SPELL, false);
+        processIntentKey(meleeKey, Intent.MELEE, false);
+        // Only process melee if no spell keys are pressed
+        // if (!isAnySpellKeyPressed()) {
+        // processIntentKey(meleeKey, Intent.MELEE, true);
+        // }
         processConfigKey();
     }
 
-    private void processIntentKey(KeyBinding key, Intent intent) {
+    private boolean isAnySpellKeyPressed() {
+        return (firstSpellKey != null && firstSpellKey.isPressed()) ||
+                (secondSpellKey != null && secondSpellKey.isPressed()) ||
+                (thirdSpellKey != null && thirdSpellKey.isPressed()) ||
+                (fourthSpellKey != null && fourthSpellKey.isPressed());
+    }
+
+    private void processIntentKey(KeyBinding key, Intent intent, boolean repeatable) {
         if (key == null)
             return;
 
         if (!key.isPressed())
             return;
 
+        if (!repeatable)
+            key.setPressed(false);
+
         intentQueue.add(intent);
-        key.setPressed(false);
     }
 
     private void processConfigKey() {
