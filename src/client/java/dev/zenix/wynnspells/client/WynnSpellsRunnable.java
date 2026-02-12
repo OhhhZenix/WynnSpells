@@ -30,7 +30,7 @@ public class WynnSpellsRunnable implements Runnable {
                     continue;
                 }
 
-                long delayMs = 100;
+                int delay = WynnSpellsClient.getInstance().getConfig().getDelayMillis();
                 // ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
                 // if (networkHandler != null) {
                 // // delayMs = networkHandler.getServerInfo().ping;
@@ -41,86 +41,86 @@ public class WynnSpellsRunnable implements Runnable {
                     case MELEE:
                         if (WynnSpellsUtils.isArcher(client)) {
                             sendInteractPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                         } else {
                             sendAttackPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                         }
                         break;
                     case FIRST_SPELL:
                         if (WynnSpellsUtils.isArcher(client)) {
                             // L-R-L
                             sendAttackPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendInteractPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendAttackPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                         } else {
                             // R-L-R
                             sendInteractPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendAttackPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendInteractPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                         }
                         break;
                     case SECOND_SPELL:
                         if (WynnSpellsUtils.isArcher(client)) {
                             // L-L-L
                             sendAttackPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendAttackPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendAttackPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                         } else {
                             // R-R-R
                             sendInteractPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendInteractPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendInteractPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                         }
                         break;
                     case THIRD_SPELL:
                         if (WynnSpellsUtils.isArcher(client)) {
                             // L-R-R
                             sendAttackPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendInteractPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendInteractPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                         } else {
                             // R-L-L
                             sendInteractPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendAttackPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendAttackPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                         }
                         break;
                     case FOURTH_SPELL:
                         if (WynnSpellsUtils.isArcher(client)) {
                             // L-L-R
                             sendAttackPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendAttackPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendInteractPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                         } else {
                             // R-R-L
                             sendInteractPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendInteractPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                             sendAttackPacket(client);
-                            Thread.sleep(delayMs);
+                            Thread.sleep(delay);
                         }
                         break;
                 }
