@@ -13,21 +13,20 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.item.ItemStack;
 
 public class WynnSpellsClient implements ClientModInitializer {
 
     public enum Intent {
-        MELEE,
-        FIRST_SPELL,
-        SECOND_SPELL,
-        THIRD_SPELL,
-        FOURTH_SPELL,
+        MELEE, FIRST_SPELL, SECOND_SPELL, THIRD_SPELL, FOURTH_SPELL,
     }
 
     private static WynnSpellsClient instance;
     private BlockingQueue<Intent> intentQueue = new LinkedBlockingQueue<>();
     private AtomicBoolean running = new AtomicBoolean(true);
 
+    private int queueLimit = 10;
+    private ItemStack previousItem = null;
     private KeyBinding firstSpellKey;
     private KeyBinding secondSpellKey;
     private KeyBinding thirdSpellKey;
@@ -39,30 +38,18 @@ public class WynnSpellsClient implements ClientModInitializer {
     public void onInitializeClient() {
         instance = this;
         final String category = "key.category.wynnspells";
-        firstSpellKey = KeyBindingHelper
-                .registerKeyBinding(
-                        new KeyBinding("key.wynnspells.first", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
-                                category));
-        secondSpellKey = KeyBindingHelper
-                .registerKeyBinding(
-                        new KeyBinding("key.wynnspells.second", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
-                                category));
-        thirdSpellKey = KeyBindingHelper
-                .registerKeyBinding(
-                        new KeyBinding("key.wynnspells.third", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
-                                category));
-        fourthSpellKey = KeyBindingHelper
-                .registerKeyBinding(
-                        new KeyBinding("key.wynnspells.fourth", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
-                                category));
-        meleeKey = KeyBindingHelper
-                .registerKeyBinding(
-                        new KeyBinding("key.wynnspells.melee", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
-                                category));
-        configKey = KeyBindingHelper
-                .registerKeyBinding(
-                        new KeyBinding("key.wynnspells.config", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN,
-                                category));
+        firstSpellKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.first",
+                InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, category));
+        secondSpellKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.second",
+                InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, category));
+        thirdSpellKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.third",
+                InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, category));
+        fourthSpellKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.fourth",
+                InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, category));
+        meleeKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.melee",
+                InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, category));
+        configKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.config",
+                InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, category));
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> onClientStart(client));
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> onClientStop(client));
         ClientTickEvents.END_CLIENT_TICK.register(client -> onClientEndTick(client));
@@ -83,6 +70,23 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     private void onClientEndTick(MinecraftClient client) {
+        // does our player even exists?
+        if (client.player == null) {
+            return;
+        }
+
+        // if item different, lets clear it
+        ItemStack itemInMainHand = client.player.getMainHandStack();
+        if (itemInMainHand != previousItem) {
+            previousItem = itemInMainHand;
+            intentQueue.clear();
+        }
+
+        // should we keep casting?
+        if (intentQueue.size() == queueLimit) {
+            return;
+        }
+
         processIntentKey(firstSpellKey, Intent.FIRST_SPELL, false);
         processIntentKey(secondSpellKey, Intent.SECOND_SPELL, false);
         processIntentKey(thirdSpellKey, Intent.THIRD_SPELL, false);
@@ -95,12 +99,12 @@ public class WynnSpellsClient implements ClientModInitializer {
         processConfigKey();
     }
 
-    private boolean isAnySpellKeyPressed() {
-        return (firstSpellKey != null && firstSpellKey.isPressed()) ||
-                (secondSpellKey != null && secondSpellKey.isPressed()) ||
-                (thirdSpellKey != null && thirdSpellKey.isPressed()) ||
-                (fourthSpellKey != null && fourthSpellKey.isPressed());
-    }
+    // private boolean isAnySpellKeyPressed() {
+    // return (firstSpellKey != null && firstSpellKey.isPressed())
+    // || (secondSpellKey != null && secondSpellKey.isPressed())
+    // || (thirdSpellKey != null && thirdSpellKey.isPressed())
+    // || (fourthSpellKey != null && fourthSpellKey.isPressed());
+    // }
 
     private void processIntentKey(KeyBinding key, Intent intent, boolean repeatable) {
         if (key == null)
