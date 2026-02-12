@@ -92,19 +92,8 @@ public class WynnSpellsClient implements ClientModInitializer {
         processIntentKey(thirdSpellKey, Intent.THIRD_SPELL, false);
         processIntentKey(fourthSpellKey, Intent.FOURTH_SPELL, false);
         processIntentKey(meleeKey, Intent.MELEE, false);
-        // Only process melee if no spell keys are pressed
-        // if (!isAnySpellKeyPressed()) {
-        // processIntentKey(meleeKey, Intent.MELEE, true);
-        // }
         processConfigKey();
     }
-
-    // private boolean isAnySpellKeyPressed() {
-    // return (firstSpellKey != null && firstSpellKey.isPressed())
-    // || (secondSpellKey != null && secondSpellKey.isPressed())
-    // || (thirdSpellKey != null && thirdSpellKey.isPressed())
-    // || (fourthSpellKey != null && fourthSpellKey.isPressed());
-    // }
 
     private void processIntentKey(KeyBinding key, Intent intent, boolean repeatable) {
         if (key == null)
