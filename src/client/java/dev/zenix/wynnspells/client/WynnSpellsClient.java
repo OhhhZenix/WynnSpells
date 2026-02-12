@@ -5,7 +5,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.lwjgl.glfw.GLFW;
-
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -21,11 +22,10 @@ public class WynnSpellsClient implements ClientModInitializer {
         MELEE, FIRST_SPELL, SECOND_SPELL, THIRD_SPELL, FOURTH_SPELL,
     }
 
-    private static WynnSpellsClient instance;
+    private static WynnSpellsClient instance = null;
     private BlockingQueue<Intent> intentQueue = new LinkedBlockingQueue<>();
     private AtomicBoolean running = new AtomicBoolean(true);
-
-    private int queueLimit = 10;
+    private WynnSpellsConfig config = null;
     private ItemStack previousItem = null;
     private KeyBinding firstSpellKey;
     private KeyBinding secondSpellKey;
@@ -37,6 +37,8 @@ public class WynnSpellsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         instance = this;
+        loadConfig();
+
         final String category = "key.category.wynnspells";
         firstSpellKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.first",
                 InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, category));
@@ -57,6 +59,21 @@ public class WynnSpellsClient implements ClientModInitializer {
 
     public static WynnSpellsClient getInstance() {
         return instance;
+    }
+
+    private void loadConfig() {
+        AutoConfig.register(WynnSpellsConfig.class, GsonConfigSerializer::new);
+        config = AutoConfig.getConfigHolder(WynnSpellsConfig.class).getConfig();
+        // LOGGER.info("Config loaded successfully");
+    }
+
+    public WynnSpellsConfig getConfig() {
+        return config;
+    }
+
+    public void saveConfig() {
+        // LOGGER.debug("Saving configuration");
+        AutoConfig.getConfigHolder(WynnSpellsConfig.class).save();
     }
 
     private void onClientStart(MinecraftClient client) {
@@ -83,7 +100,7 @@ public class WynnSpellsClient implements ClientModInitializer {
         }
 
         // should we keep casting?
-        if (intentQueue.size() == queueLimit) {
+        if (intentQueue.size() == config.getQueueLimit()) {
             return;
         }
 
@@ -118,5 +135,4 @@ public class WynnSpellsClient implements ClientModInitializer {
         // TODO: Open config screen
         configKey.setPressed(false);
     }
-
 }
