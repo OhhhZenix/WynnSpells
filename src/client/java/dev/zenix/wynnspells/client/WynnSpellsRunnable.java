@@ -137,12 +137,7 @@ public class WynnSpellsRunnable implements Runnable {
     }
 
     private void sendInteractPacket(MinecraftClient client) {
-        WynnSpellsUtils.sendPacket(
-                client,
-                new PlayerInteractItemC2SPacket(
-                        Hand.MAIN_HAND,
-                        0,
-                        client.player.getYaw(),
-                        client.player.getPitch()));
+        WynnSpellsUtils.sendPacket(client, new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0,
+                client.player.getYaw(), client.player.getPitch()));
     }
 }
