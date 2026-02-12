@@ -7,7 +7,7 @@ public class WynnSpellsDataGenerator implements DataGeneratorEntrypoint {
 
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
+        @SuppressWarnings("unused")
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
     }
-
 }
