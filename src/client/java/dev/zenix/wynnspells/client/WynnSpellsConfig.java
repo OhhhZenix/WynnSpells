@@ -1,6 +1,10 @@
 package dev.zenix.wynnspells.client;
 
-public class WynnSpellsConfig {
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+
+@Config(name = "wynnspells")
+public class WynnSpellsConfig implements ConfigData {
 
     private int delayMillis = 80;
     private int queueLimit = 10;
