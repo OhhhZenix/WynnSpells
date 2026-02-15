@@ -13,8 +13,10 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.option.KeyBinding.Category;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 
 public class WynnSpellsClient implements ClientModInitializer {
 
@@ -39,7 +41,7 @@ public class WynnSpellsClient implements ClientModInitializer {
         instance = this;
         loadConfig();
 
-        final String category = "key.category.wynnspells";
+        var category = Category.create(Identifier.of("wynnspells", "all"));
         firstSpellKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.first",
                 InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, category));
         secondSpellKey = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.second",
