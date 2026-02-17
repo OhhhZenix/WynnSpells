@@ -13,7 +13,15 @@ public class WynnSpellsConfig implements ConfigData {
         return delayMillis;
     }
 
+    public void setDelayMillis(int delay) {
+        delayMillis = delay;
+    }
+
     public int getQueueLimit() {
         return queueLimit;
+    }
+
+    public void setQueueLimit(int limit) {
+        queueLimit = limit;
     }
 }
