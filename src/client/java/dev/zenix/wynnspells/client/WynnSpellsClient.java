@@ -20,12 +20,8 @@ import net.minecraft.util.Identifier;
 
 public class WynnSpellsClient implements ClientModInitializer {
 
-    public enum Intent {
-        MELEE, FIRST_SPELL, SECOND_SPELL, THIRD_SPELL, FOURTH_SPELL,
-    }
-
     private static WynnSpellsClient instance = null;
-    private BlockingQueue<Intent> intentQueue = new LinkedBlockingQueue<>();
+    private BlockingQueue<WynnSpellsQueue> queueList = new LinkedBlockingQueue<>();
     private AtomicBoolean running = new AtomicBoolean(true);
     private WynnSpellsConfig config = null;
     private ItemStack previousItem = null;
@@ -79,7 +75,7 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     private void onClientStart(MinecraftClient client) {
-        Thread processorThread = new Thread(new WynnSpellsRunnable(intentQueue, running));
+        Thread processorThread = new Thread(new WynnSpellsRunnable(queueList, running));
         processorThread.setDaemon(true);
         processorThread.start();
     }
@@ -98,23 +94,23 @@ public class WynnSpellsClient implements ClientModInitializer {
         ItemStack itemInMainHand = client.player.getMainHandStack();
         if (itemInMainHand != previousItem) {
             previousItem = itemInMainHand;
-            intentQueue.clear();
+            queueList.clear();
         }
 
         // should we keep casting?
-        if (intentQueue.size() == config.getQueueLimit()) {
+        if (queueList.size() == config.getQueueLimit()) {
             return;
         }
 
-        processIntentKey(firstSpellKey, Intent.FIRST_SPELL, false);
-        processIntentKey(secondSpellKey, Intent.SECOND_SPELL, false);
-        processIntentKey(thirdSpellKey, Intent.THIRD_SPELL, false);
-        processIntentKey(fourthSpellKey, Intent.FOURTH_SPELL, false);
-        processIntentKey(meleeKey, Intent.MELEE, false);
+        processIntentKey(firstSpellKey, WynnSpellsIntent.FIRST_SPELL, false);
+        processIntentKey(secondSpellKey, WynnSpellsIntent.SECOND_SPELL, false);
+        processIntentKey(thirdSpellKey, WynnSpellsIntent.THIRD_SPELL, false);
+        processIntentKey(fourthSpellKey, WynnSpellsIntent.FOURTH_SPELL, false);
+        processIntentKey(meleeKey, WynnSpellsIntent.MELEE, false);
         processConfigKey();
     }
 
-    private void processIntentKey(KeyBinding key, Intent intent, boolean repeatable) {
+    private void processIntentKey(KeyBinding key, WynnSpellsIntent intent, boolean repeatable) {
         if (key == null)
             return;
 
@@ -124,7 +120,8 @@ public class WynnSpellsClient implements ClientModInitializer {
         if (!repeatable)
             key.setPressed(false);
 
-        intentQueue.add(intent);
+        queueList.add(new WynnSpellsQueue(intent,
+                MinecraftClient.getInstance().options.sneakKey.isPressed()));
     }
 
     private void processConfigKey() {
