@@ -18,11 +18,14 @@ import net.minecraft.util.PlayerInput;
 public class WynnSpellsUtils {
 
     public static void sendPacket(MinecraftClient client, Packet<?> packet) {
+        if (client == null)
+            return;
+
         ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
         if (networkHandler == null)
             return;
-        else
-            networkHandler.sendPacket(packet);
+
+        networkHandler.sendPacket(packet);
     }
 
     public static void sendAttackPacket(MinecraftClient client) {
