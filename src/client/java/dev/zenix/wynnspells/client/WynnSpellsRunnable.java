@@ -5,8 +5,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerInputC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.util.Hand;
+import net.minecraft.util.PlayerInput;
 
 public class WynnSpellsRunnable implements Runnable {
 
@@ -23,19 +25,15 @@ public class WynnSpellsRunnable implements Runnable {
         while (running.get()) {
             try {
                 WynnSpellsQueue queue = queueList.take();
-                WynnSpellsIntent intent = queue.getIntent();
                 MinecraftClient client = MinecraftClient.getInstance();
                 if (client == null || client.player == null) {
                     continue;
                 }
 
                 int delay = WynnSpellsClient.getInstance().getConfig().getDelayMillis();
-                // ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
-                // if (networkHandler != null) {
-                // // delayMs = networkHandler.getServerInfo().ping;
-                // client.player.sendMessage(Text.of(delayMs + "ms"), false);
-                // }
+                // TODO: calculate delay based on ping
 
+                WynnSpellsIntent intent = queue.getIntent();
                 switch (intent) {
                     case MELEE:
                         if (WynnSpellsUtils.isArcher(client)) {
@@ -123,6 +121,12 @@ public class WynnSpellsRunnable implements Runnable {
                         }
                         break;
                 }
+
+                boolean isSneaking = queue.isSneaking();
+                if (isSneaking != client.options.sneakKey.isPressed()) {
+                    sendSneakingPacket(client, isSneaking);
+                    Thread.sleep(delay);
+                }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
@@ -140,7 +144,12 @@ public class WynnSpellsRunnable implements Runnable {
                 client.player.getYaw(), client.player.getPitch()));
     }
 
-    private void sendSneakingPacket(MinecraftClient client) {
+    private void sendSneakingPacket(MinecraftClient client, boolean isSneaking) {
+        PlayerInput playerInput = new PlayerInput(client.options.forwardKey.isPressed(),
+                client.options.backKey.isPressed(), client.options.leftKey.isPressed(),
+                client.options.rightKey.isPressed(), client.options.jumpKey.isPressed(), isSneaking,
+                client.options.sprintKey.isPressed());
 
+        WynnSpellsUtils.sendPacket(client, new PlayerInputC2SPacket(playerInput));
     }
 }
