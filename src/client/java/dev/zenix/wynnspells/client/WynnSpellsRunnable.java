@@ -33,6 +33,12 @@ public class WynnSpellsRunnable implements Runnable {
                 int delay = WynnSpellsClient.getInstance().getConfig().getDelayMillis();
                 // TODO: calculate delay based on ping
 
+                boolean queuedSneak = queue.isSneaking();
+                if (queuedSneak != client.player.isSneaking()) {
+                    sendSneakingPacket(client, queuedSneak);
+                    Thread.sleep(delay);
+                }
+
                 WynnSpellsIntent intent = queue.getIntent();
                 switch (intent) {
                     case MELEE:
@@ -122,9 +128,11 @@ public class WynnSpellsRunnable implements Runnable {
                         break;
                 }
 
-                boolean isSneaking = queue.isSneaking();
-                sendSneakingPacket(client, isSneaking);
-                Thread.sleep(delay);
+                boolean physicalSneak = client.options.sneakKey.isPressed();
+                if (physicalSneak != client.player.isSneaking()) {
+                    sendSneakingPacket(client, physicalSneak);
+                    Thread.sleep(delay);
+                }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
