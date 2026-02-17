@@ -7,8 +7,8 @@ import net.minecraft.client.MinecraftClient;
 
 public class WynnSpellsRunnable implements Runnable {
 
-    private final BlockingQueue<WynnSpellsQueue> queueList;
     private final AtomicBoolean running;
+    private final BlockingQueue<WynnSpellsQueue> queueList;
 
     public WynnSpellsRunnable(BlockingQueue<WynnSpellsQueue> queueList, AtomicBoolean running) {
         this.queueList = queueList;
