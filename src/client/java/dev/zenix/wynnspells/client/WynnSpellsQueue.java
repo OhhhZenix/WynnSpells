@@ -2,19 +2,13 @@ package dev.zenix.wynnspells.client;
 
 public class WynnSpellsQueue {
 
-    private WynnSpellsIntent intent;
-    private boolean isSneaking;
+    private final WynnSpellsIntent intent;
 
-    public WynnSpellsQueue(WynnSpellsIntent intent, boolean isSneaking) {
+    public WynnSpellsQueue(WynnSpellsIntent intent) {
         this.intent = intent;
-        this.isSneaking = isSneaking;
     }
 
     public WynnSpellsIntent getIntent() {
         return intent;
-    }
-
-    public boolean isSneaking() {
-        return isSneaking;
     }
 }
