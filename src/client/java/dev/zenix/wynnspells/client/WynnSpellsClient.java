@@ -104,6 +104,9 @@ public class WynnSpellsClient implements ClientModInitializer {
             key.setPressed(false);
 
         MinecraftClient client = MinecraftClient.getInstance();
+        if (client == null || client.options == null) {
+            return;
+        }
 
         // does our player even exists?
         if (client.player == null) {
@@ -118,12 +121,11 @@ public class WynnSpellsClient implements ClientModInitializer {
         }
 
         // should we keep casting?
-        if (queueList.size() == config.getQueueLimit()) {
+        if (queueList.size() >= config.getQueueLimit()) {
             return;
         }
 
-        queueList.add(new WynnSpellsQueue(intent,
-                MinecraftClient.getInstance().options.sneakKey.isPressed()));
+        queueList.add(new WynnSpellsQueue(intent, client.options.sneakKey.isPressed()));
     }
 
     private void processConfigKey() {
