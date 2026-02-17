@@ -123,10 +123,8 @@ public class WynnSpellsRunnable implements Runnable {
                 }
 
                 boolean isSneaking = queue.isSneaking();
-                if (isSneaking != client.options.sneakKey.isPressed()) {
-                    sendSneakingPacket(client, isSneaking);
-                    Thread.sleep(delay);
-                }
+                sendSneakingPacket(client, isSneaking);
+                Thread.sleep(delay);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
