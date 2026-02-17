@@ -3,16 +3,21 @@
   "id": "wynnspells",
   "version": "${version}",
   "name": "WynnSpells",
-  "description": "",
-  "authors": [],
-  "contact": {},
+  "description": "A simple spell macro mod for Wynncraft.",
+  "authors": ["OhhhZenix"],
+  "contact": {
+    "homepage": "https://github.com/OhhhZenix/WynnSpells",
+    "issues": "https://github.com/OhhhZenix/WynnSpells/issues",
+    "sources": "https://github.com/OhhhZenix/WynnSpells"
+  },
   "license": "GPL-3.0",
   "icon": "assets/wynnspells/icon.png",
   "environment": "client",
   "entrypoints": {
     "fabric-datagen": ["dev.zenix.wynnspells.client.WynnSpellsDataGenerator"],
     "client": ["dev.zenix.wynnspells.client.WynnSpellsClient"],
-    "main": ["dev.zenix.wynnspells.WynnSpells"]
+    "main": ["dev.zenix.wynnspells.WynnSpells"],
+    "modmenu": ["dev.zenix.wynnspells.client.WynnSpellsModMenu"]
   },
   "mixins": [
     "wynnspells.mixins.json",
