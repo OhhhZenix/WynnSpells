@@ -84,7 +84,7 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     private void onClientEndTick(MinecraftClient client) {
-        processConfigKey();
+        processConfigKey(client);
         processIntentKey(client, firstSpellKey, WynnSpellsIntent.FIRST_SPELL);
         processIntentKey(client, secondSpellKey, WynnSpellsIntent.SECOND_SPELL);
         processIntentKey(client, thirdSpellKey, WynnSpellsIntent.THIRD_SPELL);
@@ -117,14 +117,14 @@ public class WynnSpellsClient implements ClientModInitializer {
         queueList.add(new WynnSpellsQueue(intent));
     }
 
-    private void processConfigKey() {
+    private void processConfigKey(MinecraftClient client) {
         if (configKey == null)
             return;
 
         if (!configKey.isPressed())
             return;
 
-        // TODO: Open config screen
         configKey.setPressed(false);
+        client.setScreen(WynnSpellsConfigScreen.create(client.currentScreen));
     }
 }
