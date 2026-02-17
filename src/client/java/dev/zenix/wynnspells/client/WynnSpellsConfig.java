@@ -6,8 +6,12 @@ import me.shedaniel.autoconfig.annotation.Config;
 @Config(name = "wynnspells")
 public class WynnSpellsConfig implements ConfigData {
 
-    private int delayMillis = 100;
-    private int queueLimit = 10;
+    private int delayMillis = getDefaultDelayMillis();
+    private int queueLimit = getDefaultQueueLimit();
+
+    public static int getDefaultDelayMillis() {
+        return 100;
+    }
 
     public int getDelayMillis() {
         return delayMillis;
@@ -15,6 +19,10 @@ public class WynnSpellsConfig implements ConfigData {
 
     public void setDelayMillis(int delay) {
         delayMillis = delay;
+    }
+
+    public static int getDefaultQueueLimit() {
+        return 10;
     }
 
     public int getQueueLimit() {
