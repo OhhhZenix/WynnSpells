@@ -8,15 +8,13 @@ import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.util.Hand;
 
-import dev.zenix.wynnspells.client.WynnSpellsClient.Intent;
-
 public class WynnSpellsRunnable implements Runnable {
 
-    private final BlockingQueue<Intent> intentQueue;
+    private final BlockingQueue<WynnSpellsQueue> queueList;
     private final AtomicBoolean running;
 
-    public WynnSpellsRunnable(BlockingQueue<Intent> intentQueue, AtomicBoolean running) {
-        this.intentQueue = intentQueue;
+    public WynnSpellsRunnable(BlockingQueue<WynnSpellsQueue> queueList, AtomicBoolean running) {
+        this.queueList = queueList;
         this.running = running;
     }
 
@@ -24,7 +22,8 @@ public class WynnSpellsRunnable implements Runnable {
     public void run() {
         while (running.get()) {
             try {
-                Intent intent = intentQueue.take();
+                WynnSpellsQueue queue = queueList.take();
+                WynnSpellsIntent intent = queue.getIntent();
                 MinecraftClient client = MinecraftClient.getInstance();
                 if (client == null || client.player == null) {
                     continue;
