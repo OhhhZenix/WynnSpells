@@ -1,3 +1,3 @@
 # WynnSpells
 
-A simple macro for Wynncraft.
+A simple spell macro mod for Wynncraft.
