@@ -5,7 +5,12 @@ All the changes in WynnSpells.
 ## Release 1.0.0
 
 - Use Minecraft version 1.21.11
-- Add cloth config as dep
-- Add mod menu as dep
-- Ability to config
-- Add custom keybinds
+- Add cloth config as required dep
+- Add mod menu as optional dep
+- Add first spell keybind
+- Add second spell keybind
+- Add third spell keybind
+- Add fourth spell keybind
+- Add melee keybind
+- Add config keybind
+- Add config menu
