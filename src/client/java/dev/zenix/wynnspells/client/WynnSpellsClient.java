@@ -85,23 +85,6 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     private void onClientEndTick(MinecraftClient client) {
-        // does our player even exists?
-        if (client.player == null) {
-            return;
-        }
-
-        // if item different, lets clear it
-        ItemStack itemInMainHand = client.player.getMainHandStack();
-        if (itemInMainHand != previousItem) {
-            previousItem = itemInMainHand;
-            queueList.clear();
-        }
-
-        // should we keep casting?
-        if (queueList.size() == config.getQueueLimit()) {
-            return;
-        }
-
         processIntentKey(firstSpellKey, WynnSpellsIntent.FIRST_SPELL, false);
         processIntentKey(secondSpellKey, WynnSpellsIntent.SECOND_SPELL, false);
         processIntentKey(thirdSpellKey, WynnSpellsIntent.THIRD_SPELL, false);
@@ -119,6 +102,25 @@ public class WynnSpellsClient implements ClientModInitializer {
 
         if (!repeatable)
             key.setPressed(false);
+
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        // does our player even exists?
+        if (client.player == null) {
+            return;
+        }
+
+        // if item different, lets clear it
+        ItemStack itemInMainHand = client.player.getMainHandStack();
+        if (itemInMainHand != previousItem) {
+            previousItem = itemInMainHand;
+            queueList.clear();
+        }
+
+        // should we keep casting?
+        if (queueList.size() == config.getQueueLimit()) {
+            return;
+        }
 
         queueList.add(new WynnSpellsQueue(intent,
                 MinecraftClient.getInstance().options.sneakKey.isPressed()));
