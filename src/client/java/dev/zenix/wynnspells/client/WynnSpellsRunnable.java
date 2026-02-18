@@ -26,6 +26,7 @@ public class WynnSpellsRunnable implements Runnable {
                 // TODO: calculate delay based on ping
                 int delay = WynnSpellsClient.getInstance().getConfig().getDelayMillis();
 
+                WynnSpellsClient.LOGGER.debug("Intent: {}", intent.toString());
                 switch (intent) {
                     case MELEE:
                         if (WynnSpellsUtils.isArcher(client)) {
