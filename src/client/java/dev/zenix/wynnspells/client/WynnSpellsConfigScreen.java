@@ -32,6 +32,8 @@ public class WynnSpellsConfigScreen {
                         .setDefaultValue(WynnSpellsConfig.getDefaultQueueLimit())
                         .setSaveConsumer(value -> config.setQueueLimit(value)).build());
 
+        // TODO: Add keybinding
+
         return builder.build();
     }
 }
