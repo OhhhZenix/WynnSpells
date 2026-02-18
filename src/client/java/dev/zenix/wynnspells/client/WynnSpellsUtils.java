@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.toast.SystemToast;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
@@ -67,4 +68,12 @@ public class WynnSpellsUtils {
         return false;
     }
 
+    public static void sendNotification(Text description, Boolean shouldSend) {
+        if (!shouldSend) {
+            return;
+        }
+
+        SystemToast.add(MinecraftClient.getInstance().getToastManager(),
+                SystemToast.Type.WORLD_BACKUP, Text.of(WynnSpellsClient.MOD_NAME), description);
+    }
 }
