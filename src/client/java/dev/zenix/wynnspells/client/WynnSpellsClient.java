@@ -87,9 +87,13 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     private void onClientStart(MinecraftClient client) {
-        Thread processorThread = new Thread(new WynnSpellsRunnable(queueList, running));
-        processorThread.setDaemon(true);
-        processorThread.start();
+        Thread wynnSpells = new Thread(new WynnSpellsRunnable(queueList, running));
+        wynnSpells.setDaemon(true);
+        wynnSpells.start();
+
+        Thread updateChecker = new Thread(new WynnSpellsUpdateChecker(running));
+        updateChecker.setDaemon(true);
+        updateChecker.start();
     }
 
     private void onClientStop(MinecraftClient client) {
