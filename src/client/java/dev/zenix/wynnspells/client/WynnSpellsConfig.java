@@ -6,6 +6,8 @@ import me.shedaniel.autoconfig.annotation.Config;
 @Config(name = "wynnspells")
 public class WynnSpellsConfig implements ConfigData {
 
+    // TODO: add notifications settings
+    // TODO: add auto calculation method
     private int delayMillis = getDefaultDelayMillis();
     private int queueLimit = getDefaultQueueLimit();
 
