@@ -14,3 +14,4 @@ All the changes in WynnSpells.
 - Add melee keybind
 - Add config keybind
 - Add config menu
+- Add update checker
