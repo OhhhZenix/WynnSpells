@@ -2,6 +2,10 @@ package dev.zenix.wynnspells.client;
 
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.lwjgl.glfw.GLFW;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
@@ -17,6 +21,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 public class WynnSpellsClient implements ClientModInitializer {
+
+    public static final String MOD_ID = "wynnspells";
+    public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
     private static WynnSpellsClient instance = null;
     private WynnSpellsConfig config = null;
@@ -48,6 +55,7 @@ public class WynnSpellsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         instance = this;
+        setupLogger();
         loadConfig();
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> onClientStart(client));
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> onClientStop(client));
@@ -56,6 +64,10 @@ public class WynnSpellsClient implements ClientModInitializer {
 
     public static WynnSpellsClient getInstance() {
         return instance;
+    }
+
+    private void setupLogger() {
+        Configurator.setLevel(LOGGER.getName(), Level.DEBUG);
     }
 
     private void loadConfig() {
