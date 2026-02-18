@@ -15,3 +15,6 @@ All the changes in WynnSpells.
 - Add config keybind
 - Add config menu
 - Add update checker
+
+**Config menu**
+![](./images/1.png)
