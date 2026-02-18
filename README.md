@@ -1,6 +1,6 @@
 # WynnSpells
 
-Looking for a spell macro for Wynncraft? Tired of miscasting because of lag or clicking too fast? WynnSpells is the solution you’ve been waiting for. WynnSpells is a simple, lightweight mod with one clear purpose: to provide reliable and consistent spell macros for Wynncraft. No more worrying about high ping, inconsistent CPS, etc — just smooth and accurate spell casting every time.
+Looking for a spell macro for Wynncraft? Tired of miscasting because of lag or clicking too fast? WynnSpells is the solution you’ve been waiting for. WynnSpells is a simple, lightweight mod with one clear purpose: to provide reliable and consistent spell macros for Wynncraft. No more worrying about high ping, inconsistent CPS, etc—just smooth and accurate spell casting every time.
 
 ## Dependenices
 
