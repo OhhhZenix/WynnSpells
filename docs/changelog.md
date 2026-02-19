@@ -2,6 +2,13 @@
 
 All the changes in WynnSpells.
 
+## Release 1.1.0
+
+- Remove debug loggin
+- Add keybinds section to config menu
+- Add auto delay calculation
+- Update config descriptions
+
 ## Release 1.0.0
 
 - Use Minecraft version 1.21.11
