@@ -68,7 +68,7 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     private void setupLogger() {
-        Configurator.setLevel(LOGGER.getName(), Level.DEBUG);
+        Configurator.setLevel(LOGGER.getName(), Level.INFO);
     }
 
     private void loadConfig() {
