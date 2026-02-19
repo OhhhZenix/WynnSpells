@@ -74,7 +74,7 @@ public class WynnSpellsClient implements ClientModInitializer {
     private void loadConfig() {
         AutoConfig.register(WynnSpellsConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(WynnSpellsConfig.class).getConfig();
-        // LOGGER.info("Config loaded successfully");
+        LOGGER.info("Config loaded successfully");
     }
 
     public WynnSpellsConfig getConfig() {
@@ -82,7 +82,7 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     public void saveConfig() {
-        // LOGGER.debug("Saving configuration");
+        LOGGER.debug("Saving configuration");
         AutoConfig.getConfigHolder(WynnSpellsConfig.class).save();
     }
 
