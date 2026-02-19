@@ -5,7 +5,7 @@ All the changes in WynnSpells.
 ## Release 1.1.0
 
 - Update homepage url
-- Remove debug loggin
+- Remove debug logging
 - Fix update checker
 - Add auto delay calculation
 - Add keybinds section to config menu
