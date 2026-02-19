@@ -4,9 +4,11 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.google.gson.Gson;
+
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 
@@ -14,51 +16,69 @@ public class WynnSpellsUpdateChecker implements Runnable {
 
     private final AtomicBoolean running;
     private final long checkInterval;
+    private final HttpClient httpClient;
+    private final Gson gson = new Gson();
+
+    private String lastNotifiedVersion = null;
 
     public WynnSpellsUpdateChecker(AtomicBoolean running) {
         this.running = running;
-        checkInterval = 3_600_000; // 1 hour in milliseconds
+        this.checkInterval = 3_600_000; // 1 hour
+        this.httpClient = HttpClient.newHttpClient();
     }
 
     @Override
     public void run() {
         while (running.get()) {
-            // try to fetch latest version from GitHub API
             try {
                 final String API_URL =
                         "https://api.github.com/repos/OhhhZenix/WynnSpells/releases/latest";
-                HttpClient httpClient = HttpClient.newHttpClient();
-                HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(API_URL))
+
+                HttpRequest request = HttpRequest.newBuilder().uri(URI.create(API_URL))
                         .header("Accept", "application/json").build();
-                HttpResponse<String> httpResponse =
-                        httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
-                if (httpResponse.statusCode() != 200) {
-                    System.out.println("Failed to fetch. Status code: " + httpResponse.statusCode());
-                } else {
-                    String body = httpResponse.body();
-                    Gson gson = new Gson();
-                    HashMap<?, ?> json = gson.fromJson(body, HashMap.class);
-                    String latestVersion = (String) json.get("tag_name");
-                    String currentVersion = FabricLoader.getInstance()
-                            .getModContainer(WynnSpellsClient.MOD_ID).map(modContainer -> modContainer
-                                    .getMetadata().getVersion().getFriendlyString())
-                            .orElse("0.0.0");
-                    String homepageUrl = FabricLoader.getInstance()
-                            .getModContainer(WynnSpellsClient.MOD_ID).flatMap(
-                                    modContainer -> modContainer.getMetadata().getContact()
-                                            .get("homepage"))
-                            .orElse("https://github.com/OhhhZenix/WynnSpells");
+                HttpResponse<String> response =
+                        httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-                    if (compareSemver(latestVersion, currentVersion) > 0) {
-                        // TODO: add config settings for notifications
-                        WynnSpellsUtils.sendNotification(Text.of("New update available now."), true);
-
-                        WynnSpellsClient.LOGGER.info(
-                                "{} v{} is now available. You're running v{}. Visit {} to download.",
-                                WynnSpellsClient.MOD_NAME, latestVersion, currentVersion, homepageUrl);
-                    }
+                if (response.statusCode() != 200) {
+                    WynnSpellsClient.LOGGER.warn("Failed to fetch update info. Status code: {}",
+                            response.statusCode());
+                    continue;
                 }
+
+                Map<?, ?> json = gson.fromJson(response.body(), Map.class);
+                String latestVersion = (String) json.get("tag_name");
+
+                if (latestVersion == null) {
+                    continue;
+                }
+
+                String currentVersion = FabricLoader.getInstance()
+                        .getModContainer(WynnSpellsClient.MOD_ID).map(modContainer -> modContainer
+                                .getMetadata().getVersion().getFriendlyString())
+                        .orElse("0.0.0");
+
+                String homepageUrl =
+                        FabricLoader.getInstance().getModContainer(WynnSpellsClient.MOD_ID)
+                                .flatMap(modContainer -> modContainer.getMetadata().getContact()
+                                        .get("homepage"))
+                                .orElse("https://github.com/OhhhZenix/WynnSpells");
+
+                // Normalize versions before compare
+                if (compareSemver(latestVersion, currentVersion) > 0
+                        && !latestVersion.equals(lastNotifiedVersion)) {
+
+                    lastNotifiedVersion = latestVersion;
+
+                    // TODO: make update notifications optional
+                    WynnSpellsUtils.sendNotification(
+                            Text.of("New update available: " + latestVersion), true);
+
+                    WynnSpellsClient.LOGGER.info(
+                            "{} v{} is now available. You're running v{}. Visit {} to download.",
+                            WynnSpellsClient.MOD_NAME, latestVersion, currentVersion, homepageUrl);
+                }
+
             } catch (Exception e) {
                 WynnSpellsClient.LOGGER.warn("Failed to check for updates", e);
             }
@@ -72,20 +92,51 @@ public class WynnSpellsUpdateChecker implements Runnable {
         }
     }
 
+    /**
+     * Compares semantic versions safely.
+     * 
+     * Supports: v1.2.3, 1.2.3-beta, 1.2
+     */
     private int compareSemver(String v1, String v2) {
+        v1 = normalizeVersion(v1);
+        v2 = normalizeVersion(v2);
+
         String[] a = v1.split("\\.");
         String[] b = v2.split("\\.");
 
         int len = Math.max(a.length, b.length);
 
         for (int i = 0; i < len; i++) {
-            int n1 = i < a.length ? Integer.parseInt(a[i]) : 0;
-            int n2 = i < b.length ? Integer.parseInt(b[i]) : 0;
+            int n1 = i < a.length ? parseSafe(a[i]) : 0;
+            int n2 = i < b.length ? parseSafe(b[i]) : 0;
 
             if (n1 != n2) {
                 return Integer.compare(n1, n2);
             }
         }
         return 0;
+    }
+
+    private String normalizeVersion(String version) {
+        // remove leading 'v'
+        if (version.startsWith("v") || version.startsWith("V")) {
+            version = version.substring(1);
+        }
+
+        // remove pre-release suffix
+        int dashIndex = version.indexOf("-");
+        if (dashIndex != -1) {
+            version = version.substring(0, dashIndex);
+        }
+
+        return version;
+    }
+
+    private int parseSafe(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }
