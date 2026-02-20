@@ -92,6 +92,10 @@ public class WynnSpellsClient implements ClientModInitializer {
         wynnSpells.setDaemon(true);
         wynnSpells.start();
 
+        Thread pingPong = new Thread(new WynnSpellsPingPong(running));
+        pingPong.setDaemon(true);
+        pingPong.start();
+
         Thread updateChecker = new Thread(new WynnSpellsUpdateChecker(running));
         updateChecker.setDaemon(true);
         updateChecker.start();
