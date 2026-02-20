@@ -90,7 +90,7 @@ public class WynnSpellsClient implements ClientModInitializer {
     private void onClientStart(MinecraftClient client) {
         WynnSpellsPingPong.start();
 
-        Thread wynnSpells = new Thread(new WynnSpellsRunnable(buffer, running));
+        Thread wynnSpells = new Thread(new WynnSpellsCaster(buffer, running));
         wynnSpells.setDaemon(true);
         wynnSpells.start();
 
