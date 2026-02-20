@@ -1,33 +1,32 @@
 package dev.zenix.wynnspells.client;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;
+import net.minecraft.util.Util;
 
-public class WynnSpellsPingPong implements Runnable {
+public final class WynnSpellsPingPong {
 
-    private static final long MS_PER_PING = 1000;
-    private static volatile long lastPing = 0;
+    private static final long PING_INTERVAL_TICKS = 20;
+    private static long lastPing = 0;
+    private static int tickCounter = 0;
 
-    private final AtomicBoolean running;
+    private WynnSpellsPingPong() {}
 
-    public WynnSpellsPingPong(AtomicBoolean running) {
-        this.running = running;
-    }
+    public static void tick() {
+        // increment tick
+        tickCounter++;
 
-    @Override
-    public void run() {
-        while (running.get()) {
-            MinecraftClient client = MinecraftClient.getInstance();
-            WynnSpellsUtils.sendPacket(client, new QueryPingC2SPacket(System.currentTimeMillis()));
-
-            try {
-                Thread.sleep(MS_PER_PING);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return;
-            }
+        // should send again?
+        if (tickCounter < PING_INTERVAL_TICKS) {
+            return;
         }
+
+        // send packet
+        MinecraftClient client = MinecraftClient.getInstance();
+        WynnSpellsUtils.sendPacket(client, new QueryPingC2SPacket(Util.getMeasuringTimeMs()));
+
+        // reset tick
+        tickCounter = 0;
     }
 
     public static long getPing() {
@@ -35,6 +34,7 @@ public class WynnSpellsPingPong implements Runnable {
     }
 
     public static void onCallback(long startTime) {
-        lastPing = Math.max(0, System.currentTimeMillis() - startTime);
+        long currentTime = Util.getMeasuringTimeMs();
+        lastPing = currentTime - startTime;
     }
 }
