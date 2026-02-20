@@ -120,7 +120,7 @@ public class WynnSpellsClient implements ClientModInitializer {
         if (!key.isPressed())
             return;
 
-        if (queueList.size() >= config.getQueueLimit()) {
+        if (queueList.size() >= config.getBufferLimit()) {
             return;
         }
 
