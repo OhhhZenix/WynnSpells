@@ -13,12 +13,14 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.option.KeyBinding.Category;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.network.packet.PingPackets;
+import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
 import net.minecraft.util.Identifier;
 
 public class WynnSpellsClient implements ClientModInitializer {
@@ -92,10 +94,6 @@ public class WynnSpellsClient implements ClientModInitializer {
         wynnSpells.setDaemon(true);
         wynnSpells.start();
 
-        Thread pingPong = new Thread(new WynnSpellsPingPong(running));
-        pingPong.setDaemon(true);
-        pingPong.start();
-
         Thread updateChecker = new Thread(new WynnSpellsUpdateChecker(running));
         updateChecker.setDaemon(true);
         updateChecker.start();
@@ -106,8 +104,6 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     private void onClientEndTick(MinecraftClient client) {
-        if (client.player != null)
-            client.player.sendMessage(Text.of("ping: " + WynnSpellsPingPong.getPing()), false);
         processConfigKey(client);
         processIntentKey(client, firstSpellKey, WynnSpellsIntent.FIRST_SPELL);
         processIntentKey(client, secondSpellKey, WynnSpellsIntent.SECOND_SPELL);
