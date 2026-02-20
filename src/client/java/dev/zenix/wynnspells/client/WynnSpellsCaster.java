@@ -2,7 +2,6 @@ package dev.zenix.wynnspells.client;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import net.minecraft.client.MinecraftClient;
 
 public class WynnSpellsCaster implements Runnable {
@@ -10,7 +9,10 @@ public class WynnSpellsCaster implements Runnable {
     private final AtomicBoolean running;
     private final BlockingQueue<WynnSpellsIntent> buffer;
 
-    public WynnSpellsCaster(BlockingQueue<WynnSpellsIntent> buffer, AtomicBoolean running) {
+    public WynnSpellsCaster(
+        BlockingQueue<WynnSpellsIntent> buffer,
+        AtomicBoolean running
+    ) {
         this.buffer = buffer;
         this.running = running;
     }
@@ -21,7 +23,8 @@ public class WynnSpellsCaster implements Runnable {
             try {
                 MinecraftClient client = MinecraftClient.getInstance();
 
-                WynnSpellsConfig config = WynnSpellsClient.getInstance().getConfig();
+                WynnSpellsConfig config =
+                    WynnSpellsClient.getInstance().getConfig();
                 long delay = config.getDelayMillis();
                 if (config.shouldUseAutoDelay()) {
                     delay = WynnSpellsUtils.getAutoDelay();
