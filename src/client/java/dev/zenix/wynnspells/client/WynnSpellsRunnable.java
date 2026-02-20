@@ -8,10 +8,10 @@ import net.minecraft.client.MinecraftClient;
 public class WynnSpellsRunnable implements Runnable {
 
     private final AtomicBoolean running;
-    private final BlockingQueue<WynnSpellsQueue> queueList;
+    private final BlockingQueue<WynnSpellsIntent> buffer;
 
-    public WynnSpellsRunnable(BlockingQueue<WynnSpellsQueue> queueList, AtomicBoolean running) {
-        this.queueList = queueList;
+    public WynnSpellsRunnable(BlockingQueue<WynnSpellsIntent> buffer, AtomicBoolean running) {
+        this.buffer = buffer;
         this.running = running;
     }
 
@@ -20,8 +20,6 @@ public class WynnSpellsRunnable implements Runnable {
         while (running.get()) {
             try {
                 MinecraftClient client = MinecraftClient.getInstance();
-                WynnSpellsQueue queue = queueList.take();
-                WynnSpellsIntent intent = queue.getIntent();
 
                 WynnSpellsConfig config = WynnSpellsClient.getInstance().getConfig();
                 long delay = config.getDelayMillis();
@@ -29,6 +27,7 @@ public class WynnSpellsRunnable implements Runnable {
                     delay = WynnSpellsUtils.getAutoDelay();
                 }
 
+                WynnSpellsIntent intent = buffer.take();
                 WynnSpellsClient.LOGGER.debug("Intent: {}", intent.toString());
                 switch (intent) {
                     case MELEE:
