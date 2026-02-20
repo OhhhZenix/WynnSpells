@@ -23,8 +23,11 @@ public class WynnSpellsRunnable implements Runnable {
                 WynnSpellsQueue queue = queueList.take();
                 WynnSpellsIntent intent = queue.getIntent();
 
-                // int delay = WynnSpellsClient.getInstance().getConfig().getDelayMillis();
-                long delay = WynnSpellsUtils.getAutoDelay();
+                WynnSpellsConfig config = WynnSpellsClient.getInstance().getConfig();
+                long delay = config.getDelayMillis();
+                if (config.shouldUseAutoDelay()) {
+                    delay = WynnSpellsUtils.getAutoDelay();
+                }
 
                 WynnSpellsClient.LOGGER.debug("Intent: {}", intent.toString());
                 switch (intent) {
