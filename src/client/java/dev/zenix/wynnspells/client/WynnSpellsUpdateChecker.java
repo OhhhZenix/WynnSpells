@@ -70,9 +70,9 @@ public class WynnSpellsUpdateChecker implements Runnable {
 
                     lastNotifiedVersion = latestVersion;
 
-                    // TODO: make update notifications optional
                     WynnSpellsUtils.sendNotification(
-                            Text.of("New update available: " + latestVersion), true);
+                            Text.of("New update available: " + latestVersion),
+                            WynnSpellsClient.getInstance().getConfig().shouldNotifyUpdates());
 
                     WynnSpellsClient.LOGGER.info(
                             "{} v{} is now available. You're running v{}. Visit {} to download.",
