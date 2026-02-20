@@ -7,6 +7,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 public class WynnSpellsConfig implements ConfigData {
 
     private boolean notifyUpdates = getDefaultNotifyUpdates();
+    private boolean notifyBusyCast = getDefaultNotifyBusyCast();
     private boolean useAutoDelay = getDefaultUseAutoDelay();
     private int delayMillis = getDefaultDelayMillis();
     private int bufferLimit = getDefaultBufferLimit();
@@ -33,6 +34,18 @@ public class WynnSpellsConfig implements ConfigData {
 
     public void setUseAutoDelay(boolean enabled) {
         useAutoDelay = enabled;
+    }
+
+    public static boolean getDefaultNotifyBusyCast() {
+        return true;
+    }
+
+    public boolean shouldNotifyBusyCast() {
+        return notifyBusyCast;
+    }
+
+    public void setNotifyBusyCast(boolean enabled) {
+        notifyBusyCast = enabled;
     }
 
     public static int getDefaultDelayMillis() {
