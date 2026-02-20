@@ -13,14 +13,12 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.option.KeyBinding.Category;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.PingPackets;
-import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
+
 import net.minecraft.util.Identifier;
 
 public class WynnSpellsClient implements ClientModInitializer {
@@ -90,6 +88,8 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     private void onClientStart(MinecraftClient client) {
+        WynnSpellsPingPong.start();
+
         Thread wynnSpells = new Thread(new WynnSpellsRunnable(queueList, running));
         wynnSpells.setDaemon(true);
         wynnSpells.start();
@@ -100,6 +100,7 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     private void onClientStop(MinecraftClient client) {
+        WynnSpellsPingPong.stop();
         running.set(false);
     }
 
