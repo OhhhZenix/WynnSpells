@@ -7,34 +7,37 @@ import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;
 public class WynnSpellsPingPong implements Runnable {
 
     private static final long MS_PER_PING = 1000;
+    private static volatile long lastPing = 0;
 
-    private AtomicBoolean running;
-    private long lastPing;
+    private final AtomicBoolean running;
 
     public WynnSpellsPingPong(AtomicBoolean running) {
         this.running = running;
-        this.lastPing = 0;
     }
 
     @Override
     public void run() {
         while (running.get()) {
-            WynnSpellsUtils.sendPacket(MinecraftClient.getInstance(),
-                    new QueryPingC2SPacket(System.currentTimeMillis()));
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client != null && client.getNetworkHandler() != null) {
+                WynnSpellsUtils.sendPacket(client,
+                        new QueryPingC2SPacket(System.currentTimeMillis()));
+            }
 
             try {
                 Thread.sleep(MS_PER_PING);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
+                return;
             }
         }
     }
 
-    public long getPing() {
+    public static long getPing() {
         return lastPing;
     }
 
-    public void onCallback(long ping) {
-        lastPing = ping;
+    public static void onCallback(long startTime) {
+        lastPing = Math.max(0, System.currentTimeMillis() - startTime);
     }
 }
