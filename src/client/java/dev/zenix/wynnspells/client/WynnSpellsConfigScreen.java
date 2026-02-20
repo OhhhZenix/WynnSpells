@@ -17,20 +17,25 @@ public class WynnSpellsConfigScreen {
         WynnSpellsConfig config = wynnSpellsClient.getConfig();
         builder.setSavingRunnable(wynnSpellsClient::saveConfig);
 
-        // config.wynnspells.general.delay.title
-        // config.wynnspells.general.delay.description
         // General
         ConfigCategory generalCategory = builder.getOrCreateCategory(Text.of("General"));
-        generalCategory
-                .addEntry(entryBuilder.startIntField(Text.of("Delay"), config.getDelayMillis())
-                        .setTooltip(Text.of("The delay between actions of each queue block."))
-                        .setDefaultValue(WynnSpellsConfig.getDefaultDelayMillis())
-                        .setSaveConsumer(value -> config.setDelayMillis(value)).build());
-        generalCategory
-                .addEntry(entryBuilder.startIntField(Text.of("Queue Limit"), config.getQueueLimit())
-                        .setTooltip(Text.of("The amount of actions that can be in a queue."))
-                        .setDefaultValue(WynnSpellsConfig.getDefaultQueueLimit())
-                        .setSaveConsumer(value -> config.setQueueLimit(value)).build());
+        generalCategory.addEntry(entryBuilder
+                .startBooleanToggle(Text.of("Use Auto Delay"), config.shouldUseAutoDelay())
+                .setTooltip(Text.of("Automatically calculates the most optimal delay for you."))
+                .setDefaultValue(WynnSpellsConfig.getDefaultUseAutoDelay())
+                .setSaveConsumer(value -> config.setUseAutoDelay(value)).build());
+        generalCategory.addEntry(entryBuilder
+                .startIntField(Text.of("Manual Delay"), config.getDelayMillis())
+                .setTooltip(Text.of(
+                        "The delay between clicks. This value is ignored if auto delay is enabled."))
+                .setDefaultValue(WynnSpellsConfig.getDefaultDelayMillis())
+                .setSaveConsumer(value -> config.setDelayMillis(value)).build());
+        generalCategory.addEntry(entryBuilder
+                .startIntField(Text.of("Buffer Limit"), config.getBufferLimit())
+                .setTooltip(
+                        Text.of("The amount of actions that is tolorated before it is ignored."))
+                .setDefaultValue(WynnSpellsConfig.getDefaultBufferLimit())
+                .setSaveConsumer(value -> config.setBufferLimit(value)).build());
 
         // TODO: Add keybinding
 
