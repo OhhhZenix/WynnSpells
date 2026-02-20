@@ -18,6 +18,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.option.KeyBinding.Category;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class WynnSpellsClient implements ClientModInitializer {
@@ -101,6 +102,8 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     private void onClientEndTick(MinecraftClient client) {
+        if (client.player != null)
+            client.player.sendMessage(Text.of("ping: " + WynnSpellsPingPong.getPing()), false);
         processConfigKey(client);
         processIntentKey(client, firstSpellKey, WynnSpellsIntent.FIRST_SPELL);
         processIntentKey(client, secondSpellKey, WynnSpellsIntent.SECOND_SPELL);
