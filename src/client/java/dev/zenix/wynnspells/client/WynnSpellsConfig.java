@@ -7,9 +7,21 @@ import me.shedaniel.autoconfig.annotation.Config;
 public class WynnSpellsConfig implements ConfigData {
 
     // TODO: add notifications settings
-    // TODO: add auto calculation method
+    private boolean useAutoDelay = getDefaultUseAutoDelay();
     private int delayMillis = getDefaultDelayMillis();
     private int queueLimit = getDefaultQueueLimit();
+
+    public static boolean getDefaultUseAutoDelay() {
+        return true;
+    }
+
+    public boolean getUseAutoDelay() {
+        return useAutoDelay;
+    }
+
+    public void setUseAutoDelay(boolean enabled) {
+        useAutoDelay = enabled;
+    }
 
     public static int getDefaultDelayMillis() {
         return 100;
