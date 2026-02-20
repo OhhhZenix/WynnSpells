@@ -131,7 +131,7 @@ public class WynnSpellsClient implements ClientModInitializer {
         ItemStack itemInMainHand = client.player.getMainHandStack();
         if (itemInMainHand != previousItem) {
             previousItem = itemInMainHand;
-            buffer.clear();;
+            buffer.clear();
         }
 
         key.setPressed(false);
