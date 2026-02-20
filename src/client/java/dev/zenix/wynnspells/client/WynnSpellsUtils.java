@@ -1,7 +1,6 @@
 package dev.zenix.wynnspells.client;
 
 import java.util.List;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.toast.SystemToast;
@@ -19,50 +18,68 @@ import net.minecraft.util.PlayerInput;
 public class WynnSpellsUtils {
 
     public static void sendPacket(MinecraftClient client, Packet<?> packet) {
-        if (client == null)
-            return;
+        if (client == null) return;
 
         ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
-        if (networkHandler == null)
-            return;
+        if (networkHandler == null) return;
 
         networkHandler.sendPacket(packet);
     }
 
     public static void sendAttackPacket(MinecraftClient client) {
-        WynnSpellsUtils.sendPacket(client, new HandSwingC2SPacket(Hand.MAIN_HAND));
+        WynnSpellsUtils.sendPacket(
+            client,
+            new HandSwingC2SPacket(Hand.MAIN_HAND)
+        );
     }
 
     public static void sendInteractPacket(MinecraftClient client) {
-        WynnSpellsUtils.sendPacket(client, new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0,
-                client.player.getYaw(), client.player.getPitch()));
+        WynnSpellsUtils.sendPacket(
+            client,
+            new PlayerInteractItemC2SPacket(
+                Hand.MAIN_HAND,
+                0,
+                client.player.getYaw(),
+                client.player.getPitch()
+            )
+        );
     }
 
-    public static void sendSneakingPacket(MinecraftClient client, boolean isSneaking) {
-        PlayerInput playerInput = new PlayerInput(client.options.forwardKey.isPressed(),
-                client.options.backKey.isPressed(), client.options.leftKey.isPressed(),
-                client.options.rightKey.isPressed(), client.options.jumpKey.isPressed(), isSneaking,
-                client.options.sprintKey.isPressed());
+    public static void sendSneakingPacket(
+        MinecraftClient client,
+        boolean isSneaking
+    ) {
+        PlayerInput playerInput = new PlayerInput(
+            client.options.forwardKey.isPressed(),
+            client.options.backKey.isPressed(),
+            client.options.leftKey.isPressed(),
+            client.options.rightKey.isPressed(),
+            client.options.jumpKey.isPressed(),
+            isSneaking,
+            client.options.sprintKey.isPressed()
+        );
 
-        WynnSpellsUtils.sendPacket(client, new PlayerInputC2SPacket(playerInput));
+        WynnSpellsUtils.sendPacket(
+            client,
+            new PlayerInputC2SPacket(playerInput)
+        );
     }
 
     public static boolean isArcher(MinecraftClient client) {
-        if (client == null || client.player == null)
-            return false;
+        if (client == null || client.player == null) return false;
 
         ItemStack heldItem = client.player.getMainHandStack();
-        if (heldItem == null)
-            return false;
+        if (heldItem == null) return false;
 
-        List<Text> tooltip =
-                heldItem.getTooltip(Item.TooltipContext.DEFAULT, client.player, TooltipType.BASIC);
-        if (tooltip == null || tooltip.isEmpty())
-            return false;
+        List<Text> tooltip = heldItem.getTooltip(
+            Item.TooltipContext.DEFAULT,
+            client.player,
+            TooltipType.BASIC
+        );
+        if (tooltip == null || tooltip.isEmpty()) return false;
 
         for (Text line : tooltip) {
-            if (line.getString().contains("Archer/Hunter"))
-                return true;
+            if (line.getString().contains("Archer/Hunter")) return true;
         }
 
         return false;
@@ -73,8 +90,12 @@ public class WynnSpellsUtils {
             return;
         }
 
-        SystemToast.add(MinecraftClient.getInstance().getToastManager(),
-                SystemToast.Type.WORLD_BACKUP, Text.of(WynnSpellsClient.MOD_NAME), description);
+        SystemToast.add(
+            MinecraftClient.getInstance().getToastManager(),
+            SystemToast.Type.WORLD_BACKUP,
+            Text.of(WynnSpellsClient.MOD_NAME),
+            description
+        );
     }
 
     public static long getAutoDelay() {
