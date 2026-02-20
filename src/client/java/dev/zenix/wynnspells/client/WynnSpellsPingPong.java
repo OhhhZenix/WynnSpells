@@ -34,7 +34,14 @@ public final class WynnSpellsPingPong {
         );
     }
 
-    public static void stop() {}
+    public static void stop() {
+        if (executor == null || executor.isShutdown()) {
+            return;
+        }
+
+        executor.shutdownNow();
+        executor = null;
+    }
 
     private static void sendPing() {
         MinecraftClient client = MinecraftClient.getInstance();
