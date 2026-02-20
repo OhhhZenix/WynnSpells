@@ -15,7 +15,7 @@ public class WynnSpellsConfig implements ConfigData {
         return true;
     }
 
-    public boolean getUseAutoDelay() {
+    public boolean shouldUseAutoDelay() {
         return useAutoDelay;
     }
 
