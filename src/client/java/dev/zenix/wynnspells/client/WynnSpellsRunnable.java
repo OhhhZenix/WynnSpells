@@ -23,13 +23,8 @@ public class WynnSpellsRunnable implements Runnable {
                 WynnSpellsQueue queue = queueList.take();
                 WynnSpellsIntent intent = queue.getIntent();
 
-                // TODO: calculate delay based on ping
                 // int delay = WynnSpellsClient.getInstance().getConfig().getDelayMillis();
-                long rtt = WynnSpellsPingPong.getPing();
-                long oneWay = rtt / 2;
-                long msPerTick = 1000L / 20L; // 50ms at 20 TPS
-                long delay = oneWay < msPerTick ? msPerTick : oneWay;
-                WynnSpellsClient.LOGGER.info("Delay: {}", delay);
+                long delay = WynnSpellsUtils.getAutoDelay();
 
                 WynnSpellsClient.LOGGER.debug("Intent: {}", intent.toString());
                 switch (intent) {
