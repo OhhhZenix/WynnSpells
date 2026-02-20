@@ -19,10 +19,7 @@ public class WynnSpellsPingPong implements Runnable {
     public void run() {
         while (running.get()) {
             MinecraftClient client = MinecraftClient.getInstance();
-            if (client != null && client.getNetworkHandler() != null) {
-                WynnSpellsUtils.sendPacket(client,
-                        new QueryPingC2SPacket(System.currentTimeMillis()));
-            }
+            WynnSpellsUtils.sendPacket(client, new QueryPingC2SPacket(System.currentTimeMillis()));
 
             try {
                 Thread.sleep(MS_PER_PING);
