@@ -31,7 +31,7 @@ public class WynnSpellsClient implements ClientModInitializer {
     private WynnSpellsConfig config = null;
 
     private AtomicBoolean running = new AtomicBoolean(true);
-    private LinkedBlockingDeque<WynnSpellsQueue> queueList = new LinkedBlockingDeque<>();
+    private LinkedBlockingDeque<WynnSpellsIntent> buffer = new LinkedBlockingDeque<>();
     private ItemStack previousItem = null;
 
     private final Category KEY_CATEGORY = Category.create(Identifier.of("wynnspells", "all"));
@@ -90,7 +90,7 @@ public class WynnSpellsClient implements ClientModInitializer {
     private void onClientStart(MinecraftClient client) {
         WynnSpellsPingPong.start();
 
-        Thread wynnSpells = new Thread(new WynnSpellsRunnable(queueList, running));
+        Thread wynnSpells = new Thread(new WynnSpellsRunnable(buffer, running));
         wynnSpells.setDaemon(true);
         wynnSpells.start();
 
@@ -120,7 +120,7 @@ public class WynnSpellsClient implements ClientModInitializer {
         if (!key.isPressed())
             return;
 
-        if (queueList.size() >= config.getBufferLimit()) {
+        if (buffer.size() >= config.getBufferLimit()) {
             return;
         }
 
@@ -131,11 +131,11 @@ public class WynnSpellsClient implements ClientModInitializer {
         ItemStack itemInMainHand = client.player.getMainHandStack();
         if (itemInMainHand != previousItem) {
             previousItem = itemInMainHand;
-            queueList.clear();;
+            buffer.clear();;
         }
 
         key.setPressed(false);
-        queueList.add(new WynnSpellsQueue(intent));
+        buffer.add(intent);
     }
 
     private void processConfigKey(MinecraftClient client) {
