@@ -6,10 +6,22 @@ import me.shedaniel.autoconfig.annotation.Config;
 @Config(name = "wynnspells")
 public class WynnSpellsConfig implements ConfigData {
 
-    // TODO: add notifications settings
+    private boolean notifyUpdates = getDefaultNotifyUpdates();
     private boolean useAutoDelay = getDefaultUseAutoDelay();
     private int delayMillis = getDefaultDelayMillis();
-    private int queueLimit = getDefaultQueueLimit();
+    private int bufferLimit = getDefaultBufferLimit();
+
+    public static boolean getDefaultNotifyUpdates() {
+        return true;
+    }
+
+    public boolean shouldNotifyUpdates() {
+        return notifyUpdates;
+    }
+
+    public void setNotifyUpdates(boolean enabled) {
+        notifyUpdates = enabled;
+    }
 
     public static boolean getDefaultUseAutoDelay() {
         return true;
@@ -35,15 +47,15 @@ public class WynnSpellsConfig implements ConfigData {
         delayMillis = delay;
     }
 
-    public static int getDefaultQueueLimit() {
+    public static int getDefaultBufferLimit() {
         return 10;
     }
 
-    public int getQueueLimit() {
-        return queueLimit;
+    public int getBufferLimit() {
+        return bufferLimit;
     }
 
-    public void setQueueLimit(int limit) {
-        queueLimit = limit;
+    public void setBufferLimit(int limit) {
+        bufferLimit = limit;
     }
 }
