@@ -35,22 +35,22 @@ public class WynnSpellsClient implements ClientModInitializer {
     private ItemStack previousItem = null;
 
     private final Category KEY_CATEGORY = Category.create(Identifier.of("wynnspells", "all"));
-    private KeyBinding firstSpellKey =
+    private final KeyBinding FIRST_SPELL_KEY =
             KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.first",
                     InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
-    private KeyBinding secondSpellKey =
+    private final KeyBinding SECOND_SPELL_KEY =
             KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.second",
                     InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
-    private KeyBinding thirdSpellKey =
+    private final KeyBinding THIRD_SPELL_KEY =
             KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.third",
                     InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
-    private KeyBinding fourthSpellKey =
+    private final KeyBinding FOURTH_SPELL_KEY =
             KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.fourth",
                     InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
-    private KeyBinding meleeKey =
+    private final KeyBinding MELEE_KEY =
             KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.melee",
                     InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
-    private KeyBinding configKey =
+    private final KeyBinding CONFIG_KEY =
             KeyBindingHelper.registerKeyBinding(new KeyBinding("key.wynnspells.config",
                     InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
 
@@ -106,11 +106,11 @@ public class WynnSpellsClient implements ClientModInitializer {
 
     private void onClientEndTick(MinecraftClient client) {
         processConfigKey(client);
-        processIntentKey(client, firstSpellKey, WynnSpellsIntent.FIRST_SPELL);
-        processIntentKey(client, secondSpellKey, WynnSpellsIntent.SECOND_SPELL);
-        processIntentKey(client, thirdSpellKey, WynnSpellsIntent.THIRD_SPELL);
-        processIntentKey(client, fourthSpellKey, WynnSpellsIntent.FOURTH_SPELL);
-        processIntentKey(client, meleeKey, WynnSpellsIntent.MELEE);
+        processIntentKey(client, FIRST_SPELL_KEY, WynnSpellsIntent.FIRST_SPELL);
+        processIntentKey(client, SECOND_SPELL_KEY, WynnSpellsIntent.SECOND_SPELL);
+        processIntentKey(client, THIRD_SPELL_KEY, WynnSpellsIntent.THIRD_SPELL);
+        processIntentKey(client, FOURTH_SPELL_KEY, WynnSpellsIntent.FOURTH_SPELL);
+        processIntentKey(client, MELEE_KEY, WynnSpellsIntent.MELEE);
     }
 
     private void processIntentKey(MinecraftClient client, KeyBinding key, WynnSpellsIntent intent) {
@@ -139,13 +139,13 @@ public class WynnSpellsClient implements ClientModInitializer {
     }
 
     private void processConfigKey(MinecraftClient client) {
-        if (configKey == null)
+        if (CONFIG_KEY == null)
             return;
 
-        if (!configKey.isPressed())
+        if (!CONFIG_KEY.isPressed())
             return;
 
-        configKey.setPressed(false);
+        CONFIG_KEY.setPressed(false);
         client.setScreen(WynnSpellsConfigScreen.create(client.currentScreen));
     }
 }
