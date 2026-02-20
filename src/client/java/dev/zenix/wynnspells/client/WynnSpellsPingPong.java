@@ -9,9 +9,9 @@ import net.minecraft.util.Util;
 
 public final class WynnSpellsPingPong {
 
-    private static final long PING_INTERVAL_MILLIS = 1000L;
+    private static final long PING_INTERVAL_MILLIS = 1000;
     private static ScheduledExecutorService executor = null;
-    private static volatile long lastPing = 0L;
+    private static volatile long lastPing = 0;
 
 
     private WynnSpellsPingPong() {}
