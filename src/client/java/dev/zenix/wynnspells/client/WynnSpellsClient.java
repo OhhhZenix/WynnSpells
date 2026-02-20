@@ -18,7 +18,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.option.KeyBinding.Category;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
-
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class WynnSpellsClient implements ClientModInitializer {
@@ -121,6 +121,8 @@ public class WynnSpellsClient implements ClientModInitializer {
             return;
 
         if (buffer.size() >= config.getBufferLimit()) {
+            WynnSpellsUtils.sendNotification(Text.of("Cast ignored: spell queue is busy."),
+                    config.shouldNotifyBusyCast());
             return;
         }
 
