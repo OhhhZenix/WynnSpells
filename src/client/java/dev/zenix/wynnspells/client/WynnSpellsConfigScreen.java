@@ -25,6 +25,11 @@ public class WynnSpellsConfigScreen {
                 .setDefaultValue(WynnSpellsConfig.getDefaultNotifyUpdates())
                 .setSaveConsumer(value -> config.setNotifyUpdates(value)).build());
         generalCategory.addEntry(entryBuilder
+                .startBooleanToggle(Text.of("Notify Busy Cast"), config.shouldNotifyBusyCast())
+                .setTooltip(Text.of("To enable or disable busy cast notifications."))
+                .setDefaultValue(WynnSpellsConfig.getDefaultNotifyBusyCast())
+                .setSaveConsumer(value -> config.setNotifyBusyCast(value)).build());
+        generalCategory.addEntry(entryBuilder
                 .startBooleanToggle(Text.of("Use Auto Delay"), config.shouldUseAutoDelay())
                 .setTooltip(Text.of("Automatically calculates the most optimal delay for you."))
                 .setDefaultValue(WynnSpellsConfig.getDefaultUseAutoDelay())
