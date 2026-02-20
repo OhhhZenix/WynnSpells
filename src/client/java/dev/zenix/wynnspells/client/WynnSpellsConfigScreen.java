@@ -20,6 +20,11 @@ public class WynnSpellsConfigScreen {
         // General
         ConfigCategory generalCategory = builder.getOrCreateCategory(Text.of("General"));
         generalCategory.addEntry(entryBuilder
+                .startBooleanToggle(Text.of("Notify Updates"), config.shouldNotifyUpdates())
+                .setTooltip(Text.of("To enable or disable update notifications."))
+                .setDefaultValue(WynnSpellsConfig.getDefaultNotifyUpdates())
+                .setSaveConsumer(value -> config.setNotifyUpdates(value)).build());
+        generalCategory.addEntry(entryBuilder
                 .startBooleanToggle(Text.of("Use Auto Delay"), config.shouldUseAutoDelay())
                 .setTooltip(Text.of("Automatically calculates the most optimal delay for you."))
                 .setDefaultValue(WynnSpellsConfig.getDefaultUseAutoDelay())
