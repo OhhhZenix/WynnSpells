@@ -13,7 +13,6 @@ public final class WynnSpellsPingPong {
     private static ScheduledExecutorService executor = null;
     private static volatile long lastPing = 0;
 
-
     private WynnSpellsPingPong() {}
 
     public static void start() {
@@ -27,17 +26,22 @@ public final class WynnSpellsPingPong {
             return thread;
         });
 
-        executor.scheduleAtFixedRate(WynnSpellsPingPong::sendPing, 0L, PING_INTERVAL_MILLIS,
-                TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(
+            WynnSpellsPingPong::sendPing,
+            0L,
+            PING_INTERVAL_MILLIS,
+            TimeUnit.MILLISECONDS
+        );
     }
 
-    public static void stop() {
-
-    }
+    public static void stop() {}
 
     private static void sendPing() {
         MinecraftClient client = MinecraftClient.getInstance();
-        WynnSpellsUtils.sendPacket(client, new QueryPingC2SPacket(Util.getMeasuringTimeMs()));
+        WynnSpellsUtils.sendPacket(
+            client,
+            new QueryPingC2SPacket(Util.getMeasuringTimeMs())
+        );
     }
 
     public static long getPing() {
