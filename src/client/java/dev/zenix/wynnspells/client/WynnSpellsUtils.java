@@ -76,4 +76,13 @@ public class WynnSpellsUtils {
         SystemToast.add(MinecraftClient.getInstance().getToastManager(),
                 SystemToast.Type.WORLD_BACKUP, Text.of(WynnSpellsClient.MOD_NAME), description);
     }
+
+    public static long getAutoDelay() {
+        long rtt = WynnSpellsPingPong.getPing();
+        long oneWay = rtt / 2;
+        long msPerTick = 1000L / 20L; // 50ms at 20 TPS
+        long delay = oneWay < msPerTick ? msPerTick : oneWay;
+        WynnSpellsClient.LOGGER.debug("Auto Delay: {}", delay);
+        return delay;
+    }
 }
