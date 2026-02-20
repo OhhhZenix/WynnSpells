@@ -1,9 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "dev.zenix.wynnspells.mixin.client",
+  "package": "dev.zenix.wynnspells.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "WynnSpellsClientPacketListener"
   ],
   "injectors": {
     "defaultRequire": 1
