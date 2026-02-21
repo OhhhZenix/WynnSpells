@@ -61,7 +61,7 @@ public class WynnSpellsConfig implements ConfigData {
     }
 
     public static int getDefaultBufferLimit() {
-        return 10;
+        return 1;
     }
 
     public int getBufferLimit() {
