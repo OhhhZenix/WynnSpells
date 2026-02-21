@@ -67,14 +67,14 @@ public class WynnSpellsConfigScreen {
         );
         generalCategory.addEntry(
             entryBuilder
-                .startIntField(Text.of("Manual Delay"), config.getDelayMillis())
+                .startIntField(Text.of("Manual Delay"), config.getManualDelay())
                 .setTooltip(
                     Text.of(
                         "The delay between clicks. This value is ignored if auto delay is enabled."
                     )
                 )
-                .setDefaultValue(WynnSpellsConfig.getDefaultDelayMillis())
-                .setSaveConsumer(value -> config.setDelayMillis(value))
+                .setDefaultValue(WynnSpellsConfig.getDefaultManualDelay())
+                .setSaveConsumer(value -> config.setManualDelay(value))
                 .build()
         );
         generalCategory.addEntry(
