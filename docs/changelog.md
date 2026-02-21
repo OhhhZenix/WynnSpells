@@ -10,6 +10,7 @@ All the changes in WynnSpells.
 - Add auto delay calculation
 - Add keybinds section to config menu
 - Update config descriptions
+- Add busy cast notification
 
 **New settings menu**
 ![Settings menu for v1.1.0](./images/2.png)
