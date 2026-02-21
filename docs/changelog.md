@@ -11,6 +11,9 @@ All the changes in WynnSpells.
 - Add keybinds section to config menu
 - Update config descriptions
 
+**New settings menu**
+![Settings menu for v1.1.0](./images/2.png)
+
 ## Release 1.0.0
 
 - Use Minecraft version 1.21.11
@@ -26,4 +29,4 @@ All the changes in WynnSpells.
 - Add update checker
 
 **Config menu**
-![](./images/1.png)
+![Sttings menu for v1.0.0](./images/1.png)
