@@ -14,7 +14,7 @@ All the changes in WynnSpells.
 **New settings menu**
 ![Settings menu for v1.1.0](./images/2.png)
 
-**Busy Cast Notification**
+**Busy Cast Notification** </br>
 ![Busy Cast Notification](./images/3.png)
 
 ## Release 1.0.0
