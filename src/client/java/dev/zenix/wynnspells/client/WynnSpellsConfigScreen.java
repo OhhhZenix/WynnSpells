@@ -4,6 +4,8 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 
 public class WynnSpellsConfigScreen {
@@ -88,8 +90,60 @@ public class WynnSpellsConfigScreen {
                 .build()
         );
 
-        // TODO: Add keybinding
+        ConfigCategory keybindsCategory = builder.getOrCreateCategory(
+            Text.of("Keybinds")
+        );
+        addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.CONFIG_KEY);
+        addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.MELEE_KEY);
+        addKeybind(
+            keybindsCategory,
+            entryBuilder,
+            WynnSpellsClient.FIRST_SPELL_KEY
+        );
+        addKeybind(
+            keybindsCategory,
+            entryBuilder,
+            WynnSpellsClient.SECOND_SPELL_KEY
+        );
+        addKeybind(
+            keybindsCategory,
+            entryBuilder,
+            WynnSpellsClient.THIRD_SPELL_KEY
+        );
+        addKeybind(
+            keybindsCategory,
+            entryBuilder,
+            WynnSpellsClient.FOURTH_SPELL_KEY
+        );
 
         return builder.build();
+    }
+
+    private static void addKeybind(
+        ConfigCategory category,
+        ConfigEntryBuilder entryBuilder,
+        KeyBinding keyBinding
+    ) {
+        category.addEntry(
+            entryBuilder
+                .startKeyCodeField(
+                    Text.translatable(keyBinding.getId()),
+                    InputUtil.fromTranslationKey(
+                        keyBinding.getBoundKeyTranslationKey()
+                    )
+                )
+                .setTooltip(
+                    Text.of(
+                        "Keybind for " +
+                            Text.translatable(keyBinding.getId()).getString()
+                    )
+                )
+                .setDefaultValue(keyBinding.getDefaultKey())
+                .setKeySaveConsumer(value -> {
+                    keyBinding.setBoundKey(value);
+                    WynnSpellsUtils.refreshAndSaveKeyBindings();
+                })
+                .build()
+        );
     }
 }
