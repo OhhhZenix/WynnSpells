@@ -80,7 +80,7 @@ public class WynnSpellsConfigScreen {
                 .startIntField(Text.of("Buffer Limit"), config.getBufferLimit())
                 .setTooltip(
                     Text.of(
-                        "The amount of actions that is tolorated before it is ignored."
+                        "The amount of actions that is tolorated before it is ignored. Reduces key ghosting."
                     )
                 )
                 .setDefaultValue(WynnSpellsConfig.getDefaultBufferLimit())
