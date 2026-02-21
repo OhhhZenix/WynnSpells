@@ -29,6 +29,7 @@ public class WynnSpellsClient implements ClientModInitializer {
 
     private static WynnSpellsClient instance = null;
     private WynnSpellsConfig config = null;
+    private WynnSpellsUpdateChecker updateChecker;
 
     private AtomicBoolean running = new AtomicBoolean(true);
     private LinkedBlockingDeque<WynnSpellsIntent> buffer =
@@ -132,7 +133,9 @@ public class WynnSpellsClient implements ClientModInitializer {
 
     private void onClientStart(MinecraftClient client) {
         WynnSpellsPingPong.start();
-        WynnSpellsUpdateChecker.start();
+
+        updateChecker = new WynnSpellsUpdateChecker();
+        updateChecker.start();
 
         Thread wynnSpells = new Thread(new WynnSpellsCaster(buffer, running));
         wynnSpells.setDaemon(true);
@@ -141,7 +144,7 @@ public class WynnSpellsClient implements ClientModInitializer {
 
     private void onClientStop(MinecraftClient client) {
         WynnSpellsPingPong.stop();
-        WynnSpellsUpdateChecker.stop();
+        updateChecker.stop();
         running.set(false);
     }
 
