@@ -102,8 +102,8 @@ public class WynnSpellsUtils {
         long rtt = WynnSpellsPingPong.getPing();
         long oneWay = rtt / 2;
         long msPerTick = 1000L / 20L; // 50ms at 20 TPS
-        long delay = oneWay < 100 ? msPerTick + oneWay : oneWay;
-        WynnSpellsClient.LOGGER.debug("Auto Delay: {}", delay);
+        long delay = oneWay < msPerTick ? msPerTick + oneWay : oneWay;
+        WynnSpellsClient.LOGGER.info("Auto Delay: {}", delay);
         return delay;
     }
 }
