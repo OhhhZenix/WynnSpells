@@ -3,6 +3,7 @@ package dev.zenix.wynnspells.client;
 import java.util.List;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -105,5 +106,20 @@ public class WynnSpellsUtils {
         long delay = oneWay < msPerTick ? msPerTick + oneWay : oneWay;
         WynnSpellsClient.LOGGER.debug("Auto Delay: {}", delay);
         return delay;
+    }
+
+    public static void refreshKeyBindings() {
+        KeyBinding.updateKeysByCode();
+        WynnSpellsClient.LOGGER.debug("Refreshed keybinds.");
+    }
+
+    public static void saveKeyBindings() {
+        MinecraftClient.getInstance().options.write();
+        WynnSpellsClient.LOGGER.debug("Saved keybinds.");
+    }
+
+    public static void refreshAndSaveKeyBindings() {
+        refreshKeyBindings();
+        saveKeyBindings();
     }
 }
