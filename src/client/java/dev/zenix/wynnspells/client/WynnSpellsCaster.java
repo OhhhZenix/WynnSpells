@@ -27,7 +27,9 @@ public class WynnSpellsCaster implements Runnable {
                     WynnSpellsClient.getInstance().getConfig();
                 long delay = config.getManualDelay();
                 if (config.shouldUseAutoDelay()) {
-                    delay = WynnSpellsUtils.getAutoDelay();
+                    delay =
+                        WynnSpellsUtils.getAutoDelay() +
+                        config.getAutoDelayTolerance();
                 }
 
                 WynnSpellsIntent intent = buffer.take();
