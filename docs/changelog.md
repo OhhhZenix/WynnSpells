@@ -6,7 +6,7 @@ All the changes in WynnSpells.
 
 - Update homepage url
 - Remove debug logging
-- Fix update checker
+- Fix & improve update checker
 - Add auto delay calculation
 - Add keybinds section to config menu
 - Update config descriptions
