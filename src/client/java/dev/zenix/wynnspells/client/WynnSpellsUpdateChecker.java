@@ -5,116 +5,146 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.*;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 
-public class WynnSpellsUpdateChecker implements Runnable {
+public final class WynnSpellsUpdateChecker {
 
-    private final AtomicBoolean running;
-    private final long checkInterval;
+    private static final String API_URL =
+        "https://api.github.com/repos/OhhhZenix/WynnSpells/releases/latest";
+
+    private static final long CHECK_INTERVAL_HOURS = 1;
+
+    private final ScheduledExecutorService scheduler;
     private final HttpClient httpClient;
     private final Gson gson = new Gson();
 
-    private String lastNotifiedVersion = null;
+    public WynnSpellsUpdateChecker() {
+        this.scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread t = new Thread(r, "WynnSpells-UpdateChecker");
+            t.setDaemon(true);
+            return t;
+        });
 
-    public WynnSpellsUpdateChecker(AtomicBoolean running) {
-        this.running = running;
-        this.checkInterval = 3_600_000; // 1 hour
-        this.httpClient = HttpClient.newHttpClient();
+        this.httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
     }
 
-    @Override
-    public void run() {
-        while (running.get()) {
-            try {
-                final String API_URL =
-                    "https://api.github.com/repos/OhhhZenix/WynnSpells/releases/latest";
+    /* ============================= */
+    /* Lifecycle                     */
+    /* ============================= */
 
-                HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(API_URL))
-                    .header("Accept", "application/json")
-                    .build();
+    public void start() {
+        scheduler.scheduleAtFixedRate(
+            this::checkForUpdates,
+            0,
+            CHECK_INTERVAL_HOURS,
+            TimeUnit.HOURS
+        );
+    }
 
-                HttpResponse<String> response = httpClient.send(
-                    request,
-                    HttpResponse.BodyHandlers.ofString()
-                );
+    public void stop() {
+        scheduler.shutdownNow();
+    }
 
-                if (response.statusCode() != 200) {
-                    WynnSpellsClient.LOGGER.warn(
-                        "Failed to fetch update info. Status code: {}",
-                        response.statusCode()
+    /* ============================= */
+    /* Update Logic                  */
+    /* ============================= */
+
+    private void checkForUpdates() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(API_URL))
+                .header("Accept", "application/json")
+                .header("User-Agent", "WynnSpells-UpdateChecker")
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+
+            httpClient
+                .sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .orTimeout(15, TimeUnit.SECONDS)
+                .thenAccept(this::handleResponse)
+                .exceptionally(ex -> {
+                    WynnSpellsClient.LOGGER.debug(
+                        "Update check failed: {}",
+                        ex.getMessage()
                     );
-                    continue;
-                }
-
-                Map<?, ?> json = gson.fromJson(response.body(), Map.class);
-                String latestVersion = (String) json.get("tag_name");
-
-                if (latestVersion == null) {
-                    continue;
-                }
-
-                String currentVersion = FabricLoader.getInstance()
-                    .getModContainer(WynnSpellsClient.MOD_ID)
-                    .map(modContainer ->
-                        modContainer
-                            .getMetadata()
-                            .getVersion()
-                            .getFriendlyString()
-                    )
-                    .orElse("0.0.0");
-
-                String homepageUrl = FabricLoader.getInstance()
-                    .getModContainer(WynnSpellsClient.MOD_ID)
-                    .flatMap(modContainer ->
-                        modContainer.getMetadata().getContact().get("homepage")
-                    )
-                    .orElse("https://github.com/OhhhZenix/WynnSpells");
-
-                // Normalize versions before compare
-                if (
-                    compareSemver(latestVersion, currentVersion) > 0 &&
-                    !latestVersion.equals(lastNotifiedVersion)
-                ) {
-                    lastNotifiedVersion = latestVersion;
-
-                    WynnSpellsUtils.sendNotification(
-                        Text.of("New update available: " + latestVersion),
-                        WynnSpellsClient.getInstance()
-                            .getConfig()
-                            .shouldNotifyUpdates()
-                    );
-
-                    WynnSpellsClient.LOGGER.info(
-                        "{} v{} is now available. You're running v{}. Visit {} to download.",
-                        WynnSpellsClient.MOD_NAME,
-                        latestVersion,
-                        currentVersion,
-                        homepageUrl
-                    );
-                }
-            } catch (Exception e) {
-                WynnSpellsClient.LOGGER.warn("Failed to check for updates", e);
-            }
-
-            try {
-                Thread.sleep(checkInterval);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
-            }
+                    return null;
+                });
+        } catch (Exception e) {
+            WynnSpellsClient.LOGGER.debug("Failed to start update check", e);
         }
     }
 
-    /**
-     * Compares semantic versions safely.
-     *
-     * Supports: v1.2.3, 1.2.3-beta, 1.2
-     */
+    private void handleResponse(HttpResponse<String> response) {
+        if (response.statusCode() != 200) {
+            WynnSpellsClient.LOGGER.debug(
+                "GitHub API returned status {}",
+                response.statusCode()
+            );
+            return;
+        }
+
+        try {
+            Map<?, ?> json = gson.fromJson(response.body(), Map.class);
+            String latestVersion = (String) json.get("tag_name");
+
+            if (latestVersion == null) return;
+
+            String currentVersion = FabricLoader.getInstance()
+                .getModContainer(WynnSpellsClient.MOD_ID)
+                .map(mc -> mc.getMetadata().getVersion().getFriendlyString())
+                .orElse("0.0.0");
+
+            if (!isNewer(latestVersion, currentVersion)) return;
+
+            notifyPlayer(latestVersion, currentVersion);
+        } catch (Exception e) {
+            WynnSpellsClient.LOGGER.debug("Failed parsing update response", e);
+        }
+    }
+
+    /* ============================= */
+    /* Notification                  */
+    /* ============================= */
+
+    private void notifyPlayer(String latest, String current) {
+        String homepageUrl = FabricLoader.getInstance()
+            .getModContainer(WynnSpellsClient.MOD_ID)
+            .flatMap(mc -> mc.getMetadata().getContact().get("homepage"))
+            .orElse("https://github.com/OhhhZenix/WynnSpells");
+
+        WynnSpellsUtils.sendNotification(
+            Text.of("New update available: " + latest),
+            WynnSpellsClient.getInstance().getConfig().shouldNotifyUpdates()
+        );
+
+        WynnSpellsClient.LOGGER.info(
+            "{} v{} is available (current: v{}). Download: {}",
+            WynnSpellsClient.MOD_NAME,
+            latest,
+            current,
+            homepageUrl
+        );
+    }
+
+    /* ============================= */
+    /* Semver Comparison             */
+    /* ============================= */
+
+    private boolean isNewer(String latest, String current) {
+        return compareSemver(latest, current) > 0;
+    }
+
     private int compareSemver(String v1, String v2) {
+        boolean v1Pre = v1.contains("-");
+        boolean v2Pre = v2.contains("-");
+
         v1 = normalizeVersion(v1);
         v2 = normalizeVersion(v2);
 
@@ -131,16 +161,20 @@ public class WynnSpellsUpdateChecker implements Runnable {
                 return Integer.compare(n1, n2);
             }
         }
+
+        // Stable > prerelease
+        if (v1Pre != v2Pre) {
+            return v1Pre ? -1 : 1;
+        }
+
         return 0;
     }
 
     private String normalizeVersion(String version) {
-        // remove leading 'v'
         if (version.startsWith("v") || version.startsWith("V")) {
             version = version.substring(1);
         }
 
-        // remove pre-release suffix
         int dashIndex = version.indexOf("-");
         if (dashIndex != -1) {
             version = version.substring(0, dashIndex);
