@@ -67,6 +67,23 @@ public class WynnSpellsConfigScreen {
         );
         generalCategory.addEntry(
             entryBuilder
+                .startIntField(
+                    Text.of("Auto Delay Tolerance"),
+                    config.getAutoDelayTolerance()
+                )
+                .setTooltip(
+                    Text.of(
+                        "Milliseconds of error allowed per calculation. More is accurate. Less is faster."
+                    )
+                )
+                .setDefaultValue(
+                    WynnSpellsConfig.getDefaultAutoDelayTolerance()
+                )
+                .setSaveConsumer(value -> config.setAutoDelayTolerance(value))
+                .build()
+        );
+        generalCategory.addEntry(
+            entryBuilder
                 .startIntField(Text.of("Manual Delay"), config.getManualDelay())
                 .setTooltip(
                     Text.of(
