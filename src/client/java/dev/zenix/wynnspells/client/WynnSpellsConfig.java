@@ -50,7 +50,7 @@ public class WynnSpellsConfig implements ConfigData {
     }
 
     public static int getDefaultAutoDelayTolerance() {
-        return 5;
+        return 10;
     }
 
     public int getAutoDelayTolerance() {
