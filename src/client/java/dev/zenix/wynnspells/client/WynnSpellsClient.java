@@ -36,10 +36,11 @@ public class WynnSpellsClient implements ClientModInitializer {
         new LinkedBlockingDeque<>();
     private ItemStack previousItem = null;
 
-    private final Category KEY_CATEGORY = Category.create(
+    private static final Category KEY_CATEGORY = Category.create(
         Identifier.of("wynnspells", "all")
     );
-    private final KeyBinding FIRST_SPELL_KEY =
+
+    public static final KeyBinding FIRST_SPELL_KEY =
         KeyBindingHelper.registerKeyBinding(
             new KeyBinding(
                 "key.wynnspells.first",
@@ -48,7 +49,8 @@ public class WynnSpellsClient implements ClientModInitializer {
                 KEY_CATEGORY
             )
         );
-    private final KeyBinding SECOND_SPELL_KEY =
+
+    public static final KeyBinding SECOND_SPELL_KEY =
         KeyBindingHelper.registerKeyBinding(
             new KeyBinding(
                 "key.wynnspells.second",
@@ -57,7 +59,8 @@ public class WynnSpellsClient implements ClientModInitializer {
                 KEY_CATEGORY
             )
         );
-    private final KeyBinding THIRD_SPELL_KEY =
+
+    public static final KeyBinding THIRD_SPELL_KEY =
         KeyBindingHelper.registerKeyBinding(
             new KeyBinding(
                 "key.wynnspells.third",
@@ -66,7 +69,7 @@ public class WynnSpellsClient implements ClientModInitializer {
                 KEY_CATEGORY
             )
         );
-    private final KeyBinding FOURTH_SPELL_KEY =
+    public static final KeyBinding FOURTH_SPELL_KEY =
         KeyBindingHelper.registerKeyBinding(
             new KeyBinding(
                 "key.wynnspells.fourth",
@@ -75,22 +78,26 @@ public class WynnSpellsClient implements ClientModInitializer {
                 KEY_CATEGORY
             )
         );
-    private final KeyBinding MELEE_KEY = KeyBindingHelper.registerKeyBinding(
-        new KeyBinding(
-            "key.wynnspells.melee",
-            InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_UNKNOWN,
-            KEY_CATEGORY
-        )
-    );
-    private final KeyBinding CONFIG_KEY = KeyBindingHelper.registerKeyBinding(
-        new KeyBinding(
-            "key.wynnspells.config",
-            InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_UNKNOWN,
-            KEY_CATEGORY
-        )
-    );
+
+    public static final KeyBinding MELEE_KEY =
+        KeyBindingHelper.registerKeyBinding(
+            new KeyBinding(
+                "key.wynnspells.melee",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_UNKNOWN,
+                KEY_CATEGORY
+            )
+        );
+
+    public static final KeyBinding CONFIG_KEY =
+        KeyBindingHelper.registerKeyBinding(
+            new KeyBinding(
+                "key.wynnspells.config",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_UNKNOWN,
+                KEY_CATEGORY
+            )
+        );
 
     @Override
     public void onInitializeClient() {
