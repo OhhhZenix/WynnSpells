@@ -14,6 +14,9 @@ All the changes in WynnSpells.
 **New settings menu**
 ![Settings menu for v1.1.0](./images/2.png)
 
+**Busy Cast Notification**
+![Busy Cast Notification](./images/3.png)
+
 ## Release 1.0.0
 
 - Use Minecraft version 1.21.11
