@@ -9,7 +9,8 @@ public class WynnSpellsConfig implements ConfigData {
     private boolean notifyUpdates = getDefaultNotifyUpdates();
     private boolean notifyBusyCast = getDefaultNotifyBusyCast();
     private boolean useAutoDelay = getDefaultUseAutoDelay();
-    private int delayMillis = getDefaultDelayMillis();
+    private int autoDelayTolerance = getDefaultAutoDelayTolerance();
+    private int manualDelay = getDefaultManualDelay();
     private int bufferLimit = getDefaultBufferLimit();
 
     public static boolean getDefaultNotifyUpdates() {
@@ -18,6 +19,18 @@ public class WynnSpellsConfig implements ConfigData {
 
     public boolean shouldNotifyUpdates() {
         return notifyUpdates;
+    }
+
+    public static boolean getDefaultNotifyBusyCast() {
+        return true;
+    }
+
+    public boolean shouldNotifyBusyCast() {
+        return notifyBusyCast;
+    }
+
+    public void setNotifyBusyCast(boolean enabled) {
+        notifyBusyCast = enabled;
     }
 
     public void setNotifyUpdates(boolean enabled) {
@@ -36,28 +49,28 @@ public class WynnSpellsConfig implements ConfigData {
         useAutoDelay = enabled;
     }
 
-    public static boolean getDefaultNotifyBusyCast() {
-        return true;
+    public static int getDefaultAutoDelayTolerance() {
+        return 5;
     }
 
-    public boolean shouldNotifyBusyCast() {
-        return notifyBusyCast;
+    public int getAutoDelayTolerance() {
+        return autoDelayTolerance;
     }
 
-    public void setNotifyBusyCast(boolean enabled) {
-        notifyBusyCast = enabled;
+    public void setAutoDelayTolerance(int tolerance) {
+        autoDelayTolerance = tolerance;
     }
 
-    public static int getDefaultDelayMillis() {
+    public static int getDefaultManualDelay() {
         return 100;
     }
 
-    public int getDelayMillis() {
-        return delayMillis;
+    public int getManualDelay() {
+        return manualDelay;
     }
 
-    public void setDelayMillis(int delay) {
-        delayMillis = delay;
+    public void setManualDelay(int delay) {
+        manualDelay = delay;
     }
 
     public static int getDefaultBufferLimit() {
