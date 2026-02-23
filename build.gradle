@@ -1,6 +1,7 @@
 plugins {
     id 'fabric-loom' version '1.15-SNAPSHOT'
     id 'maven-publish'
+    id 'com.palantir.java-format-spotless' version '2.44.0' 
 }
 
 version = project.mod_version
@@ -24,6 +25,14 @@ loom {
 fabricApi {
     configureDataGeneration {
         client = true
+    }
+}
+
+spotless {
+    java {
+        palantirJavaFormat()
+        removeUnusedImports()
+        target 'src/**/*.java' 
     }
 }
 
