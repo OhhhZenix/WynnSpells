@@ -18,109 +18,88 @@ import net.minecraft.util.PlayerInput;
 
 public class WynnSpellsUtils {
 
-    public static void sendPacket(MinecraftClient client, Packet<?> packet) {
-        if (client == null) return;
+	public static void sendPacket(MinecraftClient client, Packet<?> packet) {
+		if (client == null)
+			return;
 
-        ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
-        if (networkHandler == null) return;
+		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
+		if (networkHandler == null)
+			return;
 
-        networkHandler.sendPacket(packet);
-    }
+		networkHandler.sendPacket(packet);
+	}
 
-    public static void sendAttackPacket(MinecraftClient client) {
-        WynnSpellsUtils.sendPacket(
-            client,
-            new HandSwingC2SPacket(Hand.MAIN_HAND)
-        );
-    }
+	public static void sendAttackPacket(MinecraftClient client) {
+		WynnSpellsUtils.sendPacket(client, new HandSwingC2SPacket(Hand.MAIN_HAND));
+	}
 
-    public static void sendInteractPacket(MinecraftClient client) {
-        WynnSpellsUtils.sendPacket(
-            client,
-            new PlayerInteractItemC2SPacket(
-                Hand.MAIN_HAND,
-                0,
-                client.player.getYaw(),
-                client.player.getPitch()
-            )
-        );
-    }
+	public static void sendInteractPacket(MinecraftClient client) {
+		WynnSpellsUtils.sendPacket(client,
+				new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0, client.player.getYaw(), client.player.getPitch()));
+	}
 
-    public static void sendSneakingPacket(
-        MinecraftClient client,
-        boolean isSneaking
-    ) {
-        PlayerInput playerInput = new PlayerInput(
-            client.options.forwardKey.isPressed(),
-            client.options.backKey.isPressed(),
-            client.options.leftKey.isPressed(),
-            client.options.rightKey.isPressed(),
-            client.options.jumpKey.isPressed(),
-            isSneaking,
-            client.options.sprintKey.isPressed()
-        );
+	public static void sendSneakingPacket(MinecraftClient client, boolean isSneaking) {
+		PlayerInput playerInput = new PlayerInput(client.options.forwardKey.isPressed(),
+				client.options.backKey.isPressed(), client.options.leftKey.isPressed(),
+				client.options.rightKey.isPressed(), client.options.jumpKey.isPressed(), isSneaking,
+				client.options.sprintKey.isPressed());
 
-        WynnSpellsUtils.sendPacket(
-            client,
-            new PlayerInputC2SPacket(playerInput)
-        );
-    }
+		WynnSpellsUtils.sendPacket(client, new PlayerInputC2SPacket(playerInput));
+	}
 
-    public static boolean isArcher(MinecraftClient client) {
-        if (client == null || client.player == null) return false;
+	public static boolean isArcher(MinecraftClient client) {
+		if (client == null || client.player == null)
+			return false;
 
-        ItemStack heldItem = client.player.getMainHandStack();
-        if (heldItem == null) return false;
+		ItemStack heldItem = client.player.getMainHandStack();
+		if (heldItem == null)
+			return false;
 
-        List<Text> tooltip = heldItem.getTooltip(
-            Item.TooltipContext.DEFAULT,
-            client.player,
-            TooltipType.BASIC
-        );
-        if (tooltip == null || tooltip.isEmpty()) return false;
+		List<Text> tooltip = heldItem.getTooltip(Item.TooltipContext.DEFAULT, client.player, TooltipType.BASIC);
+		if (tooltip == null || tooltip.isEmpty())
+			return false;
 
-        for (Text line : tooltip) {
-            if (line.getString().contains("Archer/Hunter")) return true;
-        }
+		for (Text line : tooltip) {
+			if (line.getString().contains("Archer/Hunter"))
+				return true;
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    public static void sendNotification(Text description, Boolean shouldSend) {
-        if (!shouldSend) {
-            return;
-        }
+	public static void sendNotification(Text description, Boolean shouldSend) {
+		if (!shouldSend) {
+			return;
+		}
 
-        SystemToast.add(
-            MinecraftClient.getInstance().getToastManager(),
-            SystemToast.Type.WORLD_BACKUP,
-            Text.of(WynnSpellsClient.MOD_NAME),
-            description
-        );
-    }
+		SystemToast.add(MinecraftClient.getInstance().getToastManager(), SystemToast.Type.WORLD_BACKUP,
+				Text.of(WynnSpellsClient.MOD_NAME), description);
+	}
 
-    public static long getAutoDelay() {
-        long rtt = WynnSpellsPingPong.getPing();
-        long oneWay = rtt / 2;
-        long msPerTick = 1000L / 20L;
-        long jitterMargin = 20L;
-        long delay = Math.max(msPerTick + jitterMargin, oneWay);
-        WynnSpellsClient.LOGGER.info("Auto Delay: {}", delay);
-        return delay;
-    }
+	public static long getAutoDelay() {
+		long rtt = WynnSpellsPingPong.getPing();
+		long oneWay = rtt / 2;
+		long msPerTick = 1000L / 20L;
+		long jitterMargin = 30L;
+		long delay = msPerTick + jitterMargin;
+		if (delay < oneWay)
+			delay = 0;
+		WynnSpellsClient.LOGGER.info("Auto Delay: {}", delay);
+		return delay;
+	}
 
-    public static void refreshKeyBindings() {
-        KeyBinding.updateKeysByCode();
-        WynnSpellsClient.LOGGER.debug("Refreshed keybinds.");
-    }
+	public static void refreshKeyBindings() {
+		KeyBinding.updateKeysByCode();
+		WynnSpellsClient.LOGGER.debug("Refreshed keybinds.");
+	}
 
-    public static void saveKeyBindings() {
-        MinecraftClient.getInstance().options.write();
-        WynnSpellsClient.LOGGER.debug("Saved keybinds.");
-    }
+	public static void saveKeyBindings() {
+		MinecraftClient.getInstance().options.write();
+		WynnSpellsClient.LOGGER.debug("Saved keybinds.");
+	}
 
-    public static void refreshAndSaveKeyBindings() {
-        refreshKeyBindings();
-        saveKeyBindings();
-    }
+	public static void refreshAndSaveKeyBindings() {
+		refreshKeyBindings();
+		saveKeyBindings();
+	}
 }
