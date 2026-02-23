@@ -1,124 +1,116 @@
 package dev.zenix.wynnspells.client;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 
 public class WynnSpellsCaster implements Runnable {
 
-	private final AtomicBoolean running;
-	private final BlockingQueue<WynnSpellsIntent> buffer;
+	private final MinecraftClient mc;
+	private final LinkedBlockingDeque<WynnSpellsIntent> buffer = new LinkedBlockingDeque<>();
+	private final LinkedBlockingDeque<Boolean> clicks = new LinkedBlockingDeque<>();
+	private volatile ItemStack previousItem = null;
+	private volatile boolean isRunning = true;
+	private long lastTime = System.nanoTime();
 
-	public WynnSpellsCaster(BlockingQueue<WynnSpellsIntent> buffer, AtomicBoolean running) {
-		this.buffer = buffer;
-		this.running = running;
+	public WynnSpellsCaster(MinecraftClient mc) {
+		this.mc = mc;
+	}
+
+	public void start() {
+		Thread thread = new Thread(this);
+		thread.start();
+	}
+
+	public void stop() {
+		isRunning = false;
 	}
 
 	@Override
 	public void run() {
-		while (running.get()) {
-			try {
-				MinecraftClient client = MinecraftClient.getInstance();
-
-				WynnSpellsConfig config = WynnSpellsClient.getInstance().getConfig();
-				long delay = config.getManualDelay();
-				if (config.shouldUseAutoDelay()) {
-					delay = WynnSpellsUtils.getAutoDelay() + config.getAutoDelayTolerance();
-				}
-
-				WynnSpellsIntent intent = buffer.take();
-				WynnSpellsClient.LOGGER.debug("Intent: {}", intent.toString());
-				switch (intent) {
-					case MELEE :
-						if (WynnSpellsUtils.isArcher(client)) {
-							WynnSpellsUtils.sendInteractPacket(client);
-							Thread.sleep(delay);
-						} else {
-							WynnSpellsUtils.sendAttackPacket(client);
-							Thread.sleep(delay);
-						}
-						break;
-					case FIRST_SPELL :
-						if (WynnSpellsUtils.isArcher(client)) {
-							// L-R-L
-							WynnSpellsUtils.sendAttackPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendInteractPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendAttackPacket(client);
-							Thread.sleep(delay);
-						} else {
-							// R-L-R
-							WynnSpellsUtils.sendInteractPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendAttackPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendInteractPacket(client);
-							Thread.sleep(delay);
-						}
-						break;
-					case SECOND_SPELL :
-						if (WynnSpellsUtils.isArcher(client)) {
-							// L-L-L
-							WynnSpellsUtils.sendAttackPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendAttackPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendAttackPacket(client);
-							Thread.sleep(delay);
-						} else {
-							// R-R-R
-							WynnSpellsUtils.sendInteractPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendInteractPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendInteractPacket(client);
-							Thread.sleep(delay);
-						}
-						break;
-					case THIRD_SPELL :
-						if (WynnSpellsUtils.isArcher(client)) {
-							// L-R-R
-							WynnSpellsUtils.sendAttackPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendInteractPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendInteractPacket(client);
-							Thread.sleep(delay);
-						} else {
-							// R-L-L
-							WynnSpellsUtils.sendInteractPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendAttackPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendAttackPacket(client);
-							Thread.sleep(delay);
-						}
-						break;
-					case FOURTH_SPELL :
-						if (WynnSpellsUtils.isArcher(client)) {
-							// L-L-R
-							WynnSpellsUtils.sendAttackPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendAttackPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendInteractPacket(client);
-							Thread.sleep(delay);
-						} else {
-							// R-R-L
-							WynnSpellsUtils.sendInteractPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendInteractPacket(client);
-							Thread.sleep(delay);
-							WynnSpellsUtils.sendAttackPacket(client);
-							Thread.sleep(delay);
-						}
-						break;
-				}
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				break;
-			}
+		while (isRunning) {
+			processClicks();
+			processBuffer();
 		}
+	}
+
+	private void processClicks() {
+		if (clicks.isEmpty())
+			return;
+
+		long now = System.nanoTime();
+		long delay = TimeUnit.MILLISECONDS.toNanos(WynnSpellsClient.getInstance().getConfig().getManualDelay());
+		if (now < lastTime + delay)
+			return;
+
+		try {
+			boolean click = clicks.take();
+
+			if (click) {
+				WynnSpellsUtils.sendInteractPacket(mc); // right click
+			} else {
+				WynnSpellsUtils.sendAttackPacket(mc); // left click
+			}
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+
+		lastTime = now;
+	}
+
+	private void processBuffer() {
+		if (!clicks.isEmpty())
+			return;
+
+		if (buffer.isEmpty())
+			return;
+
+		try {
+			WynnSpellsIntent intent = buffer.take();
+			boolean isArcher = WynnSpellsUtils.isArcher(mc);
+			for (boolean click : intent.convert(isArcher)) {
+				clicks.add(click);
+			}
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void processIntentKey(KeyBinding key, WynnSpellsIntent intent) {
+		if (key == null)
+			return;
+
+		if (!key.isPressed())
+			return;
+
+		WynnSpellsConfig config = WynnSpellsClient.getInstance().getConfig();
+		if (buffer.size() >= config.getBufferLimit()) {
+			WynnSpellsUtils.sendNotification(Text.of("Cast ignored: spell queue is busy."),
+					config.shouldNotifyBusyCast());
+			return;
+		}
+
+		if (mc == null || mc.player == null) {
+			return;
+		}
+
+		ItemStack itemInMainHand = mc.player.getMainHandStack();
+		if (itemInMainHand != previousItem) {
+			previousItem = itemInMainHand;
+			buffer.clear();
+		}
+
+		key.setPressed(false);
+		buffer.add(intent);
+	}
+
+	public void processIntentKeys() {
+		processIntentKey(WynnSpellsClient.FIRST_SPELL_KEY, WynnSpellsIntent.FIRST_SPELL);
+		processIntentKey(WynnSpellsClient.SECOND_SPELL_KEY, WynnSpellsIntent.SECOND_SPELL);
+		processIntentKey(WynnSpellsClient.THIRD_SPELL_KEY, WynnSpellsIntent.THIRD_SPELL);
+		processIntentKey(WynnSpellsClient.FOURTH_SPELL_KEY, WynnSpellsIntent.FOURTH_SPELL);
 	}
 }
