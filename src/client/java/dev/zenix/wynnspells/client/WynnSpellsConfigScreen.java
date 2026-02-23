@@ -24,30 +24,30 @@ public class WynnSpellsConfigScreen {
 				.addEntry(entryBuilder.startBooleanToggle(Text.of("Notify Updates"), config.shouldNotifyUpdates())
 						.setTooltip(Text.of("To enable or disable update notifications."))
 						.setDefaultValue(WynnSpellsConfig.getDefaultNotifyUpdates())
-						.setSaveConsumer(value -> config.setNotifyUpdates(value)).build());
+						.setSaveConsumer(config::setNotifyUpdates).build());
 		generalCategory
 				.addEntry(entryBuilder.startBooleanToggle(Text.of("Notify Busy Cast"), config.shouldNotifyBusyCast())
 						.setTooltip(Text.of("To enable or disable busy cast notifications."))
 						.setDefaultValue(WynnSpellsConfig.getDefaultNotifyBusyCast())
-						.setSaveConsumer(value -> config.setNotifyBusyCast(value)).build());
+						.setSaveConsumer(config::setNotifyBusyCast).build());
 		generalCategory.addEntry(entryBuilder.startBooleanToggle(Text.of("Use Auto Delay"), config.shouldUseAutoDelay())
 				.setTooltip(Text.of("Automatically calculates the most optimal delay for you."))
-				.setDefaultValue(WynnSpellsConfig.getDefaultUseAutoDelay())
-				.setSaveConsumer(value -> config.setUseAutoDelay(value)).build());
+				.setDefaultValue(WynnSpellsConfig.getDefaultUseAutoDelay()).setSaveConsumer(config::setUseAutoDelay)
+				.build());
 		generalCategory.addEntry(entryBuilder
 				.startIntField(Text.of("Auto Delay Tolerance"), config.getAutoDelayTolerance())
 				.setTooltip(Text.of("Milliseconds of error allowed per calculation. More is accurate. Less is faster."))
 				.setDefaultValue(WynnSpellsConfig.getDefaultAutoDelayTolerance())
-				.setSaveConsumer(value -> config.setAutoDelayTolerance(value)).build());
+				.setSaveConsumer(config::setAutoDelayTolerance).build());
 		generalCategory.addEntry(entryBuilder.startIntField(Text.of("Manual Delay"), config.getManualDelay())
 				.setTooltip(Text.of("The delay between clicks. This value is ignored if auto delay is enabled."))
-				.setDefaultValue(WynnSpellsConfig.getDefaultManualDelay())
-				.setSaveConsumer(value -> config.setManualDelay(value)).build());
+				.setDefaultValue(WynnSpellsConfig.getDefaultManualDelay()).setSaveConsumer(config::setManualDelay)
+				.build());
 		generalCategory.addEntry(entryBuilder.startIntField(Text.of("Buffer Limit"), config.getBufferLimit())
 				.setTooltip(
 						Text.of("The amount of actions that is tolorated before it is ignored. Reduces key ghosting."))
-				.setDefaultValue(WynnSpellsConfig.getDefaultBufferLimit())
-				.setSaveConsumer(value -> config.setBufferLimit(value)).build());
+				.setDefaultValue(WynnSpellsConfig.getDefaultBufferLimit()).setSaveConsumer(config::setBufferLimit)
+				.build());
 
 		ConfigCategory keybindsCategory = builder.getOrCreateCategory(Text.of("Keybinds"));
 		addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.CONFIG_KEY);
