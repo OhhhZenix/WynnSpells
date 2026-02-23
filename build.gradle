@@ -31,6 +31,7 @@ fabricApi {
 spotless {
     java {
         eclipse()
+        importOrder()
         removeUnusedImports()
         target 'src/**/*.java'
     }
