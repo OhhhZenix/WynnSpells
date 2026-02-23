@@ -1,7 +1,7 @@
 plugins {
     id 'fabric-loom' version '1.15-SNAPSHOT'
     id 'maven-publish'
-    id 'com.palantir.java-format-spotless' version '2.44.0' 
+    id "com.diffplug.spotless" version "7.2.1"
 }
 
 version = project.mod_version
@@ -30,9 +30,9 @@ fabricApi {
 
 spotless {
     java {
-        palantirJavaFormat()
+        eclipse()
         removeUnusedImports()
-        target 'src/**/*.java' 
+        target 'src/**/*.java'
     }
 }
 
