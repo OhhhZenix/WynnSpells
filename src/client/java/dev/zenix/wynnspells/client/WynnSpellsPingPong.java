@@ -9,54 +9,47 @@ import net.minecraft.util.Util;
 
 public final class WynnSpellsPingPong {
 
-    private static final long PING_INTERVAL_MILLIS = 1000;
-    private static ScheduledExecutorService executor = null;
-    private static volatile long lastPing = 0;
+	private static final long PING_INTERVAL_MILLIS = 1000;
+	private static ScheduledExecutorService executor = null;
+	private static volatile long lastPing = 0;
 
-    private WynnSpellsPingPong() {}
+	private WynnSpellsPingPong() {
+	}
 
-    public static void start() {
-        if (executor != null && !executor.isShutdown()) {
-            return;
-        }
+	public static void start() {
+		if (executor != null && !executor.isShutdown()) {
+			return;
+		}
 
-        executor = Executors.newSingleThreadScheduledExecutor(runnable -> {
-            Thread thread = new Thread(runnable, "wynnspells-pingpong");
-            thread.setDaemon(true);
-            return thread;
-        });
+		executor = Executors.newSingleThreadScheduledExecutor(runnable -> {
+			Thread thread = new Thread(runnable, "wynnspells-pingpong");
+			thread.setDaemon(true);
+			return thread;
+		});
 
-        executor.scheduleAtFixedRate(
-            WynnSpellsPingPong::sendPing,
-            0L,
-            PING_INTERVAL_MILLIS,
-            TimeUnit.MILLISECONDS
-        );
-    }
+		executor.scheduleAtFixedRate(WynnSpellsPingPong::sendPing, 0L, PING_INTERVAL_MILLIS, TimeUnit.MILLISECONDS);
+	}
 
-    public static void stop() {
-        if (executor == null || executor.isShutdown()) {
-            return;
-        }
+	public static void stop() {
+		if (executor == null || executor.isShutdown()) {
+			return;
+		}
 
-        executor.shutdownNow();
-        executor = null;
-    }
+		executor.shutdownNow();
+		executor = null;
+	}
 
-    private static void sendPing() {
-        MinecraftClient client = MinecraftClient.getInstance();
-        WynnSpellsUtils.sendPacket(
-            client,
-            new QueryPingC2SPacket(Util.getMeasuringTimeMs())
-        );
-    }
+	private static void sendPing() {
+		MinecraftClient client = MinecraftClient.getInstance();
+		WynnSpellsUtils.sendPacket(client, new QueryPingC2SPacket(Util.getMeasuringTimeMs()));
+	}
 
-    public static long getPing() {
-        return lastPing;
-    }
+	public static long getPing() {
+		return lastPing;
+	}
 
-    public static void onCallback(long startTime) {
-        long currentTime = Util.getMeasuringTimeMs();
-        lastPing = currentTime - startTime;
-    }
+	public static void onCallback(long startTime) {
+		long currentTime = Util.getMeasuringTimeMs();
+		lastPing = currentTime - startTime;
+	}
 }
