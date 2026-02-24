@@ -17,11 +17,12 @@ public final class UpdateChecker {
 	private static final String API_URL = "https://api.github.com/repos/OhhhZenix/WynnSpells/releases/latest";
 	private final ScheduledExecutorService scheduler;
 	private final HttpClient httpClient;
-	private final Gson gson = new Gson();
+	private final Gson gson;
 
 	public UpdateChecker() {
 		this.scheduler = Executors.newSingleThreadScheduledExecutor();
 		this.httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+		this.gson =  new Gson();
 	}
 
 	/* ============================= */
