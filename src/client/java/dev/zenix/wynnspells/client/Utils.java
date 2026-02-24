@@ -80,9 +80,9 @@ public class Utils {
 	public static long getAutoDelay() {
 		long rtt = WynnSpellsClient.getInstance().getPingTracker().getLastPing();
 		long oneWay = rtt / 2;
-		long msPerTick = 1000L / 20L;
-		long jitterMargin = 30L;
-		long delay = msPerTick + jitterMargin;
+		long msPerTick = 1000 / 20;
+		long jitter = msPerTick / 2;
+		long delay = msPerTick + jitter;
 		if (delay < oneWay)
 			delay = 0;
 		WynnSpells.LOGGER.info("Auto Delay: {}", delay);
