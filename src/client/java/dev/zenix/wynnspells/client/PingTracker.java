@@ -4,7 +4,6 @@ import dev.zenix.wynnspells.WynnSpells;
 import dev.zenix.wynnspells.client.event.PingResultEvent;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;

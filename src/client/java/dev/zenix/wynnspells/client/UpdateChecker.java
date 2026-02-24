@@ -22,7 +22,7 @@ public final class UpdateChecker {
 	public UpdateChecker() {
 		this.scheduler = Executors.newSingleThreadScheduledExecutor();
 		this.httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
-		this.gson =  new Gson();
+		this.gson = new Gson();
 	}
 
 	/* ============================= */
