@@ -4,7 +4,7 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 
 @Config(name = "wynnspells")
-public class WynnSpellsConfig implements ConfigData {
+public class ClothConfig implements ConfigData {
 
 	private boolean notifyUpdates = getDefaultNotifyUpdates();
 	private boolean notifyBusyCast = getDefaultNotifyBusyCast();

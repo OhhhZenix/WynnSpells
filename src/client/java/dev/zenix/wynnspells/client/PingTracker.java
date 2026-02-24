@@ -12,14 +12,14 @@ import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
 import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-public final class WynnSpellsPingTracker {
+public final class PingTracker {
 
 	private final MinecraftClient mc;
 	private final ScheduledExecutorService scheduler;
 	private ScheduledFuture<?> task;
 	private volatile long lastPing = 0;
 
-	public WynnSpellsPingTracker(MinecraftClient mc) {
+	public PingTracker(MinecraftClient mc) {
 		this.mc = mc;
 		this.scheduler = Executors.newSingleThreadScheduledExecutor();
 	}
@@ -34,7 +34,7 @@ public final class WynnSpellsPingTracker {
 	}
 
 	private void sendPing() {
-		WynnSpellsUtils.sendPacket(mc, new QueryPingC2SPacket(Util.getMeasuringTimeMs()));
+		Utils.sendPacket(mc, new QueryPingC2SPacket(Util.getMeasuringTimeMs()));
 	}
 
 	private void onPingResult(PingResultS2CPacket packet, CallbackInfo callbackInfo) {

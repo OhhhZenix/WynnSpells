@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 
-public final class WynnSpellsUpdateChecker {
+public final class UpdateChecker {
 
 	private static final String API_URL = "https://api.github.com/repos/OhhhZenix/WynnSpells/releases/latest";
 	private static final long CHECK_INTERVAL_HOURS = 1;
@@ -20,7 +20,7 @@ public final class WynnSpellsUpdateChecker {
 	private final HttpClient httpClient;
 	private final Gson gson = new Gson();
 
-	public WynnSpellsUpdateChecker() {
+	public UpdateChecker() {
 		this.scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
 			Thread t = new Thread(r, "WynnSpells-UpdateChecker");
 			t.setDaemon(true);
@@ -95,7 +95,7 @@ public final class WynnSpellsUpdateChecker {
 				.flatMap(mc -> mc.getMetadata().getContact().get("homepage"))
 				.orElse("https://github.com/OhhhZenix/WynnSpells");
 
-		WynnSpellsUtils.sendNotification(Text.of("New update available: " + latest),
+		Utils.sendNotification(Text.of("New update available: " + latest),
 				WynnSpellsClient.getInstance().getConfig().shouldNotifyUpdates());
 
 		WynnSpells.LOGGER.info("{} v{} is available (current: v{}). Download: {}", WynnSpells.MOD_NAME, latest, current,

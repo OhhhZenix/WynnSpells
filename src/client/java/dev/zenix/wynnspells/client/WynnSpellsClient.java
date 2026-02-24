@@ -31,10 +31,10 @@ public class WynnSpellsClient implements ClientModInitializer {
 			new KeyBinding("key.wynnspells.config", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
 
 	private static WynnSpellsClient instance = null;
-	private WynnSpellsConfig config = null;
-	private WynnSpellsUpdateChecker updateChecker;
-	private WynnSpellsPingTracker pingTracker;
-	private WynnSpellsCaster caster;
+	private ClothConfig config;
+	private UpdateChecker updateChecker;
+	private PingTracker pingTracker;
+	private Caster caster;
 
 	public static WynnSpellsClient getInstance() {
 		return instance;
@@ -50,28 +50,28 @@ public class WynnSpellsClient implements ClientModInitializer {
 	}
 
 	private void loadConfig() {
-		AutoConfig.register(WynnSpellsConfig.class, GsonConfigSerializer::new);
-		config = AutoConfig.getConfigHolder(WynnSpellsConfig.class).getConfig();
+		AutoConfig.register(ClothConfig.class, GsonConfigSerializer::new);
+		config = AutoConfig.getConfigHolder(ClothConfig.class).getConfig();
 		WynnSpells.LOGGER.info("Config loaded successfully");
 	}
 
-	public WynnSpellsConfig getConfig() {
+	public ClothConfig getConfig() {
 		return config;
 	}
 
 	public void saveConfig() {
 		WynnSpells.LOGGER.debug("Saving configuration");
-		AutoConfig.getConfigHolder(WynnSpellsConfig.class).save();
+		AutoConfig.getConfigHolder(ClothConfig.class).save();
 	}
 
 	private void onClientStart(MinecraftClient client) {
-		updateChecker = new WynnSpellsUpdateChecker();
+		updateChecker = new UpdateChecker();
 		updateChecker.start();
 
-		pingTracker = new WynnSpellsPingTracker(client);
+		pingTracker = new PingTracker(client);
 		pingTracker.start();
 
-		caster = new WynnSpellsCaster(client);
+		caster = new Caster(client);
 		caster.start();
 	}
 
@@ -91,10 +91,10 @@ public class WynnSpellsClient implements ClientModInitializer {
 			return;
 
 		WynnSpellsClient.CONFIG_KEY.setPressed(false);
-		client.setScreen(WynnSpellsConfigScreen.create(client.currentScreen));
+		client.setScreen(ConfigScreen.create(client.currentScreen));
 	}
 
-	public WynnSpellsPingTracker getPingTracker() {
+	public PingTracker getPingTracker() {
 		return pingTracker;
 	}
 }

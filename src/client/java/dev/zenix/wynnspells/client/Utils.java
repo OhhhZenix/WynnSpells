@@ -17,7 +17,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.PlayerInput;
 
-public class WynnSpellsUtils {
+public class Utils {
 
 	public static void sendPacket(MinecraftClient client, Packet<?> packet) {
 		if (client == null)
@@ -31,11 +31,11 @@ public class WynnSpellsUtils {
 	}
 
 	public static void sendAttackPacket(MinecraftClient client) {
-		WynnSpellsUtils.sendPacket(client, new HandSwingC2SPacket(Hand.MAIN_HAND));
+		Utils.sendPacket(client, new HandSwingC2SPacket(Hand.MAIN_HAND));
 	}
 
 	public static void sendInteractPacket(MinecraftClient client) {
-		WynnSpellsUtils.sendPacket(client,
+		Utils.sendPacket(client,
 				new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, 0, client.player.getYaw(), client.player.getPitch()));
 	}
 
@@ -45,7 +45,7 @@ public class WynnSpellsUtils {
 				client.options.rightKey.isPressed(), client.options.jumpKey.isPressed(), isSneaking,
 				client.options.sprintKey.isPressed());
 
-		WynnSpellsUtils.sendPacket(client, new PlayerInputC2SPacket(playerInput));
+		Utils.sendPacket(client, new PlayerInputC2SPacket(playerInput));
 	}
 
 	public static boolean isArcher(MinecraftClient client) {

@@ -10,16 +10,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
-public class WynnSpellsCaster implements Runnable {
+public class Caster implements Runnable {
 
 	private final MinecraftClient mc;
-	private final LinkedBlockingDeque<WynnSpellsIntent> buffer = new LinkedBlockingDeque<>();
+	private final LinkedBlockingDeque<Intent> buffer = new LinkedBlockingDeque<>();
 	private final LinkedBlockingDeque<Boolean> clicks = new LinkedBlockingDeque<>();
 	private volatile ItemStack previousItem = null;
 	private volatile boolean isRunning = true;
 	private long lastTime = System.nanoTime();
 
-	public WynnSpellsCaster(MinecraftClient mc) {
+	public Caster(MinecraftClient mc) {
 		this.mc = mc;
 	}
 
@@ -55,9 +55,9 @@ public class WynnSpellsCaster implements Runnable {
 			boolean click = clicks.take();
 
 			if (click) {
-				WynnSpellsUtils.sendInteractPacket(mc); // right click
+				Utils.sendInteractPacket(mc); // right click
 			} else {
-				WynnSpellsUtils.sendAttackPacket(mc); // left click
+				Utils.sendAttackPacket(mc); // left click
 			}
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
@@ -74,8 +74,8 @@ public class WynnSpellsCaster implements Runnable {
 			return;
 
 		try {
-			WynnSpellsIntent intent = buffer.take();
-			boolean isArcher = WynnSpellsUtils.isArcher(mc);
+			Intent intent = buffer.take();
+			boolean isArcher = Utils.isArcher(mc);
 			for (boolean click : intent.convert(isArcher)) {
 				clicks.add(click);
 			}
@@ -84,17 +84,16 @@ public class WynnSpellsCaster implements Runnable {
 		}
 	}
 
-	private void processIntentKey(KeyBinding key, WynnSpellsIntent intent) {
+	private void processIntentKey(KeyBinding key, Intent intent) {
 		if (key == null)
 			return;
 
 		if (!key.isPressed())
 			return;
 
-		WynnSpellsConfig config = WynnSpellsClient.getInstance().getConfig();
+		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
 		if (buffer.size() >= config.getBufferLimit()) {
-			WynnSpellsUtils.sendNotification(Text.of("Cast ignored: spell queue is busy."),
-					config.shouldNotifyBusyCast());
+			Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."), config.shouldNotifyBusyCast());
 			return;
 		}
 
@@ -117,15 +116,15 @@ public class WynnSpellsCaster implements Runnable {
 			return false;
 		}
 
-		buffer.add(WynnSpellsIntent.MELEE);
+		buffer.add(Intent.MELEE);
 		return true;
 	}
 
 	public void processIntentKeys() {
-		processIntentKey(WynnSpellsClient.MELEE_KEY, WynnSpellsIntent.MELEE);
-		processIntentKey(WynnSpellsClient.FIRST_SPELL_KEY, WynnSpellsIntent.FIRST_SPELL);
-		processIntentKey(WynnSpellsClient.SECOND_SPELL_KEY, WynnSpellsIntent.SECOND_SPELL);
-		processIntentKey(WynnSpellsClient.THIRD_SPELL_KEY, WynnSpellsIntent.THIRD_SPELL);
-		processIntentKey(WynnSpellsClient.FOURTH_SPELL_KEY, WynnSpellsIntent.FOURTH_SPELL);
+		processIntentKey(WynnSpellsClient.MELEE_KEY, Intent.MELEE);
+		processIntentKey(WynnSpellsClient.FIRST_SPELL_KEY, Intent.FIRST_SPELL);
+		processIntentKey(WynnSpellsClient.SECOND_SPELL_KEY, Intent.SECOND_SPELL);
+		processIntentKey(WynnSpellsClient.THIRD_SPELL_KEY, Intent.THIRD_SPELL);
+		processIntentKey(WynnSpellsClient.FOURTH_SPELL_KEY, Intent.FOURTH_SPELL);
 	}
 }
