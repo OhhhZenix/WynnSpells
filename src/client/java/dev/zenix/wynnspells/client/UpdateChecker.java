@@ -21,12 +21,7 @@ public final class UpdateChecker {
 	private final Gson gson = new Gson();
 
 	public UpdateChecker() {
-		this.scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
-			Thread t = new Thread(r, "WynnSpells-UpdateChecker");
-			t.setDaemon(true);
-			return t;
-		});
-
+		this.scheduler = Executors.newSingleThreadScheduledExecutor();
 		this.httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
 	}
 
@@ -39,7 +34,7 @@ public final class UpdateChecker {
 	}
 
 	public void stop() {
-		scheduler.shutdownNow();
+		scheduler.shutdown();
 	}
 
 	/* ============================= */
