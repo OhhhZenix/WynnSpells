@@ -15,9 +15,7 @@ import net.minecraft.text.Text;
 public final class WynnSpellsUpdateChecker {
 
 	private static final String API_URL = "https://api.github.com/repos/OhhhZenix/WynnSpells/releases/latest";
-
 	private static final long CHECK_INTERVAL_HOURS = 1;
-
 	private final ScheduledExecutorService scheduler;
 	private final HttpClient httpClient;
 	private final Gson gson = new Gson();
