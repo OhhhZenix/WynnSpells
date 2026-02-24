@@ -1,5 +1,6 @@
 package dev.zenix.wynnspells.client;
 
+import dev.zenix.wynnspells.WynnSpells;
 import java.util.List;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -73,7 +74,7 @@ public class WynnSpellsUtils {
 		}
 
 		SystemToast.add(MinecraftClient.getInstance().getToastManager(), SystemToast.Type.WORLD_BACKUP,
-				Text.of(WynnSpellsClient.MOD_NAME), description);
+				Text.of(WynnSpells.MOD_NAME), description);
 	}
 
 	public static long getAutoDelay() {
@@ -84,18 +85,18 @@ public class WynnSpellsUtils {
 		long delay = msPerTick + jitterMargin;
 		if (delay < oneWay)
 			delay = 0;
-		WynnSpellsClient.LOGGER.info("Auto Delay: {}", delay);
+		WynnSpells.LOGGER.info("Auto Delay: {}", delay);
 		return delay;
 	}
 
 	public static void refreshKeyBindings() {
 		KeyBinding.updateKeysByCode();
-		WynnSpellsClient.LOGGER.debug("Refreshed keybinds.");
+		WynnSpells.LOGGER.debug("Refreshed keybinds.");
 	}
 
 	public static void saveKeyBindings() {
 		MinecraftClient.getInstance().options.write();
-		WynnSpellsClient.LOGGER.debug("Saved keybinds.");
+		WynnSpells.LOGGER.debug("Saved keybinds.");
 	}
 
 	public static void refreshAndSaveKeyBindings() {
