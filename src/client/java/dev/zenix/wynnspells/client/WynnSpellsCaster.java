@@ -1,15 +1,13 @@
 package dev.zenix.wynnspells.client;
 
+import dev.zenix.wynnspells.client.event.SwingHandEvent;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
-
-import dev.zenix.wynnspells.client.event.SwingHandEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 
 public class WynnSpellsCaster implements Runnable {
@@ -115,6 +113,11 @@ public class WynnSpellsCaster implements Runnable {
 	}
 
 	private boolean processVanillaMelee(ClientPlayerEntity player, Hand hand) {
+		if (clicks.isEmpty()) {
+			return false;
+		}
+
+		buffer.add(WynnSpellsIntent.MELEE);
 		return true;
 	}
 
