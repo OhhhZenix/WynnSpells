@@ -1,6 +1,7 @@
 package dev.zenix.wynnspells.client;
 
 import com.google.gson.Gson;
+import dev.zenix.wynnspells.WynnSpells;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -54,17 +55,17 @@ public final class WynnSpellsUpdateChecker {
 
 			httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString()).orTimeout(15, TimeUnit.SECONDS)
 					.thenAccept(this::handleResponse).exceptionally(ex -> {
-						WynnSpellsClient.LOGGER.debug("Update check failed: {}", ex.getMessage());
+						WynnSpells.LOGGER.debug("Update check failed: {}", ex.getMessage());
 						return null;
 					});
 		} catch (Exception e) {
-			WynnSpellsClient.LOGGER.debug("Failed to start update check", e);
+			WynnSpells.LOGGER.debug("Failed to start update check", e);
 		}
 	}
 
 	private void handleResponse(HttpResponse<String> response) {
 		if (response.statusCode() != 200) {
-			WynnSpellsClient.LOGGER.debug("GitHub API returned status {}", response.statusCode());
+			WynnSpells.LOGGER.debug("GitHub API returned status {}", response.statusCode());
 			return;
 		}
 
@@ -75,7 +76,7 @@ public final class WynnSpellsUpdateChecker {
 			if (latestVersion == null)
 				return;
 
-			String currentVersion = FabricLoader.getInstance().getModContainer(WynnSpellsClient.MOD_ID)
+			String currentVersion = FabricLoader.getInstance().getModContainer(WynnSpells.MOD_ID)
 					.map(mc -> mc.getMetadata().getVersion().getFriendlyString()).orElse("0.0.0");
 
 			if (!isNewer(latestVersion, currentVersion))
@@ -83,7 +84,7 @@ public final class WynnSpellsUpdateChecker {
 
 			notifyPlayer(latestVersion, currentVersion);
 		} catch (Exception e) {
-			WynnSpellsClient.LOGGER.debug("Failed parsing update response", e);
+			WynnSpells.LOGGER.debug("Failed parsing update response", e);
 		}
 	}
 
@@ -92,15 +93,15 @@ public final class WynnSpellsUpdateChecker {
 	/* ============================= */
 
 	private void notifyPlayer(String latest, String current) {
-		String homepageUrl = FabricLoader.getInstance().getModContainer(WynnSpellsClient.MOD_ID)
+		String homepageUrl = FabricLoader.getInstance().getModContainer(WynnSpells.MOD_ID)
 				.flatMap(mc -> mc.getMetadata().getContact().get("homepage"))
 				.orElse("https://github.com/OhhhZenix/WynnSpells");
 
 		WynnSpellsUtils.sendNotification(Text.of("New update available: " + latest),
 				WynnSpellsClient.getInstance().getConfig().shouldNotifyUpdates());
 
-		WynnSpellsClient.LOGGER.info("{} v{} is available (current: v{}). Download: {}", WynnSpellsClient.MOD_NAME,
-				latest, current, homepageUrl);
+		WynnSpells.LOGGER.info("{} v{} is available (current: v{}). Download: {}", WynnSpells.MOD_NAME, latest, current,
+				homepageUrl);
 	}
 
 	/* ============================= */
