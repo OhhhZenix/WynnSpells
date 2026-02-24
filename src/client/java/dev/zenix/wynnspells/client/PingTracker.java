@@ -16,7 +16,6 @@ public final class PingTracker {
 
 	private final MinecraftClient mc;
 	private final ScheduledExecutorService scheduler;
-	private ScheduledFuture<?> task;
 	private volatile long lastPing = 0;
 
 	public PingTracker(MinecraftClient mc) {
@@ -25,12 +24,12 @@ public final class PingTracker {
 	}
 
 	public void start() {
-		task = scheduler.scheduleAtFixedRate(this::sendPing, 0, 1, TimeUnit.SECONDS);
+		scheduler.scheduleAtFixedRate(this::sendPing, 0, 1, TimeUnit.SECONDS);
 		PingResultEvent.EVENT.register(this::onPingResult);
 	}
 
 	public void stop() {
-		task.cancel(true);
+		scheduler.shutdown();
 	}
 
 	private void sendPing() {
