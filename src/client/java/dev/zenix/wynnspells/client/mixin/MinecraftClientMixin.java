@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
 
-    @WrapWithCondition(method = "doAttack()Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;swingHand(Lnet/minecraft/util/Hand;)V"))
-    private boolean onSwingHand(ClientPlayerEntity player, Hand hand) {
-        boolean result = SwingHandEvent.EVENT.invoker().swingHand(player, hand);
-        return !result;
-    }
+	@WrapWithCondition(method = "doAttack()Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;swingHand(Lnet/minecraft/util/Hand;)V"))
+	private boolean onSwingHand(ClientPlayerEntity player, Hand hand) {
+		boolean result = SwingHandEvent.EVENT.invoker().swingHand(player, hand);
+		return !result;
+	}
 }
