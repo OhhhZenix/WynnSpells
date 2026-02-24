@@ -1,5 +1,6 @@
 package dev.zenix.wynnspells.client;
 
+import dev.zenix.wynnspells.WynnSpells;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
@@ -10,19 +11,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.lwjgl.glfw.GLFW;
 
 public class WynnSpellsClient implements ClientModInitializer {
 
-	public static final String MOD_NAME = "WynnSpells";
-	public static final String MOD_ID = "wynnspells";
-	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	private static final KeyBinding.Category KEY_CATEGORY = KeyBinding.Category
-			.create(Identifier.of(WynnSpellsClient.MOD_ID, "all"));
+			.create(Identifier.of(WynnSpells.MOD_ID, "all"));
 	public static final KeyBinding FIRST_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
 			new KeyBinding("key.wynnspells.first", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
 	public static final KeyBinding SECOND_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
@@ -48,21 +42,16 @@ public class WynnSpellsClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		instance = this;
-		setupLogger();
 		loadConfig();
 		ClientLifecycleEvents.CLIENT_STARTED.register(this::onClientStart);
 		ClientLifecycleEvents.CLIENT_STOPPING.register(this::onClientStop);
 		ClientTickEvents.END_CLIENT_TICK.register(this::onClientEndTick);
 	}
 
-	private void setupLogger() {
-		Configurator.setLevel(LOGGER.getName(), Level.INFO);
-	}
-
 	private void loadConfig() {
 		AutoConfig.register(WynnSpellsConfig.class, GsonConfigSerializer::new);
 		config = AutoConfig.getConfigHolder(WynnSpellsConfig.class).getConfig();
-		LOGGER.info("Config loaded successfully");
+		WynnSpells.LOGGER.info("Config loaded successfully");
 	}
 
 	public WynnSpellsConfig getConfig() {
@@ -70,7 +59,7 @@ public class WynnSpellsClient implements ClientModInitializer {
 	}
 
 	public void saveConfig() {
-		LOGGER.debug("Saving configuration");
+		WynnSpells.LOGGER.debug("Saving configuration");
 		AutoConfig.getConfigHolder(WynnSpellsConfig.class).save();
 	}
 
