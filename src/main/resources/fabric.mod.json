@@ -4,7 +4,9 @@
   "version": "${version}",
   "name": "WynnSpells",
   "description": "A better spell macro mod for Wynncraft.",
-  "authors": ["OhhhZenix"],
+  "authors": [
+    "OhhhZenix"
+  ],
   "contact": {
     "homepage": "https://modrinth.com/mod/wynnspells",
     "issues": "https://github.com/OhhhZenix/WynnSpells/issues",
@@ -14,8 +16,12 @@
   "icon": "assets/wynnspells/icon.png",
   "environment": "client",
   "entrypoints": {
-    "client": ["dev.zenix.wynnspells.client.WynnSpellsClient"],
-    "main": ["dev.zenix.wynnspells.WynnSpells"],
+    "client": [
+      "dev.zenix.wynnspells.client.WynnSpellsClient"
+    ],
+    "main": [
+      "dev.zenix.wynnspells.WynnSpells"
+    ],
     "modmenu": [
       "dev.zenix.wynnspells.client.ModMenu"
     ]
