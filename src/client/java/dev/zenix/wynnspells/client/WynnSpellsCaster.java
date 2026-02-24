@@ -107,7 +107,13 @@ public class WynnSpellsCaster implements Runnable {
 		buffer.add(intent);
 	}
 
+	private void processVanillaMelee() {
+
+	}
+
 	public void processIntentKeys() {
+		processVanillaMelee();
+		processIntentKey(WynnSpellsClient.MELEE_KEY, WynnSpellsIntent.MELEE);
 		processIntentKey(WynnSpellsClient.FIRST_SPELL_KEY, WynnSpellsIntent.FIRST_SPELL);
 		processIntentKey(WynnSpellsClient.SECOND_SPELL_KEY, WynnSpellsIntent.SECOND_SPELL);
 		processIntentKey(WynnSpellsClient.THIRD_SPELL_KEY, WynnSpellsIntent.THIRD_SPELL);
