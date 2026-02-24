@@ -33,6 +33,7 @@ public class WynnSpellsClient implements ClientModInitializer {
 	private static WynnSpellsClient instance = null;
 	private WynnSpellsConfig config = null;
 	private WynnSpellsUpdateChecker updateChecker;
+	private WynnSpellsPingTracker pingTracker;
 	private WynnSpellsCaster caster;
 
 	public static WynnSpellsClient getInstance() {
@@ -64,18 +65,19 @@ public class WynnSpellsClient implements ClientModInitializer {
 	}
 
 	private void onClientStart(MinecraftClient client) {
-		WynnSpellsPingPong.start();
-
 		updateChecker = new WynnSpellsUpdateChecker();
 		updateChecker.start();
+
+		pingTracker = new WynnSpellsPingTracker(client);
+		pingTracker.start();
 
 		caster = new WynnSpellsCaster(client);
 		caster.start();
 	}
 
 	private void onClientStop(MinecraftClient client) {
-		WynnSpellsPingPong.stop();
 		updateChecker.stop();
+		pingTracker.stop();
 		caster.stop();
 	}
 
@@ -90,5 +92,9 @@ public class WynnSpellsClient implements ClientModInitializer {
 
 		WynnSpellsClient.CONFIG_KEY.setPressed(false);
 		client.setScreen(WynnSpellsConfigScreen.create(client.currentScreen));
+	}
+
+	public WynnSpellsPingTracker getPingTracker() {
+		return pingTracker;
 	}
 }
