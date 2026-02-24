@@ -1,6 +1,6 @@
 package dev.zenix.wynnspells.client.mixin;
 
-import dev.zenix.wynnspells.client.WynnSpellsClient;
+import dev.zenix.wynnspells.WynnSpells;
 import dev.zenix.wynnspells.client.WynnSpellsPingPong;
 import net.minecraft.client.network.PingMeasurer;
 import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
@@ -17,9 +17,9 @@ public class PingMeasurerMixin {
 	private void onPingResult(PingResultS2CPacket packet, CallbackInfo callbackInfo) {
 		long currentTime = Util.getMeasuringTimeMs();
 		long startTime = packet.startTime();
-		WynnSpellsClient.LOGGER.debug("Current Time: {}", currentTime);
-		WynnSpellsClient.LOGGER.debug("Start Time: {}", startTime);
-		WynnSpellsClient.LOGGER.debug("Ping: {}", currentTime - startTime);
+		WynnSpells.LOGGER.debug("Current Time: {}", currentTime);
+		WynnSpells.LOGGER.debug("Start Time: {}", startTime);
+		WynnSpells.LOGGER.debug("Ping: {}", currentTime - startTime);
 		WynnSpellsPingPong.onCallback(startTime);
 	}
 }
