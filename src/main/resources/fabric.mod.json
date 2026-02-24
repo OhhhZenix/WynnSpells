@@ -14,10 +14,11 @@
   "icon": "assets/wynnspells/icon.png",
   "environment": "client",
   "entrypoints": {
-    "fabric-datagen": ["dev.zenix.wynnspells.client.WynnSpellsDataGenerator"],
     "client": ["dev.zenix.wynnspells.client.WynnSpellsClient"],
     "main": ["dev.zenix.wynnspells.WynnSpells"],
-    "modmenu": ["dev.zenix.wynnspells.client.WynnSpellsModMenu"]
+    "modmenu": [
+      "dev.zenix.wynnspells.client.ModMenu"
+    ]
   },
   "mixins": [
     "wynnspells.mixins.json",
