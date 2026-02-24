@@ -20,22 +20,25 @@ public class ConfigScreen {
 
 		// General
 		ConfigCategory generalCategory = builder.getOrCreateCategory(Text.of("General"));
-		generalCategory.addEntry(entryBuilder
-				.startBooleanToggle(Text.of("Notify Updates"), config.shouldNotifyUpdates())
-				.setTooltip(Text.of("To enable or disable update notifications."))
-				.setDefaultValue(ClothConfig.getDefaultNotifyUpdates()).setSaveConsumer(config::setNotifyUpdates).build());
-		generalCategory.addEntry(entryBuilder
-				.startBooleanToggle(Text.of("Notify Busy Cast"), config.shouldNotifyBusyCast())
-				.setTooltip(Text.of("To enable or disable busy cast notifications."))
-				.setDefaultValue(ClothConfig.getDefaultNotifyBusyCast()).setSaveConsumer(config::setNotifyBusyCast).build());
+		generalCategory
+				.addEntry(entryBuilder.startBooleanToggle(Text.of("Notify Updates"), config.shouldNotifyUpdates())
+						.setTooltip(Text.of("To enable or disable update notifications."))
+						.setDefaultValue(ClothConfig.getDefaultNotifyUpdates())
+						.setSaveConsumer(config::setNotifyUpdates).build());
+		generalCategory
+				.addEntry(entryBuilder.startBooleanToggle(Text.of("Notify Busy Cast"), config.shouldNotifyBusyCast())
+						.setTooltip(Text.of("To enable or disable busy cast notifications."))
+						.setDefaultValue(ClothConfig.getDefaultNotifyBusyCast())
+						.setSaveConsumer(config::setNotifyBusyCast).build());
 		generalCategory.addEntry(entryBuilder.startBooleanToggle(Text.of("Use Auto Delay"), config.shouldUseAutoDelay())
 				.setTooltip(Text.of("Automatically calculates the most optimal delay for you."))
-				.setDefaultValue(ClothConfig.getDefaultUseAutoDelay()).setSaveConsumer(config::setUseAutoDelay).build());
+				.setDefaultValue(ClothConfig.getDefaultUseAutoDelay()).setSaveConsumer(config::setUseAutoDelay)
+				.build());
 		generalCategory.addEntry(entryBuilder
 				.startIntField(Text.of("Auto Delay Tolerance"), config.getAutoDelayTolerance())
 				.setTooltip(Text.of("Milliseconds of error allowed per calculation. More is accurate. Less is faster."))
-				.setDefaultValue(ClothConfig.getDefaultAutoDelayTolerance()).setSaveConsumer(config::setAutoDelayTolerance)
-				.build());
+				.setDefaultValue(ClothConfig.getDefaultAutoDelayTolerance())
+				.setSaveConsumer(config::setAutoDelayTolerance).build());
 		generalCategory.addEntry(entryBuilder.startIntField(Text.of("Manual Delay"), config.getManualDelay())
 				.setTooltip(Text.of("The delay between clicks. This value is ignored if auto delay is enabled."))
 				.setDefaultValue(ClothConfig.getDefaultManualDelay()).setSaveConsumer(config::setManualDelay).build());
