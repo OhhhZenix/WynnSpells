@@ -15,7 +15,6 @@ import net.minecraft.text.Text;
 public final class UpdateChecker {
 
 	private static final String API_URL = "https://api.github.com/repos/OhhhZenix/WynnSpells/releases/latest";
-	private static final long CHECK_INTERVAL_HOURS = 1;
 	private final ScheduledExecutorService scheduler;
 	private final HttpClient httpClient;
 	private final Gson gson = new Gson();
@@ -30,7 +29,7 @@ public final class UpdateChecker {
 	/* ============================= */
 
 	public void start() {
-		scheduler.scheduleAtFixedRate(this::checkForUpdates, 0, CHECK_INTERVAL_HOURS, TimeUnit.HOURS);
+		scheduler.scheduleAtFixedRate(this::checkForUpdates, 0, 1, TimeUnit.HOURS);
 	}
 
 	public void stop() {
