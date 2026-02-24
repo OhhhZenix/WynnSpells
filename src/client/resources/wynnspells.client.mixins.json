@@ -3,7 +3,10 @@
   "minVersion": "0.8",
   "package": "dev.zenix.wynnspells.client.mixin",
   "compatibilityLevel": "JAVA_21",
-  "client": ["WynnSpellsClientPacketListener"],
+  "client": [
+    "PingMeasurerMixin",
+    "MinecraftClientMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
