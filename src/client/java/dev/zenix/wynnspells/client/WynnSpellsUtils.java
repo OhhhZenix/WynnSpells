@@ -78,7 +78,7 @@ public class WynnSpellsUtils {
 	}
 
 	public static long getAutoDelay() {
-		long rtt = WynnSpellsPingPong.getPing();
+		long rtt = WynnSpellsClient.getInstance().getPingTracker().getLastPing();
 		long oneWay = rtt / 2;
 		long msPerTick = 1000L / 20L;
 		long jitterMargin = 30L;
