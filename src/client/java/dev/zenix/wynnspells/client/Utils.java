@@ -50,12 +50,12 @@ public class Utils {
 		Utils.sendPacket(client, new PlayerInputC2SPacket(playerInput));
 	}
 
-	public static boolean isArcher(MinecraftClient client) {
-		if (client == null || client.player == null)
+	public static boolean mainHandItemHasTooltipText(MinecraftClient client, String searchText) {
+		if (client == null || client.player == null || searchText == null || searchText.isEmpty())
 			return false;
 
 		ItemStack heldItem = client.player.getMainHandStack();
-		if (heldItem == null)
+		if (heldItem == null || heldItem.isEmpty())
 			return false;
 
 		List<Text> tooltip = heldItem.getTooltip(Item.TooltipContext.DEFAULT, client.player, TooltipType.BASIC);
@@ -63,11 +63,35 @@ public class Utils {
 			return false;
 
 		for (Text line : tooltip) {
-			if (line.getString().contains("Archer/Hunter"))
+			if (line.getString().contains(searchText))
 				return true;
 		}
 
 		return false;
+	}
+
+	public static boolean isArcher(MinecraftClient client) {
+		return mainHandItemHasTooltipText(client, "Archer/Hunter");
+	}
+
+	public static boolean isWarrior(MinecraftClient client) {
+		return mainHandItemHasTooltipText(client, "Warrior/Knight");
+	}
+
+	public static boolean isMage(MinecraftClient client) {
+		return mainHandItemHasTooltipText(client, "Mage/Dark Wizard");
+	}
+
+	public static boolean isAssassin(MinecraftClient client) {
+		return mainHandItemHasTooltipText(client, "Assassin/Ninja");
+	}
+
+	public static boolean isShaman(MinecraftClient client) {
+		return mainHandItemHasTooltipText(client, "Shaman/Skyseer");
+	}
+
+	public static boolean isWeapon(MinecraftClient client) {
+		return isArcher(client) || isWarrior(client) || isMage(client) || isAssassin(client) || isShaman(client);
 	}
 
 	public static void sendNotification(Text description, Boolean shouldSend) {
