@@ -19,6 +19,8 @@ import net.minecraft.util.PlayerInput;
 
 public class Utils {
 
+	public static long MS_PER_TICK = 1000L / 20L;
+
 	public static void sendPacket(MinecraftClient client, Packet<?> packet) {
 		if (client == null)
 			return;
@@ -81,11 +83,10 @@ public class Utils {
 		WynnSpellsClient client = WynnSpellsClient.getInstance();
 		long rtt = client.getPingTracker().getLastPing();
 		long oneWay = rtt / 2;
-		long msPerTick = 1000 / 20;
-		long jitter = msPerTick / 2;
+		long jitter = MS_PER_TICK / 2;
 		long tolerance = client.getConfig().getAutoDelayTolerance();
 		long margin = tolerance + (tolerance * (oneWay / tolerance));
-		long delay = msPerTick + jitter + margin;
+		long delay = MS_PER_TICK + jitter + margin;
 		WynnSpells.LOGGER.info("Auto Delay: {}", delay);
 		return delay;
 	}
