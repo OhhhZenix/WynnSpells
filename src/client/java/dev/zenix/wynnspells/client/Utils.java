@@ -111,7 +111,7 @@ public class Utils {
 		long tolerance = client.getConfig().getAutoDelayTolerance();
 		long margin = tolerance + (tolerance * (oneWay / MS_PER_TICK));
 		long delay = MS_PER_TICK + jitter + margin;
-		WynnSpells.LOGGER.info("Auto Delay: {}", delay);
+		WynnSpells.LOGGER.debug("Auto Delay: {}", delay);
 		return delay;
 	}
 
