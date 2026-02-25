@@ -1,8 +1,6 @@
 package dev.zenix.wynnspells.client;
 
 import dev.zenix.wynnspells.client.event.SwingHandEvent;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
@@ -10,121 +8,129 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
-public class Caster implements Runnable {
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 
-	private final MinecraftClient mc;
-	private final LinkedBlockingDeque<Intent> buffer = new LinkedBlockingDeque<>();
-	private final LinkedBlockingDeque<Boolean> clicks = new LinkedBlockingDeque<>();
-	private volatile ItemStack previousItem = null;
-	private volatile boolean isRunning = true;
-	private long lastTime = System.nanoTime();
+public class Caster {
 
-	public Caster(MinecraftClient mc) {
-		this.mc = mc;
-	}
+    private final MinecraftClient mc;
+    private final LinkedBlockingDeque<Intent> buffer = new LinkedBlockingDeque<>();
+    private final LinkedBlockingDeque<Boolean> clicks = new LinkedBlockingDeque<>();
+    private volatile ItemStack previousItem = null;
+    private volatile boolean isRunning = true;
+    private volatile long lastTime = System.nanoTime();
 
-	public void start() {
-		Thread thread = new Thread(this);
-		thread.start();
+    public Caster(MinecraftClient mc) {
+        this.mc = mc;
+    }
 
-		SwingHandEvent.EVENT.register(this::processVanillaMelee);
-	}
+    public void start() {
+        Thread thread = new Thread(this::process);
+        thread.start();
 
-	public void stop() {
-		isRunning = false;
-	}
+        SwingHandEvent.EVENT.register(this::processVanillaMelee);
+    }
 
-	@Override
-	public void run() {
-		while (isRunning) {
-			processClicks();
-			processBuffer();
-		}
-	}
+    public void stop() {
+        isRunning = false;
+    }
 
-	private void processClicks() {
-		if (clicks.isEmpty())
-			return;
+    private void process() {
+        while (isRunning) {
+            processClicks();
+            processBuffer();
+        }
+    }
 
-		long now = System.nanoTime();
-		long delay = TimeUnit.MILLISECONDS.toNanos(WynnSpellsClient.getInstance().getConfig().getManualDelay());
-		if (now < lastTime + delay)
-			return;
+    private void processClicks() {
+        if (clicks.isEmpty())
+            return;
 
-		try {
-			boolean click = clicks.take();
 
-			if (click) {
-				Utils.sendInteractPacket(mc); // right click
-			} else {
-				Utils.sendAttackPacket(mc); // left click
-			}
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+        ClothConfig config = WynnSpellsClient.getInstance().getConfig();
+        long delay = TimeUnit.MILLISECONDS.toNanos(config.getManualDelay());
+        if (config.shouldUseAutoDelay()) {
+            delay = TimeUnit.MILLISECONDS.toNanos(Utils.getAutoDelay());
+        }
 
-		lastTime = now;
-	}
+        long now = System.nanoTime();
+        if (now < lastTime + delay)
+            return;
 
-	private void processBuffer() {
-		if (!clicks.isEmpty())
-			return;
+        try {
+            boolean click = clicks.take();
 
-		if (buffer.isEmpty())
-			return;
+            if (click) {
+                Utils.sendInteractPacket(mc); // right click
+            } else {
+                Utils.sendAttackPacket(mc); // left click
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
-		try {
-			Intent intent = buffer.take();
-			boolean isArcher = Utils.isArcher(mc);
-			for (boolean click : intent.convert(isArcher)) {
-				clicks.add(click);
-			}
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-	}
+        lastTime = now;
+    }
 
-	private void processIntentKey(KeyBinding key, Intent intent) {
-		if (key == null)
-			return;
+    private void processBuffer() {
+        if (!clicks.isEmpty())
+            return;
 
-		if (!key.isPressed())
-			return;
+        if (buffer.isEmpty())
+            return;
 
-		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
-		if (buffer.size() >= config.getBufferLimit()) {
-			Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."), config.shouldNotifyBusyCast());
-			return;
-		}
+        try {
+            Intent intent = buffer.take();
+            boolean isArcher = Utils.isArcher(mc);
+            for (boolean click : intent.convert(isArcher)) {
+                clicks.add(click);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-		if (mc == null || mc.player == null) {
-			return;
-		}
+    private void processIntentKey(KeyBinding key, Intent intent) {
+        if (key == null)
+            return;
 
-		ItemStack itemInMainHand = mc.player.getMainHandStack();
-		if (itemInMainHand != previousItem) {
-			previousItem = itemInMainHand;
-			buffer.clear();
-		}
+        if (!key.isPressed())
+            return;
 
-		key.setPressed(false);
-		buffer.add(intent);
-	}
+        ClothConfig config = WynnSpellsClient.getInstance().getConfig();
+        if (buffer.size() >= config.getBufferLimit()) {
+            Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."), config.shouldNotifyBusyCast());
+            return;
+        }
 
-	private boolean processVanillaMelee(ClientPlayerEntity player, Hand hand) {
-		if (clicks.isEmpty()) {
-			return false;
-		}
+        if (mc == null || mc.player == null) {
+            return;
+        }
 
-		buffer.add(Intent.MELEE);
-		return true;
-	}
+        ItemStack itemInMainHand = mc.player.getMainHandStack();
+        if (itemInMainHand != previousItem) {
+            previousItem = itemInMainHand;
+            buffer.clear();
+        }
 
-	public void processIntentKeys() {
-		processIntentKey(WynnSpellsClient.MELEE_KEY, Intent.MELEE);
-		processIntentKey(WynnSpellsClient.FIRST_SPELL_KEY, Intent.FIRST_SPELL);
-		processIntentKey(WynnSpellsClient.SECOND_SPELL_KEY, Intent.SECOND_SPELL);
-		processIntentKey(WynnSpellsClient.THIRD_SPELL_KEY, Intent.THIRD_SPELL);
-		processIntentKey(WynnSpellsClient.FOURTH_SPELL_KEY, Intent.FOURTH_SPELL);
-	}
+        key.setPressed(false);
+        buffer.add(intent);
+    }
+
+    private boolean processVanillaMelee(ClientPlayerEntity player, Hand hand) {
+        if (clicks.isEmpty()) {
+            return false;
+        }
+
+        buffer.add(Intent.MELEE);
+        return true;
+    }
+
+    public void processIntentKeys() {
+        processIntentKey(WynnSpellsClient.MELEE_KEY, Intent.MELEE);
+        processIntentKey(WynnSpellsClient.FIRST_SPELL_KEY, Intent.FIRST_SPELL);
+        processIntentKey(WynnSpellsClient.SECOND_SPELL_KEY, Intent.SECOND_SPELL);
+        processIntentKey(WynnSpellsClient.THIRD_SPELL_KEY, Intent.THIRD_SPELL);
+        processIntentKey(WynnSpellsClient.FOURTH_SPELL_KEY, Intent.FOURTH_SPELL);
+    }
 }
