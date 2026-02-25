@@ -109,7 +109,7 @@ public class Utils {
 		long oneWay = rtt / 2;
 		long jitter = MS_PER_TICK / 2;
 		long tolerance = client.getConfig().getAutoDelayTolerance();
-		long margin = tolerance + (tolerance * (oneWay / tolerance));
+		long margin = tolerance + (tolerance * (oneWay / MS_PER_TICK));
 		long delay = MS_PER_TICK + jitter + margin;
 		WynnSpells.LOGGER.info("Auto Delay: {}", delay);
 		return delay;
