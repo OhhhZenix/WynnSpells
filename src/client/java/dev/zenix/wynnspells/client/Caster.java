@@ -111,6 +111,10 @@ public class Caster {
 			buffer.clear();
 		}
 
+		if (config.isWeaponOnlyCasting() && !Utils.isWeapon(mc)) {
+			return;
+		}
+
 		key.setPressed(false);
 		buffer.add(intent);
 	}
