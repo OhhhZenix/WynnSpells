@@ -30,6 +30,10 @@ public class ConfigScreen {
 						.setTooltip(Text.of("To enable or disable busy cast notifications."))
 						.setDefaultValue(ClothConfig.getDefaultNotifyBusyCast())
 						.setSaveConsumer(config::setNotifyBusyCast).build());
+		generalCategory.addEntry(entryBuilder.startBooleanToggle(Text.of("Weapon only"), config.isWeaponOnlyCasting())
+				.setTooltip(Text.of("Allow casting keybinds only when a weapon is held."))
+				.setDefaultValue(ClothConfig.getDefaultWeaponOnlyCasting())
+				.setSaveConsumer(config::setWeaponOnlyCasting).build());
 		generalCategory.addEntry(entryBuilder.startBooleanToggle(Text.of("Use Auto Delay"), config.shouldUseAutoDelay())
 				.setTooltip(Text.of("Automatically calculates the most optimal delay for you."))
 				.setDefaultValue(ClothConfig.getDefaultUseAutoDelay()).setSaveConsumer(config::setUseAutoDelay)
