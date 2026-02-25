@@ -8,6 +8,7 @@ public class ClothConfig implements ConfigData {
 
 	private boolean notifyUpdates = getDefaultNotifyUpdates();
 	private boolean notifyBusyCast = getDefaultNotifyBusyCast();
+	private boolean weaponOnlyCasting = getDefaultWeaponOnlyCasting();
 	private boolean useAutoDelay = getDefaultUseAutoDelay();
 	private int autoDelayTolerance = getDefaultAutoDelayTolerance();
 	private int manualDelay = getDefaultManualDelay();
@@ -17,12 +18,44 @@ public class ClothConfig implements ConfigData {
 		return true;
 	}
 
+	public static boolean getDefaultNotifyBusyCast() {
+		return true;
+	}
+
+	public static boolean getDefaultWeaponOnlyCasting() {
+		return true;
+	}
+
+	public boolean isWeaponOnlyCasting() {
+		return weaponOnlyCasting;
+	}
+
+	public void setWeaponOnlyCasting(boolean enabled) {
+		weaponOnlyCasting = enabled;
+	}
+
+	public static boolean getDefaultUseAutoDelay() {
+		return true;
+	}
+
+	public static int getDefaultAutoDelayTolerance() {
+		return 10;
+	}
+
+	public static int getDefaultManualDelay() {
+		return 100;
+	}
+
+	public static int getDefaultBufferLimit() {
+		return 1;
+	}
+
 	public boolean shouldNotifyUpdates() {
 		return notifyUpdates;
 	}
 
-	public static boolean getDefaultNotifyBusyCast() {
-		return true;
+	public void setNotifyUpdates(boolean enabled) {
+		notifyUpdates = enabled;
 	}
 
 	public boolean shouldNotifyBusyCast() {
@@ -33,24 +66,12 @@ public class ClothConfig implements ConfigData {
 		notifyBusyCast = enabled;
 	}
 
-	public void setNotifyUpdates(boolean enabled) {
-		notifyUpdates = enabled;
-	}
-
-	public static boolean getDefaultUseAutoDelay() {
-		return true;
-	}
-
 	public boolean shouldUseAutoDelay() {
 		return useAutoDelay;
 	}
 
 	public void setUseAutoDelay(boolean enabled) {
 		useAutoDelay = enabled;
-	}
-
-	public static int getDefaultAutoDelayTolerance() {
-		return 10;
 	}
 
 	public int getAutoDelayTolerance() {
@@ -61,20 +82,12 @@ public class ClothConfig implements ConfigData {
 		autoDelayTolerance = tolerance;
 	}
 
-	public static int getDefaultManualDelay() {
-		return 100;
-	}
-
 	public int getManualDelay() {
 		return manualDelay;
 	}
 
 	public void setManualDelay(int delay) {
 		manualDelay = delay;
-	}
-
-	public static int getDefaultBufferLimit() {
-		return 1;
 	}
 
 	public int getBufferLimit() {
