@@ -78,13 +78,14 @@ public class Utils {
 	}
 
 	public static long getAutoDelay() {
-		long rtt = WynnSpellsClient.getInstance().getPingTracker().getLastPing();
+		WynnSpellsClient client = WynnSpellsClient.getInstance();
+		long rtt = client.getPingTracker().getLastPing();
 		long oneWay = rtt / 2;
 		long msPerTick = 1000 / 20;
 		long jitter = msPerTick / 2;
-		long delay = msPerTick + jitter;
-		if (delay < oneWay)
-			delay = 0;
+		long tolerance = client.getConfig().getAutoDelayTolerance();
+		long margin = tolerance + (tolerance * (oneWay / tolerance));
+		long delay = msPerTick + jitter + margin;
 		WynnSpells.LOGGER.info("Auto Delay: {}", delay);
 		return delay;
 	}
