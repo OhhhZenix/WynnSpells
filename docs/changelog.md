@@ -2,6 +2,13 @@
 
 All the changes in WynnSpells.
 
+## Release 1.2.0
+
+- Vanilla melee no longer causes miscast
+- Option to cast only when weapon is held
+- Improved auto delay
+- Improved caster
+
 ## Release 1.1.0
 
 - Update homepage url
