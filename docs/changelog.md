@@ -2,6 +2,10 @@
 
 All the changes in WynnSpells.
 
+## Release 1.2.1
+
+- Add option to block interact while casting
+
 ## Release 1.2.0
 
 - Vanilla melee no longer causes miscast
