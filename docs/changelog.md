@@ -2,9 +2,14 @@
 
 All the changes in WynnSpells.
 
+## Release 1.3.0
+
+- Update detection system for Fruma
+
 ## Release 1.2.1
 
-- Add option to block interact while casting
+- Add option to block interact button while casting
+- Fix key switching while held
 
 ## Release 1.2.0
 
