@@ -12,6 +12,7 @@ public class ClothConfig implements ConfigData {
 	private boolean useAutoDelay = getDefaultUseAutoDelay();
 	private int autoDelayTolerance = getDefaultAutoDelayTolerance();
 	private int manualDelay = getDefaultManualDelay();
+	private int repeatThreshold = getDefaultRepeatThreshold();
 	private int bufferLimit = getDefaultBufferLimit();
 
 	public static boolean getDefaultNotifyUpdates() {
@@ -44,6 +45,10 @@ public class ClothConfig implements ConfigData {
 
 	public static int getDefaultManualDelay() {
 		return 100;
+	}
+
+	public static int getDefaultRepeatThreshold() {
+		return 250;
 	}
 
 	public static int getDefaultBufferLimit() {
@@ -88,6 +93,14 @@ public class ClothConfig implements ConfigData {
 
 	public void setManualDelay(int delay) {
 		manualDelay = delay;
+	}
+
+	public int getRepeatThreshold() {
+		return repeatThreshold;
+	}
+
+	public void setRepeatThreshold(int threshold) {
+		repeatThreshold = threshold;
 	}
 
 	public int getBufferLimit() {
