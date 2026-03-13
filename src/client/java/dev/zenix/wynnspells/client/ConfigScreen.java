@@ -46,6 +46,11 @@ public class ConfigScreen {
 		generalCategory.addEntry(entryBuilder.startIntField(Text.of("Manual Delay"), config.getManualDelay())
 				.setTooltip(Text.of("The delay between clicks. This value is ignored if auto delay is enabled."))
 				.setDefaultValue(ClothConfig.getDefaultManualDelay()).setSaveConsumer(config::setManualDelay).build());
+		generalCategory.addEntry(entryBuilder.startIntField(Text.of("Repeat Threshold"), config.getRepeatThreshold())
+				.setTooltip(Text.of(
+						"The delay in milliseconds before the pressed key is counted as held key to repeat same action."))
+				.setDefaultValue(ClothConfig.getDefaultRepeatThreshold()).setSaveConsumer(config::setRepeatThreshold)
+				.build());
 		generalCategory.addEntry(entryBuilder.startIntField(Text.of("Buffer Limit"), config.getBufferLimit())
 				.setTooltip(
 						Text.of("The amount of actions that is tolorated before it is ignored. Reduces key ghosting."))
