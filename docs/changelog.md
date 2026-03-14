@@ -8,8 +8,9 @@ All the changes in WynnSpells.
 
 ## Release 1.2.1
 
-- Add option to block interact button while casting
-- Fix key switching while held
+- Add option to block clicks while casting
+- Fix held key
+- Add option for held threshold
 
 ## Release 1.2.0
 
