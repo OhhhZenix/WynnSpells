@@ -112,8 +112,7 @@ public class ThreadCaster {
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
 
 		if (buffer.size() >= config.getBufferLimit()) {
-			Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."),
-					config.shouldNotifyBusyCast());
+			Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."), config.shouldNotifyBusyCast());
 			return;
 		}
 
@@ -140,15 +139,36 @@ public class ThreadCaster {
 			return;
 		}
 
-		if (!key.isPressed()) {
+		boolean isPressed = key.isPressed();
+		long now = System.nanoTime();
+
+		// Key released → cleanup state
+		if (!isPressed) {
+			if (previousPressedKeys.remove(key)) {
+				keysTimer.remove(key);
+			}
 			return;
 		}
 
-		// we should check is it a key we pressed before?
-		// if not lets add one intent and add to pressed keys
-		//
+		// First press
+		if (!previousPressedKeys.contains(key)) {
+			previousPressedKeys.add(key);
+			keysTimer.put(key, now);
+			addIntent(intent);
+			return;
+		}
 
-		addIntent(intent);
+		// Held key → check repeat threshold
+		Long lastPressTime = keysTimer.get(key);
+		if (lastPressTime == null) {
+			keysTimer.put(key, now);
+			return;
+		}
+
+		if (now - lastPressTime >= HOLD_THRESHOLD) {
+			addIntent(intent);
+			keysTimer.put(key, now); // reset repeat timer
+		}
 	}
 
 	private void processKeys() {
