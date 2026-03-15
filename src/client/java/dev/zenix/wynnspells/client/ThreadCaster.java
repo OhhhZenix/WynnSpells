@@ -112,7 +112,8 @@ public class ThreadCaster {
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
 
 		if (buffer.size() >= config.getBufferLimit()) {
-			Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."), config.shouldNotifyBusyCast());
+			Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."),
+					config.shouldNotifyBusyCast());
 			return;
 		}
 
@@ -139,9 +140,13 @@ public class ThreadCaster {
 			return;
 		}
 
-		if (!key.wasPressed()) {
+		if (!key.isPressed()) {
 			return;
 		}
+
+		// we should check is it a key we pressed before?
+		// if not lets add one intent and add to pressed keys
+		//
 
 		addIntent(intent);
 	}
