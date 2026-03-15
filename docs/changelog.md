@@ -10,7 +10,7 @@ All the changes in WynnSpells.
 
 - Make block clicks optional
 - Make held keys optional
-- Fix clicks processing after weapon switch
+- Fix swapping hand bug
 - Add safety checks for number options
 
 ## Release 1.2.1
