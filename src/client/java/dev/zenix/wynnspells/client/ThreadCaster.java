@@ -3,6 +3,9 @@ package dev.zenix.wynnspells.client;
 import dev.zenix.wynnspells.client.event.DoAttackEvent;
 import dev.zenix.wynnspells.client.event.InteractItemEvent;
 import java.util.Deque;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.client.MinecraftClient;
@@ -18,6 +21,9 @@ public class ThreadCaster {
 	private final MinecraftClient mc;
 	private final Deque<Boolean> clicks = new ConcurrentLinkedDeque<>();
 	private final Deque<Intent> buffer = new ConcurrentLinkedDeque<>();
+	private final Set<KeyBinding> previousPressedKeys = ConcurrentHashMap.newKeySet();
+	private final Map<KeyBinding, Long> keysTimer = new ConcurrentHashMap<>();
+	private static final long HOLD_THRESHOLD = TimeUnit.MILLISECONDS.toNanos(250);
 	private volatile boolean isRunning = true;
 	private ItemStack previousItem = ItemStack.EMPTY;
 	private long lastTime = System.nanoTime();
@@ -102,16 +108,9 @@ public class ThreadCaster {
 		}
 	}
 
-	private void processKey(KeyBinding key, Intent intent) {
-		if (key == null) {
-			return;
-		}
-
-		if (!key.wasPressed()) {
-			return;
-		}
-
+	private void addIntent(Intent intent) {
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
+
 		if (buffer.size() >= config.getBufferLimit()) {
 			Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."), config.shouldNotifyBusyCast());
 			return;
@@ -122,6 +121,7 @@ public class ThreadCaster {
 		}
 
 		ItemStack itemInMainHand = mc.player.getMainHandStack();
+
 		if (previousItem == null || !ItemStack.areEqual(itemInMainHand, previousItem)) {
 			previousItem = itemInMainHand;
 			buffer.clear();
@@ -132,6 +132,18 @@ public class ThreadCaster {
 		}
 
 		buffer.add(intent);
+	}
+
+	private void processKey(KeyBinding key, Intent intent) {
+		if (key == null) {
+			return;
+		}
+
+		if (!key.wasPressed()) {
+			return;
+		}
+
+		addIntent(intent);
 	}
 
 	private void processKeys() {
