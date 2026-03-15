@@ -5,15 +5,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Hand;
 
-public interface SwingHandEvent {
+public interface DoAttackEvent {
 
-	Event<SwingHandEvent> EVENT = EventFactory.createArrayBacked(SwingHandEvent.class,
-			(listeners) -> (player, hand) -> {
-				for (SwingHandEvent listener : listeners) {
-					return listener.swingHand(player, hand);
-				}
-				return false;
-			});
+	Event<DoAttackEvent> EVENT = EventFactory.createArrayBacked(DoAttackEvent.class, (listeners) -> (player, hand) -> {
+		for (DoAttackEvent listener : listeners) {
+			return listener.swingHand(player, hand);
+		}
+		return false;
+	});
 
 	// true == cancel
 	// false == not cancel
