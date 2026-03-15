@@ -41,6 +41,8 @@ public class WynnSpellsClient implements ClientModInitializer {
 	private UpdateChecker updateChecker;
 	private PingTracker pingTracker;
 	private Caster caster;
+	private TickCaster tickCaster;
+	private ThreadCaster threadCaster;
 
 	public static WynnSpellsClient getInstance() {
 		return instance;
@@ -77,19 +79,18 @@ public class WynnSpellsClient implements ClientModInitializer {
 		pingTracker = new PingTracker(client);
 		pingTracker.start();
 
-		caster = new Caster(client);
-		caster.start();
+		threadCaster = new ThreadCaster(client);
+		threadCaster.start();
 	}
 
 	private void onClientStop(MinecraftClient client) {
 		updateChecker.stop();
 		pingTracker.stop();
-		caster.stop();
+		threadCaster.stop();
 	}
 
 	private void onClientEndTick(MinecraftClient client) {
 		processConfigKey(client);
-		caster.processIntentKeys();
 	}
 
 	private void processConfigKey(MinecraftClient client) {
