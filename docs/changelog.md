@@ -6,6 +6,11 @@ All the changes in WynnSpells.
 
 - Update detection system for Fruma
 
+## Release 1.2.2
+
+- Make block clicks optional
+- Make held keys optional
+
 ## Release 1.2.1
 
 - Block clicks while casting
