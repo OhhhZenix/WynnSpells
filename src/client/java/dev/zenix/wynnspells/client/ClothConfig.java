@@ -9,7 +9,9 @@ public class ClothConfig implements ConfigData {
 	private boolean notifyUpdates = getDefaultNotifyUpdates();
 	private boolean notifyBusyCast = getDefaultNotifyBusyCast();
 	private boolean weaponOnlyCasting = getDefaultWeaponOnlyCasting();
+	private boolean blockClicks = getDefaultBlockClicks();
 	private boolean useAutoDelay = getDefaultUseAutoDelay();
+	private boolean repeatHeldKeys = getDefaultRepeatHeldKeys();
 	private int autoDelayTolerance = getDefaultAutoDelayTolerance();
 	private int manualDelay = getDefaultManualDelay();
 	private int repeatThreshold = getDefaultRepeatThreshold();
@@ -33,6 +35,30 @@ public class ClothConfig implements ConfigData {
 
 	public void setWeaponOnlyCasting(boolean enabled) {
 		weaponOnlyCasting = enabled;
+	}
+
+	public static boolean getDefaultBlockClicks() {
+		return true;
+	}
+
+	public boolean getBlockClicks() {
+		return blockClicks;
+	}
+
+	public void setBlockClicks(boolean value) {
+		blockClicks = value;
+	}
+
+	public static boolean getDefaultRepeatHeldKeys() {
+		return true;
+	}
+
+	public boolean getRepeatHeldKeys() {
+		return repeatHeldKeys;
+	}
+
+	public void setRepeatHeldKeys(boolean value) {
+		repeatHeldKeys = value;
 	}
 
 	public static boolean getDefaultUseAutoDelay() {
