@@ -1,6 +1,6 @@
 package dev.zenix.wynnspells.client;
 
-import dev.zenix.wynnspells.client.event.SwingHandEvent;
+import dev.zenix.wynnspells.client.event.DoAttackEvent;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.client.MinecraftClient;
@@ -27,7 +27,7 @@ public class Caster {
 		Thread thread = new Thread(this::process);
 		thread.start();
 
-		SwingHandEvent.EVENT.register(this::processVanillaMelee);
+		DoAttackEvent.EVENT.register(this::processVanillaMelee);
 	}
 
 	public void stop() {
