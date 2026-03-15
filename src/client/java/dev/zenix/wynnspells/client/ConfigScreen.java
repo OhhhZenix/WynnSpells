@@ -34,10 +34,18 @@ public class ConfigScreen {
 				.setTooltip(Text.of("Allow casting keybinds only when a weapon is held."))
 				.setDefaultValue(ClothConfig.getDefaultWeaponOnlyCasting())
 				.setSaveConsumer(config::setWeaponOnlyCasting).build());
+		generalCategory.addEntry(entryBuilder.startBooleanToggle(Text.of("Block clicks"), config.getBlockClicks())
+				.setTooltip(Text.of("Block left or right clicks while a spell is casting."))
+				.setDefaultValue(ClothConfig.getDefaultBlockClicks()).setSaveConsumer(config::setBlockClicks).build());
 		generalCategory.addEntry(entryBuilder.startBooleanToggle(Text.of("Use Auto Delay"), config.shouldUseAutoDelay())
 				.setTooltip(Text.of("Automatically calculates the most optimal delay for you."))
 				.setDefaultValue(ClothConfig.getDefaultUseAutoDelay()).setSaveConsumer(config::setUseAutoDelay)
 				.build());
+		generalCategory
+				.addEntry(entryBuilder.startBooleanToggle(Text.of("Repeat Held Keys"), config.getRepeatHeldKeys())
+						.setTooltip(Text.of("Allow action of a held key to be repeated."))
+						.setDefaultValue(ClothConfig.getDefaultRepeatHeldKeys())
+						.setSaveConsumer(config::setRepeatHeldKeys).build());
 		generalCategory.addEntry(entryBuilder
 				.startIntField(Text.of("Auto Delay Tolerance"), config.getAutoDelayTolerance())
 				.setTooltip(Text.of("Milliseconds of error allowed per calculation. More is accurate. Less is faster."))
