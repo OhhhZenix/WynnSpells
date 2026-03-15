@@ -1,7 +1,7 @@
 package dev.zenix.wynnspells.client.mixin;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import dev.zenix.wynnspells.client.event.SwingHandEvent;
+import dev.zenix.wynnspells.client.event.DoAttackEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Hand;
@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 public class MinecraftClientMixin {
 
 	@WrapWithCondition(method = "doAttack()Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;swingHand(Lnet/minecraft/util/Hand;)V"))
-	private boolean onSwingHand(ClientPlayerEntity player, Hand hand) {
-		boolean result = SwingHandEvent.EVENT.invoker().swingHand(player, hand);
+	private boolean doAttack(ClientPlayerEntity player, Hand hand) {
+		boolean result = DoAttackEvent.EVENT.invoker().swingHand(player, hand);
 		return !result;
 	}
 }
