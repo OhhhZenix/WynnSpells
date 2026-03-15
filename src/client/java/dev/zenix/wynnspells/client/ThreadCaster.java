@@ -75,19 +75,8 @@ public class ThreadCaster {
 			return;
 		}
 
-		// Update stored item
 		previousSlot = currentSlot;
-
-		// Reset timing so next click isn't artificially delayed
-		// lastTime = System.nanoTime();
-
-		// Reset key state tracking
-		// resetKeys();
-
-		// Clear queued spell clicks
 		clicks.clear();
-
-		// Clear pending spell intents
 		buffer.clear();
 	}
 
