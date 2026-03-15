@@ -30,11 +30,11 @@ public class ConfigScreen {
 						.setTooltip(Text.of("To enable or disable busy cast notifications."))
 						.setDefaultValue(ClothConfig.getDefaultNotifyBusyCast())
 						.setSaveConsumer(config::setNotifyBusyCast).build());
-		generalCategory.addEntry(entryBuilder.startBooleanToggle(Text.of("Weapon only"), config.isWeaponOnlyCasting())
+		generalCategory.addEntry(entryBuilder.startBooleanToggle(Text.of("Weapon Only"), config.isWeaponOnlyCasting())
 				.setTooltip(Text.of("Allow casting keybinds only when a weapon is held."))
 				.setDefaultValue(ClothConfig.getDefaultWeaponOnlyCasting())
 				.setSaveConsumer(config::setWeaponOnlyCasting).build());
-		generalCategory.addEntry(entryBuilder.startBooleanToggle(Text.of("Block clicks"), config.getBlockClicks())
+		generalCategory.addEntry(entryBuilder.startBooleanToggle(Text.of("Block Clicks"), config.getBlockClicks())
 				.setTooltip(Text.of("Block left or right clicks while a spell is casting."))
 				.setDefaultValue(ClothConfig.getDefaultBlockClicks()).setSaveConsumer(config::setBlockClicks).build());
 		generalCategory.addEntry(entryBuilder.startBooleanToggle(Text.of("Use Auto Delay"), config.shouldUseAutoDelay())
