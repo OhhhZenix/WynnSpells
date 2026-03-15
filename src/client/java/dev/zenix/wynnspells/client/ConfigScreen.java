@@ -41,20 +41,30 @@ public class ConfigScreen {
 		generalCategory.addEntry(entryBuilder
 				.startIntField(Text.of("Auto Delay Tolerance"), config.getAutoDelayTolerance())
 				.setTooltip(Text.of("Milliseconds of error allowed per calculation. More is accurate. Less is faster."))
-				.setDefaultValue(ClothConfig.getDefaultAutoDelayTolerance())
-				.setSaveConsumer(config::setAutoDelayTolerance).build());
+				.setDefaultValue(ClothConfig.getDefaultAutoDelayTolerance()).setSaveConsumer(value -> {
+					int clamped = Math.max(0, value);
+					config.setAutoDelayTolerance(clamped);
+				}).build());
 		generalCategory.addEntry(entryBuilder.startIntField(Text.of("Manual Delay"), config.getManualDelay())
 				.setTooltip(Text.of("The delay between clicks. This value is ignored if auto delay is enabled."))
-				.setDefaultValue(ClothConfig.getDefaultManualDelay()).setSaveConsumer(config::setManualDelay).build());
+				.setDefaultValue(ClothConfig.getDefaultManualDelay()).setSaveConsumer(value -> {
+					int clamped = Math.max(0, value);
+					config.setManualDelay(clamped);
+				}).build());
 		generalCategory.addEntry(entryBuilder.startIntField(Text.of("Repeat Threshold"), config.getRepeatThreshold())
 				.setTooltip(Text.of(
 						"The delay in milliseconds before the pressed key is counted as held key to repeat same action."))
-				.setDefaultValue(ClothConfig.getDefaultRepeatThreshold()).setSaveConsumer(config::setRepeatThreshold)
-				.build());
+				.setDefaultValue(ClothConfig.getDefaultRepeatThreshold()).setSaveConsumer(value -> {
+					int clamped = Math.max(0, value);
+					config.setRepeatThreshold(clamped);
+				}).build());
 		generalCategory.addEntry(entryBuilder.startIntField(Text.of("Buffer Limit"), config.getBufferLimit())
 				.setTooltip(
 						Text.of("The amount of actions that is tolorated before it is ignored. Reduces key ghosting."))
-				.setDefaultValue(ClothConfig.getDefaultBufferLimit()).setSaveConsumer(config::setBufferLimit).build());
+				.setDefaultValue(ClothConfig.getDefaultBufferLimit()).setSaveConsumer(value -> {
+					int clamped = Math.max(0, value);
+					config.setBufferLimit(clamped);
+				}).build());
 
 		ConfigCategory keybindsCategory = builder.getOrCreateCategory(Text.of("Keybinds"));
 		addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.CONFIG_KEY);
