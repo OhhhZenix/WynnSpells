@@ -40,8 +40,6 @@ public class WynnSpellsClient implements ClientModInitializer {
 	private ClothConfig config;
 	private UpdateChecker updateChecker;
 	private PingTracker pingTracker;
-	private Caster caster;
-	private TickCaster tickCaster;
 	private ThreadCaster threadCaster;
 
 	public static WynnSpellsClient getInstance() {
