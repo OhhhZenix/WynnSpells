@@ -1,5 +1,6 @@
 package dev.zenix.wynnspells.client;
 
+import dev.zenix.wynnspells.WynnSpells;
 import dev.zenix.wynnspells.client.event.DoAttackEvent;
 import dev.zenix.wynnspells.client.event.InteractItemEvent;
 import java.util.Deque;
@@ -25,6 +26,7 @@ public class ThreadCaster {
 	private final Map<KeyBinding, Long> keysTimer = new ConcurrentHashMap<>();
 	private volatile boolean isRunning = true;
 	private ItemStack previousItem = ItemStack.EMPTY;
+	private int previousSlot = -1;
 	private long lastTime = System.nanoTime();
 
 	public ThreadCaster(MinecraftClient mc) {
@@ -45,6 +47,7 @@ public class ThreadCaster {
 
 	private void run() {
 		while (isRunning) {
+			resetState();
 			processClicks();
 			processIntents();
 			processKeys();
@@ -62,6 +65,29 @@ public class ThreadCaster {
 
 	private boolean processVanillaInteract(PlayerEntity player, Hand hand) {
 		return !clicks.isEmpty();
+	}
+
+	private void resetState() {
+		if (mc == null || mc.player == null) {
+			return;
+		}
+
+		int currentSlot = mc.player.getInventory().getSelectedSlot();
+
+		// Update stored item
+		previousSlot = currentSlot;
+
+		// Reset timing so next click isn't artificially delayed
+		// lastTime = System.nanoTime();
+
+		// Reset key state tracking
+		// resetKeys();
+
+		// Clear queued spell clicks
+		clicks.clear();
+
+		// Clear pending spell intents
+		buffer.clear();
 	}
 
 	private void processClicks() {
@@ -110,20 +136,10 @@ public class ThreadCaster {
 	private void addIntent(Intent intent) {
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
 
-		if (buffer.size() >= config.getBufferLimit()) {
+		int bufferLimit = config.getBufferLimit();
+		if (bufferLimit < 0 && buffer.size() >= bufferLimit) {
 			Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."), config.shouldNotifyBusyCast());
 			return;
-		}
-
-		if (mc == null || mc.player == null) {
-			return;
-		}
-
-		ItemStack itemInMainHand = mc.player.getMainHandStack();
-
-		if (previousItem == null || !ItemStack.areEqual(itemInMainHand, previousItem)) {
-			previousItem = itemInMainHand;
-			buffer.clear();
 		}
 
 		if (config.isWeaponOnlyCasting() && !Utils.isWeapon(mc)) {
@@ -131,6 +147,7 @@ public class ThreadCaster {
 		}
 
 		buffer.add(intent);
+		WynnSpells.LOGGER.info("Buffer: " + buffer.size() + " Clicks: " + clicks.size());
 	}
 
 	private void processKey(KeyBinding key, Intent intent) {
