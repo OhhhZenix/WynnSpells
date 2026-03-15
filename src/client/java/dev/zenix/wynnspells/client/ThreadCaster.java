@@ -1,6 +1,5 @@
 package dev.zenix.wynnspells.client;
 
-import dev.zenix.wynnspells.WynnSpells;
 import dev.zenix.wynnspells.client.event.DoAttackEvent;
 import dev.zenix.wynnspells.client.event.InteractItemEvent;
 import java.util.Deque;
@@ -13,7 +12,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
@@ -25,7 +23,6 @@ public class ThreadCaster {
 	private final Set<KeyBinding> previousPressedKeys = ConcurrentHashMap.newKeySet();
 	private final Map<KeyBinding, Long> keysTimer = new ConcurrentHashMap<>();
 	private volatile boolean isRunning = true;
-	private ItemStack previousItem = ItemStack.EMPTY;
 	private int previousSlot = -1;
 	private long lastTime = System.nanoTime();
 
@@ -73,6 +70,10 @@ public class ThreadCaster {
 		}
 
 		int currentSlot = mc.player.getInventory().getSelectedSlot();
+
+		if (previousSlot == currentSlot) {
+			return;
+		}
 
 		// Update stored item
 		previousSlot = currentSlot;
@@ -137,7 +138,7 @@ public class ThreadCaster {
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
 
 		int bufferLimit = config.getBufferLimit();
-		if (bufferLimit < 0 && buffer.size() >= bufferLimit) {
+		if (buffer.size() >= bufferLimit) {
 			Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."), config.shouldNotifyBusyCast());
 			return;
 		}
@@ -147,7 +148,6 @@ public class ThreadCaster {
 		}
 
 		buffer.add(intent);
-		WynnSpells.LOGGER.info("Buffer: " + buffer.size() + " Clicks: " + clicks.size());
 	}
 
 	private void processKey(KeyBinding key, Intent intent) {
