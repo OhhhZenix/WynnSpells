@@ -52,6 +52,12 @@ public class ThreadCaster {
 	}
 
 	private boolean processVanillaMelee(ClientPlayerEntity player, Hand hand) {
+		boolean shouldBlockClicks = WynnSpellsClient.getInstance().getConfig().getBlockClicks();
+
+		if (!shouldBlockClicks) {
+			return false;
+		}
+
 		if (clicks.isEmpty()) {
 			return false;
 		}
@@ -61,6 +67,12 @@ public class ThreadCaster {
 	}
 
 	private boolean processVanillaInteract(PlayerEntity player, Hand hand) {
+		boolean shouldBlockClicks = WynnSpellsClient.getInstance().getConfig().getBlockClicks();
+
+		if (!shouldBlockClicks) {
+			return false;
+		}
+
 		return !clicks.isEmpty();
 	}
 
@@ -144,37 +156,47 @@ public class ThreadCaster {
 			return;
 		}
 
-		boolean isPressed = key.isPressed();
-		long now = System.nanoTime();
+		boolean shouldRepeatHeldKeys = WynnSpellsClient.getInstance().getConfig().getRepeatHeldKeys();
 
-		// Key released → cleanup state
-		if (!isPressed) {
-			if (previousPressedKeys.remove(key)) {
-				keysTimer.remove(key);
+		if (shouldRepeatHeldKeys) {
+			boolean isPressed = key.isPressed();
+			long now = System.nanoTime();
+
+			// Key released → cleanup state
+			if (!isPressed) {
+				if (previousPressedKeys.remove(key)) {
+					keysTimer.remove(key);
+				}
+				return;
 			}
-			return;
-		}
 
-		// First press
-		if (!previousPressedKeys.contains(key)) {
-			previousPressedKeys.add(key);
-			keysTimer.put(key, now);
+			// First press
+			if (!previousPressedKeys.contains(key)) {
+				previousPressedKeys.add(key);
+				keysTimer.put(key, now);
+				addIntent(intent);
+				return;
+			}
+
+			// Held key → check repeat threshold
+			Long lastPressTime = keysTimer.get(key);
+			if (lastPressTime == null) {
+				keysTimer.put(key, now);
+				return;
+			}
+
+			long repeatThreshold = TimeUnit.MILLISECONDS
+					.toNanos(WynnSpellsClient.getInstance().getConfig().getRepeatThreshold());
+			if (now - lastPressTime >= repeatThreshold) {
+				addIntent(intent);
+				keysTimer.put(key, now); // reset repeat timer
+			}
+		} else {
+			if (!key.wasPressed()) {
+				return;
+			}
+
 			addIntent(intent);
-			return;
-		}
-
-		// Held key → check repeat threshold
-		Long lastPressTime = keysTimer.get(key);
-		if (lastPressTime == null) {
-			keysTimer.put(key, now);
-			return;
-		}
-
-		long repeatThreshold = TimeUnit.MILLISECONDS
-				.toNanos(WynnSpellsClient.getInstance().getConfig().getRepeatThreshold());
-		if (now - lastPressTime >= repeatThreshold) {
-			addIntent(intent);
-			keysTimer.put(key, now); // reset repeat timer
 		}
 	}
 
