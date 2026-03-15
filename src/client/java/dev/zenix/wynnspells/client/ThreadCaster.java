@@ -23,7 +23,6 @@ public class ThreadCaster {
 	private final Deque<Intent> buffer = new ConcurrentLinkedDeque<>();
 	private final Set<KeyBinding> previousPressedKeys = ConcurrentHashMap.newKeySet();
 	private final Map<KeyBinding, Long> keysTimer = new ConcurrentHashMap<>();
-	private static final long HOLD_THRESHOLD = TimeUnit.MILLISECONDS.toNanos(250);
 	private volatile boolean isRunning = true;
 	private ItemStack previousItem = ItemStack.EMPTY;
 	private long lastTime = System.nanoTime();
@@ -165,7 +164,9 @@ public class ThreadCaster {
 			return;
 		}
 
-		if (now - lastPressTime >= HOLD_THRESHOLD) {
+		long repeatThreshold = TimeUnit.MILLISECONDS
+				.toNanos(WynnSpellsClient.getInstance().getConfig().getRepeatThreshold());
+		if (now - lastPressTime >= repeatThreshold) {
 			addIntent(intent);
 			keysTimer.put(key, now); // reset repeat timer
 		}
