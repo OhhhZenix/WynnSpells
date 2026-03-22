@@ -24,7 +24,7 @@ public class ClothConfig implements ConfigData {
 	}
 
 	public static boolean getDefaultNotifyBusyCast() {
-		return true;
+		return false;
 	}
 
 	public static boolean getDefaultWeaponOnlyCasting() {
