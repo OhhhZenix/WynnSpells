@@ -66,12 +66,12 @@ public class ConfigScreen {
 					int clamped = Math.max(0, value);
 					config.setRepeatThreshold(clamped);
 				}).build());
-		generalCategory.addEntry(entryBuilder.startIntField(Text.of("Buffer Limit"), config.getBufferLimit())
-				.setTooltip(
-						Text.of("The amount of actions that is tolorated before it is ignored. Reduces key ghosting."))
-				.setDefaultValue(ClothConfig.getDefaultBufferLimit()).setSaveConsumer(value -> {
+		generalCategory.addEntry(entryBuilder.startIntField(Text.of("Key Limit"), config.getKeyLimit())
+				.setTooltip(Text
+						.of("The amount of keybinding that is processed before it is ignored. Reduces key ghosting."))
+				.setDefaultValue(ClothConfig.getDefaultKeyLimit()).setSaveConsumer(value -> {
 					int clamped = Math.max(0, value);
-					config.setBufferLimit(clamped);
+					config.setKeyLimit(clamped);
 				}).build());
 
 		ConfigCategory keybindsCategory = builder.getOrCreateCategory(Text.of("Keybinds"));
