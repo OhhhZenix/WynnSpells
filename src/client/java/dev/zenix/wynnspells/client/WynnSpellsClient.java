@@ -40,7 +40,7 @@ public class WynnSpellsClient implements ClientModInitializer {
 	private ClothConfig config;
 	private UpdateChecker updateChecker;
 	private PingTracker pingTracker;
-	private ThreadCaster threadCaster;
+	private Caster threadCaster;
 
 	public static WynnSpellsClient getInstance() {
 		return instance;
@@ -77,7 +77,7 @@ public class WynnSpellsClient implements ClientModInitializer {
 		pingTracker = new PingTracker(client);
 		pingTracker.start();
 
-		threadCaster = new ThreadCaster(client);
+		threadCaster = new Caster(client);
 		threadCaster.start();
 	}
 
