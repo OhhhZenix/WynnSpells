@@ -17,7 +17,7 @@ public class TickCaster {
 	private long tickCounter = 0;
 	private ItemStack previousItem = null;
 	private Deque<Boolean> clicks = new ArrayDeque<>();
-	private Deque<Intent> buffer = new ArrayDeque<>();
+	private Deque<KeyBinding> keys = new ArrayDeque<>();
 
 	public TickCaster() {
 		DoAttackEvent.EVENT.register(this::processVanillaMelee);
@@ -28,11 +28,11 @@ public class TickCaster {
 		tickCounter++;
 		processClicks(mc);
 		processIntents(mc);
-		processKey(mc, WynnSpellsClient.MELEE_KEY, Intent.MELEE);
-		processKey(mc, WynnSpellsClient.FIRST_SPELL_KEY, Intent.FIRST_SPELL);
-		processKey(mc, WynnSpellsClient.SECOND_SPELL_KEY, Intent.SECOND_SPELL);
-		processKey(mc, WynnSpellsClient.THIRD_SPELL_KEY, Intent.THIRD_SPELL);
-		processKey(mc, WynnSpellsClient.FOURTH_SPELL_KEY, Intent.FOURTH_SPELL);
+		processKey(mc, WynnSpellsClient.MELEE_KEY);
+		processKey(mc, WynnSpellsClient.FIRST_SPELL_KEY);
+		processKey(mc, WynnSpellsClient.SECOND_SPELL_KEY);
+		processKey(mc, WynnSpellsClient.THIRD_SPELL_KEY);
+		processKey(mc, WynnSpellsClient.FOURTH_SPELL_KEY);
 	}
 
 	private void processClicks(MinecraftClient mc) {
@@ -66,19 +66,19 @@ public class TickCaster {
 			return;
 		}
 
-		if (buffer.isEmpty()) {
+		if (keys.isEmpty()) {
 			return;
 		}
 
-		Intent intent = buffer.poll();
+		KeyBinding key = keys.poll();
 		boolean isArcher = Utils.isArcher(mc);
 
-		for (boolean click : intent.convert(isArcher)) {
+		for (boolean click : Utils.keyToClicks(key, isArcher)) {
 			clicks.add(click);
 		}
 	}
 
-	private void processKey(MinecraftClient mc, KeyBinding key, Intent intent) {
+	private void processKey(MinecraftClient mc, KeyBinding key) {
 		if (key == null) {
 			return;
 		}
@@ -88,7 +88,7 @@ public class TickCaster {
 		}
 
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
-		if (buffer.size() >= config.getBufferLimit()) {
+		if (keys.size() >= config.getBufferLimit()) {
 			Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."), config.shouldNotifyBusyCast());
 			return;
 		}
@@ -100,14 +100,14 @@ public class TickCaster {
 		ItemStack itemInMainHand = mc.player.getMainHandStack();
 		if (previousItem == null || !ItemStack.areEqual(itemInMainHand, previousItem)) {
 			previousItem = itemInMainHand;
-			buffer.clear();
+			keys.clear();
 		}
 
 		if (config.isWeaponOnlyCasting() && !Utils.isWeapon(mc)) {
 			return;
 		}
 
-		buffer.add(intent);
+		keys.add(key);
 	}
 
 	private boolean processVanillaMelee(ClientPlayerEntity player, Hand hand) {
@@ -115,7 +115,7 @@ public class TickCaster {
 			return false;
 		}
 
-		buffer.add(Intent.MELEE);
+		keys.add(WynnSpellsClient.MELEE_KEY);
 		return true;
 	}
 
