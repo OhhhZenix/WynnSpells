@@ -42,12 +42,6 @@ All the changes in WynnSpells.
 - Update config descriptions
 - Add busy cast notification
 
-**New settings menu**
-![Settings menu for v1.1.0](./images/2.png)
-
-**Busy Cast Notification** </br>
-![Busy Cast Notification](./images/3.png)
-
 ## Release 1.0.0
 
 - Use Minecraft version 1.21.11
@@ -61,6 +55,3 @@ All the changes in WynnSpells.
 - Add config keybind
 - Add config menu
 - Add update checker
-
-**Config menu**
-![Sttings menu for v1.0.0](./images/1.png)
