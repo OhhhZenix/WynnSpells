@@ -8,14 +8,16 @@ public class ClothConfig implements ConfigData {
 
 	private boolean notifyUpdates = getDefaultNotifyUpdates();
 	private boolean notifyBusyCast = getDefaultNotifyBusyCast();
+
 	private boolean weaponOnlyCasting = getDefaultWeaponOnlyCasting();
 	private boolean blockClicks = getDefaultBlockClicks();
 	private boolean useAutoDelay = getDefaultUseAutoDelay();
 	private boolean repeatHeldKeys = getDefaultRepeatHeldKeys();
+
 	private int autoDelayTolerance = getDefaultAutoDelayTolerance();
 	private int manualDelay = getDefaultManualDelay();
 	private int repeatThreshold = getDefaultRepeatThreshold();
-	private int bufferLimit = getDefaultBufferLimit();
+	private int keyLimit = getDefaultKeyLimit();
 
 	public static boolean getDefaultNotifyUpdates() {
 		return true;
@@ -29,39 +31,15 @@ public class ClothConfig implements ConfigData {
 		return true;
 	}
 
-	public boolean isWeaponOnlyCasting() {
-		return weaponOnlyCasting;
-	}
-
-	public void setWeaponOnlyCasting(boolean enabled) {
-		weaponOnlyCasting = enabled;
-	}
-
 	public static boolean getDefaultBlockClicks() {
 		return true;
 	}
 
-	public boolean getBlockClicks() {
-		return blockClicks;
-	}
-
-	public void setBlockClicks(boolean value) {
-		blockClicks = value;
-	}
-
-	public static boolean getDefaultRepeatHeldKeys() {
+	public static boolean getDefaultUseAutoDelay() {
 		return true;
 	}
 
-	public boolean getRepeatHeldKeys() {
-		return repeatHeldKeys;
-	}
-
-	public void setRepeatHeldKeys(boolean value) {
-		repeatHeldKeys = value;
-	}
-
-	public static boolean getDefaultUseAutoDelay() {
+	public static boolean getDefaultRepeatHeldKeys() {
 		return true;
 	}
 
@@ -77,7 +55,7 @@ public class ClothConfig implements ConfigData {
 		return 250;
 	}
 
-	public static int getDefaultBufferLimit() {
+	public static int getDefaultKeyLimit() {
 		return 1;
 	}
 
@@ -95,6 +73,30 @@ public class ClothConfig implements ConfigData {
 
 	public void setNotifyBusyCast(boolean enabled) {
 		notifyBusyCast = enabled;
+	}
+
+	public boolean isWeaponOnlyCasting() {
+		return weaponOnlyCasting;
+	}
+
+	public void setWeaponOnlyCasting(boolean enabled) {
+		weaponOnlyCasting = enabled;
+	}
+
+	public boolean getBlockClicks() {
+		return blockClicks;
+	}
+
+	public void setBlockClicks(boolean value) {
+		blockClicks = value;
+	}
+
+	public boolean getRepeatHeldKeys() {
+		return repeatHeldKeys;
+	}
+
+	public void setRepeatHeldKeys(boolean value) {
+		repeatHeldKeys = value;
 	}
 
 	public boolean shouldUseAutoDelay() {
@@ -129,11 +131,11 @@ public class ClothConfig implements ConfigData {
 		repeatThreshold = threshold;
 	}
 
-	public int getBufferLimit() {
-		return bufferLimit;
+	public int getKeyLimit() {
+		return keyLimit;
 	}
 
-	public void setBufferLimit(int limit) {
-		bufferLimit = limit;
+	public void setKeyLimit(int limit) {
+		keyLimit = limit;
 	}
 }
