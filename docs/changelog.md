@@ -10,7 +10,6 @@ All the changes in WynnSpells.
 
 - Clean up backend
 - Update config defaults
-- Improve auto delay calculation
 
 ## Release 1.2.2
 
