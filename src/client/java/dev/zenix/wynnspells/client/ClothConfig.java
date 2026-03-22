@@ -17,7 +17,6 @@ public class ClothConfig implements ConfigData {
 	private int autoDelayTolerance = getDefaultAutoDelayTolerance();
 	private int manualDelay = getDefaultManualDelay();
 	private int repeatThreshold = getDefaultRepeatThreshold();
-	private int keyLimit = getDefaultKeyLimit();
 
 	public static boolean getDefaultNotifyUpdates() {
 		return true;
@@ -53,10 +52,6 @@ public class ClothConfig implements ConfigData {
 
 	public static int getDefaultRepeatThreshold() {
 		return 250;
-	}
-
-	public static int getDefaultKeyLimit() {
-		return 1;
 	}
 
 	public boolean shouldNotifyUpdates() {
@@ -129,13 +124,5 @@ public class ClothConfig implements ConfigData {
 
 	public void setRepeatThreshold(int threshold) {
 		repeatThreshold = threshold;
-	}
-
-	public int getKeyLimit() {
-		return keyLimit;
-	}
-
-	public void setKeyLimit(int limit) {
-		keyLimit = limit;
 	}
 }
