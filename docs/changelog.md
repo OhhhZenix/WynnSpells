@@ -10,6 +10,7 @@ All the changes in WynnSpells.
 
 - Clean up backend
 - Update config defaults
+- Remove buffer feature
 
 ## Release 1.2.2
 
