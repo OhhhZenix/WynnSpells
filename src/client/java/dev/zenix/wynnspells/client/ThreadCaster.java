@@ -19,7 +19,7 @@ public class ThreadCaster {
 
 	private final MinecraftClient mc;
 	private final Deque<Boolean> clicks = new ConcurrentLinkedDeque<>();
-	private final Deque<Intent> buffer = new ConcurrentLinkedDeque<>();
+	private final Deque<KeyBinding> keys = new ConcurrentLinkedDeque<>();
 	private final Set<KeyBinding> previousPressedKeys = ConcurrentHashMap.newKeySet();
 	private final Map<KeyBinding, Long> keysTimer = new ConcurrentHashMap<>();
 	private volatile boolean isRunning = true;
@@ -62,7 +62,7 @@ public class ThreadCaster {
 			return false;
 		}
 
-		buffer.add(Intent.MELEE);
+		keys.add(WynnSpellsClient.MELEE_KEY);
 		return true;
 	}
 
@@ -89,7 +89,7 @@ public class ThreadCaster {
 
 		previousSlot = currentSlot;
 		clicks.clear();
-		buffer.clear();
+		keys.clear();
 	}
 
 	private void processClicks() {
@@ -123,23 +123,23 @@ public class ThreadCaster {
 			return;
 		}
 
-		if (buffer.isEmpty()) {
+		if (keys.isEmpty()) {
 			return;
 		}
 
-		Intent intent = buffer.poll();
+		KeyBinding key = keys.poll();
 		boolean isArcher = Utils.isArcher(mc);
 
-		for (boolean click : intent.convert(isArcher)) {
+		for (boolean click : Utils.keyToClicks(key, isArcher)) {
 			clicks.add(click);
 		}
 	}
 
-	private void addIntent(Intent intent) {
+	private void addKey(KeyBinding key) {
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
 
-		int bufferLimit = config.getBufferLimit();
-		if (buffer.size() >= bufferLimit) {
+		int bufferLimit = config.getKeyLimit();
+		if (keys.size() >= bufferLimit) {
 			Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."), config.shouldNotifyBusyCast());
 			return;
 		}
@@ -148,10 +148,10 @@ public class ThreadCaster {
 			return;
 		}
 
-		buffer.add(intent);
+		keys.add(key);
 	}
 
-	private void processKey(KeyBinding key, Intent intent) {
+	private void processKey(KeyBinding key) {
 		if (key == null) {
 			return;
 		}
@@ -174,7 +174,7 @@ public class ThreadCaster {
 			if (!previousPressedKeys.contains(key)) {
 				previousPressedKeys.add(key);
 				keysTimer.put(key, now);
-				addIntent(intent);
+				addKey(key);
 				return;
 			}
 
@@ -188,7 +188,7 @@ public class ThreadCaster {
 			long repeatThreshold = TimeUnit.MILLISECONDS
 					.toNanos(WynnSpellsClient.getInstance().getConfig().getRepeatThreshold());
 			if (now - lastPressTime >= repeatThreshold) {
-				addIntent(intent);
+				addKey(key);
 				keysTimer.put(key, now); // reset repeat timer
 			}
 		} else {
@@ -196,15 +196,15 @@ public class ThreadCaster {
 				return;
 			}
 
-			addIntent(intent);
+			addKey(key);
 		}
 	}
 
 	private void processKeys() {
-		processKey(WynnSpellsClient.MELEE_KEY, Intent.MELEE);
-		processKey(WynnSpellsClient.FIRST_SPELL_KEY, Intent.FIRST_SPELL);
-		processKey(WynnSpellsClient.SECOND_SPELL_KEY, Intent.SECOND_SPELL);
-		processKey(WynnSpellsClient.THIRD_SPELL_KEY, Intent.THIRD_SPELL);
-		processKey(WynnSpellsClient.FOURTH_SPELL_KEY, Intent.FOURTH_SPELL);
+		processKey(WynnSpellsClient.MELEE_KEY);
+		processKey(WynnSpellsClient.FIRST_SPELL_KEY);
+		processKey(WynnSpellsClient.SECOND_SPELL_KEY);
+		processKey(WynnSpellsClient.THIRD_SPELL_KEY);
+		processKey(WynnSpellsClient.FOURTH_SPELL_KEY);
 	}
 }
