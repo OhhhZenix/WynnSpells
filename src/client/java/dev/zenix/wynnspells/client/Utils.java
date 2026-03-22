@@ -129,4 +129,20 @@ public class Utils {
 		refreshKeyBindings();
 		saveKeyBindings();
 	}
+
+	public static boolean[] keyToClicks(KeyBinding key, boolean isArcher) {
+		if (key.equals(WynnSpellsClient.MELEE_KEY)) {
+			return isArcher ? new boolean[]{true} : new boolean[]{false};
+		} else if (key.equals(WynnSpellsClient.FIRST_SPELL_KEY)) {
+			return isArcher ? new boolean[]{false, true, false} : new boolean[]{true, false, true};
+		} else if (key.equals(WynnSpellsClient.SECOND_SPELL_KEY)) {
+			return isArcher ? new boolean[]{false, false, false} : new boolean[]{true, true, true};
+		} else if (key.equals(WynnSpellsClient.THIRD_SPELL_KEY)) {
+			return isArcher ? new boolean[]{false, true, true} : new boolean[]{true, false, false};
+		} else if (key.equals(WynnSpellsClient.FOURTH_SPELL_KEY)) {
+			return isArcher ? new boolean[]{false, false, true} : new boolean[]{true, true, false};
+		}
+
+		return new boolean[0];
+	}
 }
