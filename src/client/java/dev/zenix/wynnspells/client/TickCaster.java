@@ -89,7 +89,7 @@ public class TickCaster {
 
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
 		if (keys.size() >= Utils.KEY_LIMIT) {
-			Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."), config.shouldNotifyBusyCast());
+			Utils.sendNotification(Text.of("Cast ignored: try slowing down a bit."), config.shouldNotifyBusyCast());
 			return;
 		}
 
