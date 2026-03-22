@@ -138,9 +138,8 @@ public class ThreadCaster {
 	private void addKey(KeyBinding key) {
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
 
-		int bufferLimit = config.getKeyLimit();
-		if (keys.size() >= bufferLimit) {
-			Utils.sendNotification(Text.of("Ignored: key limit reached."), config.shouldNotifyBusyCast());
+		if (keys.size() >= Utils.KEY_LIMIT) {
+			Utils.sendNotification(Text.of("Cast ignored: try slowing down a bit."), config.shouldNotifyBusyCast());
 			return;
 		}
 
