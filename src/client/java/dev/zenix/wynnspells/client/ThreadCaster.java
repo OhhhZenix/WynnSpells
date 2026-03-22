@@ -140,7 +140,7 @@ public class ThreadCaster {
 
 		int bufferLimit = config.getKeyLimit();
 		if (keys.size() >= bufferLimit) {
-			Utils.sendNotification(Text.of("Cast ignored: spell queue is busy."), config.shouldNotifyBusyCast());
+			Utils.sendNotification(Text.of("Ignored: key limit reached."), config.shouldNotifyBusyCast());
 			return;
 		}
 
