@@ -20,6 +20,7 @@ import net.minecraft.util.PlayerInput;
 public class Utils {
 
 	public static long MS_PER_TICK = 1000L / 20L;
+	public static int KEY_LIMIT = 1;
 
 	public static void sendPacket(MinecraftClient client, Packet<?> packet) {
 		if (client == null)
