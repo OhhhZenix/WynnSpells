@@ -22,11 +22,11 @@ public class Utils {
 
 	public static long MS_PER_TICK = 1000L / 20L;
 	public static int KEY_LIMIT = 1;
+	private static final Map<String, String> ITEM_ENCODINGS_BY_CLASS_TYPE = Map.of("Archer", "Archer/Hunter", "Warrior",
+			"Warrior/Knight", "Mage", "Mage/Dark Wizard", "Assassin", "Assassin/Ninja", "Shaman", "Shaman/Skyseer");
 	private static final Map<String, String> ITEM_ENCODINGS_BY_WEAPON_TYPE = Map.of("Archer", "󐀂󐀁󏿿󏿿󏿿󏿿󏿬",
 			"Warrior", "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿿󏿠", "Mage", "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿦", "Assassin",
 			"󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿿󏿿󏿚", "Shaman", "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿿󏿢");
-	private static final Map<String, String> ITEM_ENCODINGS_BY_CLASS_TYPE = Map.of("Archer", "Archer/Hunter", "Warrior",
-			"Warrior/Knight", "Mage", "Mage/Dark Wizard", "Assassin", "Assassin/Ninja", "Shaman", "Shaman/Skyseer");
 
 	public static void sendPacket(MinecraftClient client, Packet<?> packet) {
 		if (client == null)
@@ -78,28 +78,28 @@ public class Utils {
 	}
 
 	public static boolean isArcher(MinecraftClient client) {
-		return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Archer"))
-				|| mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Archer"));
+		return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Archer"))
+				|| mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Archer"));
 	}
 
 	public static boolean isWarrior(MinecraftClient client) {
-		return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Warrior"))
-				|| mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Warrior"));
+		return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Warrior"))
+				|| mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Warrior"));
 	}
 
 	public static boolean isMage(MinecraftClient client) {
-		return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Mage"))
-				|| mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Mage"));
+		return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Mage"))
+				|| mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Mage"));
 	}
 
 	public static boolean isAssassin(MinecraftClient client) {
-		return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Assassin"))
-				|| mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Assassin"));
+		return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Assassin"))
+				|| mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Assassin"));
 	}
 
 	public static boolean isShaman(MinecraftClient client) {
-		return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Shaman"))
-				|| mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Shaman"));
+		return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Shaman"))
+				|| mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Shaman"));
 	}
 
 	public static boolean isWeapon(MinecraftClient client) {
