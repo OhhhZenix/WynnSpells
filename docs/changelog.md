@@ -4,6 +4,10 @@ All the changes in WynnSpells.
 
 ## Release 1.3.0
 
+- Upgrade fabric api to 0.144.1+26.1
+
+## Release 1.2.4
+
 - Update detection system for Fruma
 
 ## Release 1.2.3
