@@ -72,23 +72,23 @@ public class Utils {
 	}
 
 	public static boolean isArcher(MinecraftClient client) {
-		return mainHandItemHasTooltipText(client, "Archer/Hunter");
+		return mainHandItemHasTooltipText(client, "󐀂󐀁󏿿󏿿󏿿󏿿󏿬");
 	}
 
 	public static boolean isWarrior(MinecraftClient client) {
-		return mainHandItemHasTooltipText(client, "Warrior/Knight");
+		return mainHandItemHasTooltipText(client, "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿿󏿠");
 	}
 
 	public static boolean isMage(MinecraftClient client) {
-		return mainHandItemHasTooltipText(client, "Mage/Dark Wizard");
+		return mainHandItemHasTooltipText(client, "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿦");
 	}
 
 	public static boolean isAssassin(MinecraftClient client) {
-		return mainHandItemHasTooltipText(client, "Assassin/Ninja");
+		return mainHandItemHasTooltipText(client, "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿿󏿿󏿚");
 	}
 
 	public static boolean isShaman(MinecraftClient client) {
-		return mainHandItemHasTooltipText(client, "Shaman/Skyseer");
+		return mainHandItemHasTooltipText(client, "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿿󏿢");
 	}
 
 	public static boolean isWeapon(MinecraftClient client) {
