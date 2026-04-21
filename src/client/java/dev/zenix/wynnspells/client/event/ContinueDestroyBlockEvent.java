@@ -10,11 +10,9 @@ public interface ContinueDestroyBlockEvent {
 	Event<ContinueDestroyBlockEvent> HANDLER = EventFactory.createArrayBacked(ContinueDestroyBlockEvent.class,
 			(listeners) -> (position, direction) -> {
 				for (ContinueDestroyBlockEvent callback : listeners) {
-					if (!callback.continueDestroyBlock(position, direction)) {
-						return false;
-					}
+					return callback.continueDestroyBlock(position, direction);
 				}
-				return true;
+				return false;
 			});
 
 	boolean continueDestroyBlock(BlockPos position, Direction direction);
