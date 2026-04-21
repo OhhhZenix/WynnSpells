@@ -7,13 +7,12 @@ import net.minecraft.world.entity.player.Player;
 
 public interface UseItemEvent {
 
-    Event<UseItemEvent> HANDLER = EventFactory.createArrayBacked(UseItemEvent.class,
-            (listeners) -> (player, hand) -> {
-                for (UseItemEvent callback : listeners) {
-                    return callback.useItem(player, hand);
-                }
-                return false;
-            });
+	Event<UseItemEvent> HANDLER = EventFactory.createArrayBacked(UseItemEvent.class, (listeners) -> (player, hand) -> {
+		for (UseItemEvent callback : listeners) {
+			return callback.useItem(player, hand);
+		}
+		return false;
+	});
 
-    boolean useItem(Player player, InteractionHand hand);
+	boolean useItem(Player player, InteractionHand hand);
 }
