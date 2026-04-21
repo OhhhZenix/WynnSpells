@@ -1,7 +1,6 @@
 package dev.zenix.wynnspells.client.mixin;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-
 import dev.zenix.wynnspells.client.event.PlayerStartAttackEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
