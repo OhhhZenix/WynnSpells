@@ -49,28 +49,27 @@ public class MultiPlayerGameModeMixin {
 	@Inject(method = "useItem(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;", at = @At("HEAD"), cancellable = true)
 	private void useItem(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
 		// UseItemEvent
-		cir.cancel();
+		// cir.cancel();
 	}
 
 	@Inject(method = "useItemOn(Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;", at = @At("HEAD"), cancellable = true)
 	private void useItemOn(LocalPlayer player, InteractionHand hand, BlockHitResult result,
 			CallbackInfoReturnable<InteractionResult> cir) {
 		// UseItemOnEvent
-		cir.cancel();
+		// cir.cancel();
 	}
 
 	@Inject(method = "interact(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;", at = @At("HEAD"), cancellable = true)
 	private void interact(Player player, Entity target, InteractionHand hand,
 			CallbackInfoReturnable<InteractionResult> cir) {
 		// PlayerInteractEvent
-		cir.cancel();
+		// cir.cancel();
 	}
 
 	@Inject(method = "interactAt(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/EntityHitResult;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;", at = @At("HEAD"), cancellable = true)
 	private void interactAt(Player player, Entity target, EntityHitResult ray, InteractionHand hand,
 			CallbackInfoReturnable<InteractionResult> cir) {
 		// PlayerInteractAtEvent
-		cir.cancel();
+		// cir.cancel();
 	}
-
 }
