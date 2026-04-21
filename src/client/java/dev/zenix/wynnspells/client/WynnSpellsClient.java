@@ -6,12 +6,14 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
 
 public class WynnSpellsClient implements ClientModInitializer {
 
-	// private static final KeyBinding.Category KEY_CATEGORY = KeyBinding.Category
-	// .create(Identifier.of(WynnSpells.MOD_ID, "all"));
+	private static final KeyMapping.Category KEY_CATEGORY = KeyMapping.Category.register(
+			Identifier.fromNamespaceAndPath(WynnSpells.MOD_ID, "all"));
 
 	// public static final KeyBinding FIRST_SPELL_KEY =
 	// KeyBindingHelper.registerKeyBinding(
