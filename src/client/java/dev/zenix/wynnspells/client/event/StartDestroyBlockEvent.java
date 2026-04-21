@@ -10,11 +10,9 @@ public interface StartDestroyBlockEvent {
 	Event<StartDestroyBlockEvent> HANDLER = EventFactory.createArrayBacked(StartDestroyBlockEvent.class,
 			(listeners) -> (position, direction) -> {
 				for (StartDestroyBlockEvent callback : listeners) {
-					if (!callback.startDestroyBlock(position, direction)) {
-						return false;
-					}
+					return callback.startDestroyBlock(position, direction);
 				}
-				return true;
+				return false;
 			});
 
 	boolean startDestroyBlock(BlockPos position, Direction direction);
