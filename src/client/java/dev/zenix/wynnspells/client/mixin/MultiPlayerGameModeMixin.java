@@ -2,6 +2,7 @@ package dev.zenix.wynnspells.client.mixin;
 
 import dev.zenix.wynnspells.client.event.ContinueDestroyBlockEvent;
 import dev.zenix.wynnspells.client.event.PlayerAttackEvent;
+import dev.zenix.wynnspells.client.event.PlayerInteractEvent;
 import dev.zenix.wynnspells.client.event.StartDestroyBlockEvent;
 import dev.zenix.wynnspells.client.event.UseItemEvent;
 import dev.zenix.wynnspells.client.event.UseItemOnEvent;
@@ -68,8 +69,10 @@ public class MultiPlayerGameModeMixin {
 	@Inject(method = "interact(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;", at = @At("HEAD"), cancellable = true)
 	private void interact(Player player, Entity target, InteractionHand hand,
 			CallbackInfoReturnable<InteractionResult> cir) {
-		// PlayerInteractEvent
-		// cir.cancel();
+		boolean shouldCancel = PlayerInteractEvent.HANDLER.invoker().interact(player, target, hand);
+		if (shouldCancel) {
+			cir.cancel();
+		}
 	}
 
 	@Inject(method = "interactAt(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/EntityHitResult;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;", at = @At("HEAD"), cancellable = true)
