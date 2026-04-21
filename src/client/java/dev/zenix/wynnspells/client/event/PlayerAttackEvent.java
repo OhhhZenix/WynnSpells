@@ -10,11 +10,9 @@ public interface PlayerAttackEvent {
 	Event<PlayerAttackEvent> HANDLER = EventFactory.createArrayBacked(PlayerAttackEvent.class,
 			(listeners) -> (player, target) -> {
 				for (PlayerAttackEvent callback : listeners) {
-					if (!callback.attack(player, target)) {
-						return false;
-					}
+					return callback.attack(player, target);
 				}
-				return true;
+				return false;
 			});
 
 	boolean attack(Player player, Entity target);
