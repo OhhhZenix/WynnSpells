@@ -4,7 +4,9 @@ All the changes in WynnSpells.
 
 ## Release 1.3.0
 
-- Upgrade fabric api to 0.144.1+26.1
+- Change from yarn to mojang backend
+- Fix edge cases for melee
+- Upgrade mod menu and cloth api.
 
 ## Release 1.2.4
 
