@@ -4,6 +4,7 @@ import dev.zenix.wynnspells.client.event.ContinueDestroyBlockEvent;
 import dev.zenix.wynnspells.client.event.PlayerAttackEvent;
 import dev.zenix.wynnspells.client.event.StartDestroyBlockEvent;
 import dev.zenix.wynnspells.client.event.UseItemEvent;
+import dev.zenix.wynnspells.client.event.UseItemOnEvent;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -58,8 +59,10 @@ public class MultiPlayerGameModeMixin {
 	@Inject(method = "useItemOn(Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;", at = @At("HEAD"), cancellable = true)
 	private void useItemOn(LocalPlayer player, InteractionHand hand, BlockHitResult result,
 			CallbackInfoReturnable<InteractionResult> cir) {
-		// UseItemOnEvent
-		// cir.cancel();
+		boolean shouldCancel = UseItemOnEvent.HANDLER.invoker().useItemOn(player, hand, result);
+		if (shouldCancel) {
+			cir.cancel();
+		}
 	}
 
 	@Inject(method = "interact(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;", at = @At("HEAD"), cancellable = true)
