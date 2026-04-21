@@ -1,11 +1,16 @@
 package dev.zenix.wynnspells.client;
 
+import org.lwjgl.glfw.GLFW;
+
+import com.mojang.blaze3d.platform.InputConstants;
+
 import dev.zenix.wynnspells.WynnSpells;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
@@ -15,35 +20,47 @@ public class WynnSpellsClient implements ClientModInitializer {
 	private static final KeyMapping.Category KEY_CATEGORY = KeyMapping.Category.register(
 			Identifier.fromNamespaceAndPath(WynnSpells.MOD_ID, "all"));
 
-	// public static final KeyBinding FIRST_SPELL_KEY =
-	// KeyBindingHelper.registerKeyBinding(
-	// new KeyBinding("key.wynnspells.first", InputUtil.Type.KEYSYM,
-	// GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
+	public static final KeyMapping FIRST_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
+			new KeyMapping(
+					"key.wynnspells.first",
+					InputConstants.Type.KEYSYM,
+					GLFW.GLFW_KEY_UNKNOWN,
+					KEY_CATEGORY));
 
-	// public static final KeyBinding SECOND_SPELL_KEY =
-	// KeyBindingHelper.registerKeyBinding(
-	// new KeyBinding("key.wynnspells.second", InputUtil.Type.KEYSYM,
-	// GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
+	public static final KeyMapping SECOND_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
+			new KeyMapping(
+					"key.wynnspells.second",
+					InputConstants.Type.KEYSYM,
+					GLFW.GLFW_KEY_UNKNOWN,
+					KEY_CATEGORY));
 
-	// public static final KeyBinding THIRD_SPELL_KEY =
-	// KeyBindingHelper.registerKeyBinding(
-	// new KeyBinding("key.wynnspells.third", InputUtil.Type.KEYSYM,
-	// GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
+	public static final KeyMapping THIRD_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
+			new KeyMapping(
+					"key.wynnspells.third",
+					InputConstants.Type.KEYSYM,
+					GLFW.GLFW_KEY_UNKNOWN,
+					KEY_CATEGORY));
 
-	// public static final KeyBinding FOURTH_SPELL_KEY =
-	// KeyBindingHelper.registerKeyBinding(
-	// new KeyBinding("key.wynnspells.fourth", InputUtil.Type.KEYSYM,
-	// GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
+	public static final KeyMapping FOURTH_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
+			new KeyMapping(
+					"key.wynnspells.fourth",
+					InputConstants.Type.KEYSYM,
+					GLFW.GLFW_KEY_UNKNOWN,
+					KEY_CATEGORY));
 
-	// public static final KeyBinding MELEE_KEY =
-	// KeyBindingHelper.registerKeyBinding(
-	// new KeyBinding("key.wynnspells.melee", InputUtil.Type.KEYSYM,
-	// GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
+	public static final KeyMapping MELEE_KEY = KeyBindingHelper.registerKeyBinding(
+			new KeyMapping(
+					"key.wynnspells.melee",
+					InputConstants.Type.KEYSYM,
+					GLFW.GLFW_KEY_UNKNOWN,
+					KEY_CATEGORY));
 
-	// public static final KeyBinding CONFIG_KEY =
-	// KeyBindingHelper.registerKeyBinding(
-	// new KeyBinding("key.wynnspells.config", InputUtil.Type.KEYSYM,
-	// GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
+	public static final KeyMapping CONFIG_KEY = KeyBindingHelper.registerKeyBinding(
+			new KeyMapping(
+					"key.wynnspells.config",
+					InputConstants.Type.KEYSYM,
+					GLFW.GLFW_KEY_UNKNOWN,
+					KEY_CATEGORY));
 
 	private static WynnSpellsClient instance = null;
 	private ClothConfig config;
