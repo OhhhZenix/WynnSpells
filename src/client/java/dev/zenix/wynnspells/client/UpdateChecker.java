@@ -10,7 +10,6 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.*;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.text.Text;
 
 public final class UpdateChecker {
 
@@ -90,8 +89,8 @@ public final class UpdateChecker {
 				.flatMap(mc -> mc.getMetadata().getContact().get("homepage"))
 				.orElse("https://github.com/OhhhZenix/WynnSpells");
 
-		Utils.sendNotification(Text.of("New update available: " + latest),
-				WynnSpellsClient.getInstance().getConfig().shouldNotifyUpdates());
+		// Utils.sendNotification(Text.of("New update available: " + latest),
+		// WynnSpellsClient.getInstance().getConfig().shouldNotifyUpdates());
 
 		WynnSpells.LOGGER.info("{} v{} is available (current: v{}). Download: {}", WynnSpells.MOD_NAME, latest, current,
 				homepageUrl);
