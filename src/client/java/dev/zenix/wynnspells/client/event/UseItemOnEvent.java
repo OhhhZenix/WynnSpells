@@ -8,13 +8,13 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public interface UseItemOnEvent {
 
-    Event<UseItemOnEvent> HANDLER = EventFactory.createArrayBacked(UseItemOnEvent.class,
-            (listeners) -> (player, hand, result) -> {
-                for (UseItemOnEvent callback : listeners) {
-                    return callback.useItemOn(player, hand, result);
-                }
-                return false;
-            });
+	Event<UseItemOnEvent> HANDLER = EventFactory.createArrayBacked(UseItemOnEvent.class,
+			(listeners) -> (player, hand, result) -> {
+				for (UseItemOnEvent callback : listeners) {
+					return callback.useItemOn(player, hand, result);
+				}
+				return false;
+			});
 
-    boolean useItemOn(LocalPlayer player, InteractionHand hand, BlockHitResult result);
+	boolean useItemOn(LocalPlayer player, InteractionHand hand, BlockHitResult result);
 }
