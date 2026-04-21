@@ -7,13 +7,13 @@ import net.minecraft.world.InteractionHand;
 
 public interface PlayerStartAttackEvent {
 
-    Event<PlayerStartAttackEvent> HANDLER = EventFactory.createArrayBacked(PlayerStartAttackEvent.class,
-            (listeners) -> (player, hand) -> {
-                for (PlayerStartAttackEvent callback : listeners) {
-                    return callback.startAttack(player, hand);
-                }
-                return false;
-            });
+	Event<PlayerStartAttackEvent> HANDLER = EventFactory.createArrayBacked(PlayerStartAttackEvent.class,
+			(listeners) -> (player, hand) -> {
+				for (PlayerStartAttackEvent callback : listeners) {
+					return callback.startAttack(player, hand);
+				}
+				return false;
+			});
 
-    boolean startAttack(LocalPlayer localPlayer, InteractionHand hand);
+	boolean startAttack(LocalPlayer localPlayer, InteractionHand hand);
 }
