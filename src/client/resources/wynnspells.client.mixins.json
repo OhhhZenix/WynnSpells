@@ -1,12 +1,11 @@
 {
   "required": true,
-  "minVersion": "0.8",
   "package": "dev.zenix.wynnspells.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "PingMeasurerMixin",
-    "MinecraftClientMixin",
-    "ClientPlayerInteractionManagerMixin"
+    "ClientPacketListenerMixin",
+    "MinecraftMixin",
+    "MultiPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
