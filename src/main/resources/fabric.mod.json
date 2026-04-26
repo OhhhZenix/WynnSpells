@@ -15,7 +15,8 @@
   "environment": "client",
   "entrypoints": {
     "main": ["dev.zenix.wynnspells.WynnSpells"],
-    "client": ["dev.zenix.wynnspells.client.WynnSpellsClient"]
+    "client": ["dev.zenix.wynnspells.client.WynnSpellsClient"],
+    "modmenu": ["dev.zenix.wynnspells.client.ModMenu"]
   },
   "mixins": [
     "wynnspells.mixins.json",
