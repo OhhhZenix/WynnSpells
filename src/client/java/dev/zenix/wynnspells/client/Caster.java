@@ -1,6 +1,7 @@
 package dev.zenix.wynnspells.client;
 
 import dev.zenix.wynnspells.client.event.PlayerStartAttackEvent;
+import dev.zenix.wynnspells.client.event.UseItemEvent;
 import java.util.Deque;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 
 public class Caster {
 
@@ -27,8 +29,7 @@ public class Caster {
 	public Caster(Minecraft mc) {
 		this.mc = mc;
 		PlayerStartAttackEvent.HANDLER.register(this::onPlayerStartAttackEvent);
-		// DoAttackEvent.EVENT.register(this::processVanillaMelee);
-		// InteractItemEvent.EVENT.register(this::processVanillaInteract);
+		UseItemEvent.HANDLER.register(this::onUseItemEvent);
 	}
 
 	public void start() {
@@ -65,16 +66,15 @@ public class Caster {
 		return true;
 	}
 
-	// private boolean processVanillaInteract(PlayerEntity player, Hand hand) {
-	// boolean shouldBlockClicks =
-	// WynnSpellsClient.getInstance().getConfig().getBlockClicks();
+	boolean onUseItemEvent(Player player, InteractionHand hand) {
+		boolean shouldBlockClicks = WynnSpellsClient.getInstance().getConfig().getBlockClicks();
 
-	// if (!shouldBlockClicks) {
-	// return false;
-	// }
+		if (!shouldBlockClicks) {
+			return false;
+		}
 
-	// return !clicks.isEmpty();
-	// }
+		return !clicks.isEmpty();
+	}
 
 	private void resetState() {
 		if (mc == null || mc.player == null) {
