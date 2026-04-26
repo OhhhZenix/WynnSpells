@@ -39,6 +39,7 @@ public class WynnSpellsClient implements ClientModInitializer {
 	private static WynnSpellsClient instance = null;
 	private ClothConfig config;
 	private UpdateChecker updateChecker;
+	private PingTracker pingTracker;
 
 	public static WynnSpellsClient getInstance() {
 		return instance;
@@ -72,8 +73,8 @@ public class WynnSpellsClient implements ClientModInitializer {
 		updateChecker = new UpdateChecker();
 		updateChecker.start();
 
-		// pingTracker = new PingTracker(client);
-		// pingTracker.start();
+		pingTracker = new PingTracker(client);
+		pingTracker.start();
 
 		// threadCaster = new Caster(client);
 		// threadCaster.start();
@@ -81,6 +82,7 @@ public class WynnSpellsClient implements ClientModInitializer {
 
 	private void onClientStop(Minecraft client) {
 		updateChecker.stop();
+		pingTracker.stop();
 	}
 
 	private void onClientEndTick(Minecraft client) {
@@ -91,5 +93,9 @@ public class WynnSpellsClient implements ClientModInitializer {
 		if (CONFIG_KEY.consumeClick()) {
 			client.setScreen(ConfigScreen.create(client.screen));
 		}
+	}
+
+	public PingTracker getPingTracker() {
+		return pingTracker;
 	}
 }
