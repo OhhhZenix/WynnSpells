@@ -89,8 +89,7 @@ public class WynnSpellsClient implements ClientModInitializer {
 
 	private void processConfigKey(Minecraft client) {
 		if (CONFIG_KEY.consumeClick()) {
-			// TODO: open config screen
-			// client.setScreen(ConfigScreen.create(client.currentScreen));
+			client.setScreen(ConfigScreen.create(client.screen));
 		}
 	}
 }
