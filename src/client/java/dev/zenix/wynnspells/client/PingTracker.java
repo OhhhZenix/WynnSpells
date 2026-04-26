@@ -22,7 +22,7 @@ public class PingTracker {
 
 	public void start() {
 		scheduler.scheduleAtFixedRate(this::sendPing, 0, 1, TimeUnit.SECONDS);
-		PongReceivedEvent.HANDLER.register(this::onPingResult);
+		PongReceivedEvent.HANDLER.register(this::onPongReceivedEvent);
 	}
 
 	public void stop() {
@@ -33,7 +33,7 @@ public class PingTracker {
 		Utils.sendPacket(mc, new ServerboundPingRequestPacket(Util.getMillis()));
 	}
 
-	private void onPingResult(long time) {
+	private void onPongReceivedEvent(long time) {
 		long currentTime = Util.getMillis();
 		long startTime = time;
 		WynnSpells.LOGGER.debug("Current Time: {}", currentTime);
