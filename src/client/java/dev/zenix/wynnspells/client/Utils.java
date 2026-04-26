@@ -110,8 +110,7 @@ public class Utils {
 
 	public static long getAutoDelay() {
 		WynnSpellsClient client = WynnSpellsClient.getInstance();
-		// long rtt = client.getPingTracker().getLastPing();
-		long rtt = 100; // TODO: fix ping tracker
+		long rtt = client.getPingTracker().getLastPing();
 		long oneWay = rtt / 2;
 		long jitter = MS_PER_TICK / 2;
 		long tolerance = client.getConfig().getAutoDelayTolerance();
