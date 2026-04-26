@@ -1,10 +1,11 @@
 package dev.zenix.wynnspells.client;
 
+import dev.zenix.wynnspells.WynnSpells;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -74,30 +75,27 @@ public class ConfigScreen {
 					config.setRepeatThreshold(clamped);
 				}).build());
 
-		// ConfigCategory keybindsCategory =
-		// builder.getOrCreateCategory(Component.literal("Keybinds"));
-		// addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.CONFIG_KEY);
-		// addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.MELEE_KEY);
-		// addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.FIRST_SPELL_KEY);
-		// addKeybind(keybindsCategory, entryBuilder,
-		// WynnSpellsClient.SECOND_SPELL_KEY);
-		// addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.THIRD_SPELL_KEY);
-		// addKeybind(keybindsCategory, entryBuilder,
-		// WynnSpellsClient.FOURTH_SPELL_KEY);
+		ConfigCategory keybindsCategory = builder.getOrCreateCategory(Component.literal("Keybinds"));
+		addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.CONFIG_KEY);
+		addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.MELEE_KEY);
+		addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.FIRST_SPELL_KEY);
+		addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.SECOND_SPELL_KEY);
+		addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.THIRD_SPELL_KEY);
+		addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.FOURTH_SPELL_KEY);
 
 		return builder.build();
 	}
 
-	// private static void addKeybind(ConfigCategory category, ConfigEntryBuilder
-	// entryBuilder, KeyMapping key) {
-	// category.addEntry(entryBuilder
-	// .startKeyCodeField(Text.translatable(keyBinding.getId()),
-	// InputUtil.fromTranslationKey(keyBinding.getBoundKeyTranslationKey()))
-	// .setTooltip(Text.of("Keybind for " +
-	// Text.translatable(keyBinding.getId()).getString()))
-	// .setDefaultValue(keyBinding.getDefaultKey()).setKeySaveConsumer(value -> {
-	// keyBinding.setBoundKey(value);
-	// Utils.refreshAndSaveKeyBindings();
-	// }).build());
-	// }
+	private static void addKeybind(ConfigCategory category, ConfigEntryBuilder entryBuilder, KeyMapping keyBinding) {
+		WynnSpells.LOGGER.info("Keyname: " + keyBinding.getName());
+		category.addEntry(entryBuilder
+				.startKeyCodeField(Component.translatable(keyBinding.getName()),
+						KeyBindingHelper.getBoundKeyOf(keyBinding))
+				.setTooltip(
+						Component.literal("Keybind for " + Component.translatable(keyBinding.getName()).getString()))
+				.setDefaultValue(keyBinding.getDefaultKey()).setKeySaveConsumer(value -> {
+					keyBinding.setKey(value);
+					Utils.refreshAndSaveKeyBindings();
+				}).build());
+	}
 }
