@@ -120,32 +120,32 @@ public class Utils {
 	// return delay;
 	// }
 
-	// public static void refreshKeyBindings() {
-	// KeyBinding.updateKeysByCode();
-	// WynnSpells.LOGGER.debug("Refreshed keybinds.");
-	// }
+	public static void refreshKeyBindings() {
+		KeyMapping.resetMapping();
+		WynnSpells.LOGGER.debug("Refreshed keybinds.");
+	}
 
-	// public static void saveKeyBindings() {
-	// Minecraft.getInstance().options.write();
-	// WynnSpells.LOGGER.debug("Saved keybinds.");
-	// }
+	public static void saveKeyBindings() {
+		Minecraft.getInstance().options.save();
+		WynnSpells.LOGGER.debug("Saved keybinds.");
+	}
 
-	// public static void refreshAndSaveKeyBindings() {
-	// refreshKeyBindings();
-	// saveKeyBindings();
-	// }
+	public static void refreshAndSaveKeyBindings() {
+		refreshKeyBindings();
+		saveKeyBindings();
+	}
 
 	public static boolean[] keyToClicks(KeyMapping key, boolean isArcher) {
 		if (key.equals(WynnSpellsClient.MELEE_KEY)) {
-			return isArcher ? new boolean[]{true} : new boolean[]{false};
+			return isArcher ? new boolean[] { true } : new boolean[] { false };
 		} else if (key.equals(WynnSpellsClient.FIRST_SPELL_KEY)) {
-			return isArcher ? new boolean[]{false, true, false} : new boolean[]{true, false, true};
+			return isArcher ? new boolean[] { false, true, false } : new boolean[] { true, false, true };
 		} else if (key.equals(WynnSpellsClient.SECOND_SPELL_KEY)) {
-			return isArcher ? new boolean[]{false, false, false} : new boolean[]{true, true, true};
+			return isArcher ? new boolean[] { false, false, false } : new boolean[] { true, true, true };
 		} else if (key.equals(WynnSpellsClient.THIRD_SPELL_KEY)) {
-			return isArcher ? new boolean[]{false, true, true} : new boolean[]{true, false, false};
+			return isArcher ? new boolean[] { false, true, true } : new boolean[] { true, false, false };
 		} else if (key.equals(WynnSpellsClient.FOURTH_SPELL_KEY)) {
-			return isArcher ? new boolean[]{false, false, true} : new boolean[]{true, true, false};
+			return isArcher ? new boolean[] { false, false, true } : new boolean[] { true, true, false };
 		}
 
 		return new boolean[0];
