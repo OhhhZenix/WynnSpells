@@ -1,7 +1,13 @@
 package dev.zenix.wynnspells.client;
 
+import dev.zenix.wynnspells.client.event.ContinueDestroyBlockEvent;
+import dev.zenix.wynnspells.client.event.PlayerAttackEvent;
+import dev.zenix.wynnspells.client.event.PlayerInteractAtEvent;
+import dev.zenix.wynnspells.client.event.PlayerInteractEvent;
 import dev.zenix.wynnspells.client.event.PlayerStartAttackEvent;
+import dev.zenix.wynnspells.client.event.StartDestroyBlockEvent;
 import dev.zenix.wynnspells.client.event.UseItemEvent;
+import dev.zenix.wynnspells.client.event.UseItemOnEvent;
 import java.util.Deque;
 import java.util.Map;
 import java.util.Set;
@@ -11,9 +17,14 @@ import java.util.concurrent.TimeUnit;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 
 public class Caster {
 
@@ -29,7 +40,13 @@ public class Caster {
 	public Caster(Minecraft mc) {
 		this.mc = mc;
 		PlayerStartAttackEvent.HANDLER.register(this::onPlayerStartAttackEvent);
+		PlayerAttackEvent.HANDLER.register(this::onPlayerAttackEvent);
+		StartDestroyBlockEvent.HANDLER.register(this::onStartDestroyBlockEvent);
+		ContinueDestroyBlockEvent.HANDLER.register(this::onContinueDestroyBlockEvent);
 		UseItemEvent.HANDLER.register(this::onUseItemEvent);
+		UseItemOnEvent.HANDLER.register(this::onUseItemOnEvent);
+		PlayerInteractEvent.HANDLER.register(this::onPlayerInteractEvent);
+		PlayerInteractAtEvent.HANDLER.register(this::onPlayerInteractAtEvent);
 	}
 
 	public void start() {
@@ -52,27 +69,55 @@ public class Caster {
 	}
 
 	private boolean onPlayerStartAttackEvent(LocalPlayer localPlayer, InteractionHand hand) {
-		boolean shouldBlockClicks = WynnSpellsClient.getInstance().getConfig().getBlockClicks();
+		// boolean shouldBlockClicks =
+		// WynnSpellsClient.getInstance().getConfig().getBlockClicks();
 
-		if (!shouldBlockClicks) {
-			return false;
-		}
+		// if (!shouldBlockClicks) {
+		// return false;
+		// }
 
-		if (clicks.isEmpty()) {
-			return false;
-		}
+		// if (clicks.isEmpty()) {
+		// return false;
+		// }
 
-		keys.add(WynnSpellsClient.MELEE_KEY);
-		return true;
+		// keys.add(WynnSpellsClient.MELEE_KEY);
+		// return true;
+
+		return !clicks.isEmpty();
 	}
 
-	boolean onUseItemEvent(Player player, InteractionHand hand) {
-		boolean shouldBlockClicks = WynnSpellsClient.getInstance().getConfig().getBlockClicks();
+	private boolean onPlayerAttackEvent(Player player, Entity target) {
+		return !clicks.isEmpty();
+	}
 
-		if (!shouldBlockClicks) {
-			return false;
-		}
+	private boolean onStartDestroyBlockEvent(BlockPos position, Direction direction) {
+		return !clicks.isEmpty();
+	}
 
+	private boolean onContinueDestroyBlockEvent(BlockPos position, Direction direction) {
+		return !clicks.isEmpty();
+	}
+
+	private boolean onUseItemEvent(Player player, InteractionHand hand) {
+		// boolean shouldBlockClicks =
+		// WynnSpellsClient.getInstance().getConfig().getBlockClicks();
+
+		// if (!shouldBlockClicks) {
+		// return false;
+		// }
+
+		return !clicks.isEmpty();
+	}
+
+	private boolean onUseItemOnEvent(LocalPlayer player, InteractionHand hand, BlockHitResult result) {
+		return !clicks.isEmpty();
+	}
+
+	private boolean onPlayerInteractEvent(Player player, Entity target, InteractionHand hand) {
+		return !clicks.isEmpty();
+	}
+
+	private boolean onPlayerInteractAtEvent(Player player, Entity target, EntityHitResult ray, InteractionHand hand) {
 		return !clicks.isEmpty();
 	}
 
