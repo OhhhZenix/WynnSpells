@@ -108,17 +108,18 @@ public class Utils {
 				new SystemToast(SystemToastId.WORLD_BACKUP, Component.literal(WynnSpells.MOD_NAME), description));
 	}
 
-	// public static long getAutoDelay() {
-	// WynnSpellsClient client = WynnSpellsClient.getInstance();
-	// long rtt = client.getPingTracker().getLastPing();
-	// long oneWay = rtt / 2;
-	// long jitter = MS_PER_TICK / 2;
-	// long tolerance = client.getConfig().getAutoDelayTolerance();
-	// long margin = tolerance + (tolerance * (oneWay / MS_PER_TICK));
-	// long delay = MS_PER_TICK + jitter + margin;
-	// WynnSpells.LOGGER.debug("Auto Delay: {}", delay);
-	// return delay;
-	// }
+	public static long getAutoDelay() {
+		WynnSpellsClient client = WynnSpellsClient.getInstance();
+		// long rtt = client.getPingTracker().getLastPing();
+		long rtt = 100; // TODO: fix ping tracker
+		long oneWay = rtt / 2;
+		long jitter = MS_PER_TICK / 2;
+		long tolerance = client.getConfig().getAutoDelayTolerance();
+		long margin = tolerance + (tolerance * (oneWay / MS_PER_TICK));
+		long delay = MS_PER_TICK + jitter + margin;
+		WynnSpells.LOGGER.debug("Auto Delay: {}", delay);
+		return delay;
+	}
 
 	public static void refreshKeyBindings() {
 		KeyMapping.resetMapping();
