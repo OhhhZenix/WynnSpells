@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.protocol.ping.ServerboundPingRequestPacket;
 import net.minecraft.util.Util;
 
 public class PingTracker {
@@ -29,7 +30,7 @@ public class PingTracker {
 	}
 
 	private void sendPing() {
-		// Utils.sendPacket(mc, new QueryPingC2SPacket(Util.getMeasuringTimeMs()));
+		Utils.sendPacket(mc, new ServerboundPingRequestPacket(Util.getMillis()));
 	}
 
 	private void onPingResult(long time) {
