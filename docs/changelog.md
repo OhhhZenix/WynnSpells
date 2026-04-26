@@ -2,7 +2,7 @@
 
 All the changes in WynnSpells.
 
-## Release 1.3.0
+## Release 2.0.0
 
 - Change from yarn to mojang backend
 - Fix edge cases for melee
