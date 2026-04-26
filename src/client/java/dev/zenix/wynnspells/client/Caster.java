@@ -1,5 +1,6 @@
 package dev.zenix.wynnspells.client;
 
+import dev.zenix.wynnspells.client.event.PlayerStartAttackEvent;
 import java.util.Deque;
 import java.util.Map;
 import java.util.Set;
@@ -8,7 +9,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 
 public class Caster {
 
@@ -23,6 +26,7 @@ public class Caster {
 
 	public Caster(Minecraft mc) {
 		this.mc = mc;
+		PlayerStartAttackEvent.HANDLER.register(this::onPlayerStartAttackEvent);
 		// DoAttackEvent.EVENT.register(this::processVanillaMelee);
 		// InteractItemEvent.EVENT.register(this::processVanillaInteract);
 	}
@@ -46,21 +50,20 @@ public class Caster {
 		}
 	}
 
-	// private boolean processVanillaMelee(ClientPlayerEntity player, Hand hand) {
-	// boolean shouldBlockClicks =
-	// WynnSpellsClient.getInstance().getConfig().getBlockClicks();
+	private boolean onPlayerStartAttackEvent(LocalPlayer localPlayer, InteractionHand hand) {
+		boolean shouldBlockClicks = WynnSpellsClient.getInstance().getConfig().getBlockClicks();
 
-	// if (!shouldBlockClicks) {
-	// return false;
-	// }
+		if (!shouldBlockClicks) {
+			return false;
+		}
 
-	// if (clicks.isEmpty()) {
-	// return false;
-	// }
+		if (clicks.isEmpty()) {
+			return false;
+		}
 
-	// keys.add(WynnSpellsClient.MELEE_KEY);
-	// return true;
-	// }
+		keys.add(WynnSpellsClient.MELEE_KEY);
+		return true;
+	}
 
 	// private boolean processVanillaInteract(PlayerEntity player, Hand hand) {
 	// boolean shouldBlockClicks =
