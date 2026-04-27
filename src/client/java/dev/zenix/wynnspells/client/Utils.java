@@ -3,6 +3,7 @@ package dev.zenix.wynnspells.client;
 import dev.zenix.wynnspells.WynnSpells;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -118,6 +119,15 @@ public class Utils {
 		long delay = MS_PER_TICK + jitter + margin;
 		WynnSpells.LOGGER.debug("Auto Delay: {}", delay);
 		return delay;
+	}
+
+	// returns the delay in nanoseconds
+	public static long getClickDelay() {
+		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
+		if (config.shouldUseAutoDelay()) {
+			return TimeUnit.MILLISECONDS.toNanos(Utils.getAutoDelay());
+		}
+		return TimeUnit.MILLISECONDS.toNanos(config.getManualDelay());
 	}
 
 	public static void refreshKeyBindings() {
