@@ -38,6 +38,7 @@ public class MultiPlayerGameModeMixin {
 	private void startDestroyBlock(BlockPos position, Direction direction, CallbackInfoReturnable<Boolean> cir) {
 		boolean shouldCancel = StartDestroyBlockEvent.HANDLER.invoker().startDestroyBlock(position, direction);
 		if (shouldCancel) {
+			cir.setReturnValue(false);
 			cir.cancel();
 		}
 	}
@@ -46,6 +47,7 @@ public class MultiPlayerGameModeMixin {
 	private void continueDestroyBlock(BlockPos position, Direction direction, CallbackInfoReturnable<Boolean> cir) {
 		boolean shouldCancel = ContinueDestroyBlockEvent.HANDLER.invoker().continueDestroyBlock(position, direction);
 		if (shouldCancel) {
+			cir.setReturnValue(false);
 			cir.cancel();
 		}
 	}
@@ -54,6 +56,7 @@ public class MultiPlayerGameModeMixin {
 	private void useItem(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
 		boolean shouldCancel = UseItemEvent.HANDLER.invoker().useItem(player, hand);
 		if (shouldCancel) {
+			cir.setReturnValue(InteractionResult.FAIL);
 			cir.cancel();
 		}
 	}
@@ -63,6 +66,7 @@ public class MultiPlayerGameModeMixin {
 			CallbackInfoReturnable<InteractionResult> cir) {
 		boolean shouldCancel = UseItemOnEvent.HANDLER.invoker().useItemOn(player, hand, result);
 		if (shouldCancel) {
+			cir.setReturnValue(InteractionResult.FAIL);
 			cir.cancel();
 		}
 	}
@@ -72,6 +76,7 @@ public class MultiPlayerGameModeMixin {
 			CallbackInfoReturnable<InteractionResult> cir) {
 		boolean shouldCancel = PlayerInteractEvent.HANDLER.invoker().interact(player, target, hand);
 		if (shouldCancel) {
+			cir.setReturnValue(InteractionResult.FAIL);
 			cir.cancel();
 		}
 	}
@@ -81,6 +86,7 @@ public class MultiPlayerGameModeMixin {
 			CallbackInfoReturnable<InteractionResult> cir) {
 		boolean shouldCancel = PlayerInteractAtEvent.HANDLER.invoker().interactAt(player, target, ray, hand);
 		if (shouldCancel) {
+			cir.setReturnValue(InteractionResult.FAIL);
 			cir.cancel();
 		}
 	}
