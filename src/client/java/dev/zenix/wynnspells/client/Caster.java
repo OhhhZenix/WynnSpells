@@ -1,5 +1,6 @@
 package dev.zenix.wynnspells.client;
 
+import dev.zenix.wynnspells.WynnSpells;
 import dev.zenix.wynnspells.client.event.ContinueDestroyBlockEvent;
 import dev.zenix.wynnspells.client.event.PlayerAttackEvent;
 import dev.zenix.wynnspells.client.event.PlayerInteractAtEvent;
@@ -34,9 +35,8 @@ public class Caster {
 	private final Set<KeyMapping> previousPressedKeys = ConcurrentHashMap.newKeySet();
 	private final Map<KeyMapping, Long> keysTimer = new ConcurrentHashMap<>();
 	private volatile boolean running = true;
-	private volatile boolean blocking = false;
 	private int previousSlot = -1;
-	private long lastTime = System.nanoTime();
+	private long lastClickTime = System.nanoTime();
 
 	public Caster(Minecraft mc) {
 		this.mc = mc;
@@ -60,6 +60,12 @@ public class Caster {
 		running = false;
 	}
 
+	private boolean shouldBlock() {
+		long now = System.nanoTime();
+		long delay = TimeUnit.SECONDS.toNanos(1);
+		return now < lastClickTime + delay;
+	}
+
 	private void run() {
 		while (running) {
 			resetState();
@@ -69,36 +75,76 @@ public class Caster {
 		}
 	}
 
+	// private boolean handleVanillaAction(boolean isMelee) {
+	// if (!shouldBlock()) {
+	// return false;
+	// }
+
+	// boolean shouldAddMelee = isMelee ? !Utils.isArcher(mc) : Utils.isArcher(mc);
+	// if (shouldAddMelee) {
+	// keys.add(WynnSpellsClient.MELEE_KEY);
+	// WynnSpells.LOGGER.info("MELEEE ADD");
+	// }
+
+	// return true;
+	// }
+
+	private boolean handleVanillaMelee() {
+		if (!shouldBlock()) {
+			return false;
+		}
+
+		if (!Utils.isArcher(mc)) {
+			// keys.add(WynnSpellsClient.MELEE_KEY);
+			WynnSpells.LOGGER.info("MELEEE ADD");
+		}
+
+		return true;
+	}
+
+	private boolean handleVanillaInteract() {
+		if (!shouldBlock()) {
+			return false;
+		}
+
+		if (Utils.isArcher(mc)) {
+			// keys.add(WynnSpellsClient.MELEE_KEY);
+			WynnSpells.LOGGER.info("MELEEE ADD");
+		}
+
+		return true;
+	}
+
 	private boolean onPlayerStartAttackEvent(LocalPlayer localPlayer, InteractionHand hand) {
-		return !clicks.isEmpty();
+		return handleVanillaMelee();
 	}
 
 	private boolean onPlayerAttackEvent(Player player, Entity target) {
-		return !clicks.isEmpty();
+		return handleVanillaMelee();
 	}
 
 	private boolean onStartDestroyBlockEvent(BlockPos position, Direction direction) {
-		return !clicks.isEmpty();
+		return handleVanillaMelee();
 	}
 
 	private boolean onContinueDestroyBlockEvent(BlockPos position, Direction direction) {
-		return !clicks.isEmpty();
+		return handleVanillaMelee();
 	}
 
 	private boolean onUseItemEvent(Player player, InteractionHand hand) {
-		return !clicks.isEmpty();
+		return handleVanillaInteract();
 	}
 
 	private boolean onUseItemOnEvent(LocalPlayer player, InteractionHand hand, BlockHitResult result) {
-		return !clicks.isEmpty();
+		return handleVanillaInteract();
 	}
 
 	private boolean onPlayerInteractEvent(Player player, Entity target, InteractionHand hand) {
-		return !clicks.isEmpty();
+		return handleVanillaInteract();
 	}
 
 	private boolean onPlayerInteractAtEvent(Player player, Entity target, EntityHitResult ray, InteractionHand hand) {
-		return !clicks.isEmpty();
+		return handleVanillaInteract();
 	}
 
 	private void resetState() {
@@ -122,14 +168,9 @@ public class Caster {
 			return;
 		}
 
-		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
-		long delay = TimeUnit.MILLISECONDS.toNanos(config.getManualDelay());
-		if (config.shouldUseAutoDelay()) {
-			delay = TimeUnit.MILLISECONDS.toNanos(Utils.getAutoDelay());
-		}
-
 		long now = System.nanoTime();
-		if (now < lastTime + delay) {
+		long delay = Utils.getClickDelay();
+		if (now < lastClickTime + delay) {
 			return;
 		}
 
@@ -140,7 +181,7 @@ public class Caster {
 			Utils.sendAttackPacket(mc); // left click
 		}
 
-		lastTime = now;
+		lastClickTime = now;
 	}
 
 	private void processIntents() {
