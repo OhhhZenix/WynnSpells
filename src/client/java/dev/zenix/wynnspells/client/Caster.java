@@ -33,7 +33,8 @@ public class Caster {
 	private final Deque<KeyMapping> keys = new ConcurrentLinkedDeque<>();
 	private final Set<KeyMapping> previousPressedKeys = ConcurrentHashMap.newKeySet();
 	private final Map<KeyMapping, Long> keysTimer = new ConcurrentHashMap<>();
-	private volatile boolean isRunning = true;
+	private volatile boolean running = true;
+	private volatile boolean blocking = false;
 	private int previousSlot = -1;
 	private long lastTime = System.nanoTime();
 
@@ -56,11 +57,11 @@ public class Caster {
 	}
 
 	public void stop() {
-		isRunning = false;
+		running = false;
 	}
 
 	private void run() {
-		while (isRunning) {
+		while (running) {
 			resetState();
 			processClicks();
 			processIntents();
@@ -69,20 +70,6 @@ public class Caster {
 	}
 
 	private boolean onPlayerStartAttackEvent(LocalPlayer localPlayer, InteractionHand hand) {
-		// boolean shouldBlockClicks =
-		// WynnSpellsClient.getInstance().getConfig().getBlockClicks();
-
-		// if (!shouldBlockClicks) {
-		// return false;
-		// }
-
-		// if (clicks.isEmpty()) {
-		// return false;
-		// }
-
-		// keys.add(WynnSpellsClient.MELEE_KEY);
-		// return true;
-
 		return !clicks.isEmpty();
 	}
 
@@ -99,13 +86,6 @@ public class Caster {
 	}
 
 	private boolean onUseItemEvent(Player player, InteractionHand hand) {
-		// boolean shouldBlockClicks =
-		// WynnSpellsClient.getInstance().getConfig().getBlockClicks();
-
-		// if (!shouldBlockClicks) {
-		// return false;
-		// }
-
 		return !clicks.isEmpty();
 	}
 
