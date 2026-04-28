@@ -1,6 +1,5 @@
 package dev.zenix.wynnspells.client;
 
-import dev.zenix.wynnspells.WynnSpells;
 import dev.zenix.wynnspells.client.event.ContinueDestroyBlockEvent;
 import dev.zenix.wynnspells.client.event.PlayerAttackEvent;
 import dev.zenix.wynnspells.client.event.PlayerInteractAtEvent;
@@ -62,7 +61,8 @@ public class Caster {
 
 	private boolean shouldBlock() {
 		long now = System.nanoTime();
-		long delay = TimeUnit.SECONDS.toNanos(1);
+		long tolerance = 10;
+		long delay = Utils.getClickDelay() * tolerance;
 		return now < lastClickTime + delay;
 	}
 
@@ -75,20 +75,6 @@ public class Caster {
 		}
 	}
 
-	// private boolean handleVanillaAction(boolean isMelee) {
-	// if (!shouldBlock()) {
-	// return false;
-	// }
-
-	// boolean shouldAddMelee = isMelee ? !Utils.isArcher(mc) : Utils.isArcher(mc);
-	// if (shouldAddMelee) {
-	// keys.add(WynnSpellsClient.MELEE_KEY);
-	// WynnSpells.LOGGER.info("MELEEE ADD");
-	// }
-
-	// return true;
-	// }
-
 	private boolean handleVanillaMelee() {
 		if (!shouldBlock()) {
 			return false;
@@ -96,7 +82,6 @@ public class Caster {
 
 		if (!Utils.isArcher(mc)) {
 			// keys.add(WynnSpellsClient.MELEE_KEY);
-			WynnSpells.LOGGER.info("MELEEE ADD");
 		}
 
 		return true;
@@ -109,7 +94,6 @@ public class Caster {
 
 		if (Utils.isArcher(mc)) {
 			// keys.add(WynnSpellsClient.MELEE_KEY);
-			WynnSpells.LOGGER.info("MELEEE ADD");
 		}
 
 		return true;
