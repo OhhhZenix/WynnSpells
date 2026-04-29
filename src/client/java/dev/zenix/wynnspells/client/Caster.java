@@ -1,18 +1,8 @@
 package dev.zenix.wynnspells.client;
 
-import dev.zenix.wynnspells.client.event.ContinueDestroyBlockEvent;
-import dev.zenix.wynnspells.client.event.PlayerAttackEvent;
-import dev.zenix.wynnspells.client.event.PlayerInteractAtEvent;
-import dev.zenix.wynnspells.client.event.PlayerInteractEvent;
-import dev.zenix.wynnspells.client.event.PlayerStartAttackEvent;
-import dev.zenix.wynnspells.client.event.StartDestroyBlockEvent;
-import dev.zenix.wynnspells.client.event.UseItemEvent;
-import dev.zenix.wynnspells.client.event.UseItemOnEvent;
-import java.util.Deque;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import dev.zenix.wynnspells.WynnSpells;
+import dev.zenix.wynnspells.client.event.*;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -29,16 +19,20 @@ import net.minecraft.world.phys.EntityHitResult;
 public class Caster {
 
 	private final Minecraft mc;
-	private final Deque<Boolean> clicks = new ConcurrentLinkedDeque<>();
-	private final Deque<KeyMapping> keys = new ConcurrentLinkedDeque<>();
-	private final Set<KeyMapping> previousPressedKeys = ConcurrentHashMap.newKeySet();
-	private final Map<KeyMapping, Long> keysTimer = new ConcurrentHashMap<>();
+
+	private final Deque<Boolean> clicks = new ArrayDeque<>();
+	private final Deque<KeyMapping> keys = new ArrayDeque<>();
+
+	private final Set<KeyMapping> previousPressedKeys = new HashSet<>();
+	private final Map<KeyMapping, Long> keysTimer = new HashMap<>();
+
 	private volatile boolean running = true;
 	private int previousSlot = -1;
-	private long lastClickTime = System.nanoTime();
+	private long lastClickTime = 0;
 
 	public Caster(Minecraft mc) {
 		this.mc = mc;
+
 		PlayerStartAttackEvent.HANDLER.register(this::onPlayerStartAttackEvent);
 		PlayerAttackEvent.HANDLER.register(this::onPlayerAttackEvent);
 		StartDestroyBlockEvent.HANDLER.register(this::onStartDestroyBlockEvent);
@@ -59,106 +53,125 @@ public class Caster {
 		running = false;
 	}
 
-	private boolean shouldBlock() {
-		long now = System.nanoTime();
-		long tolerance = 10;
-		long delay = Utils.getClickDelay() * tolerance;
-		return now < lastClickTime + delay;
-	}
+	// =========================
+	// Core Loop
+	// =========================
 
 	private void run() {
 		while (running) {
-			resetState();
-			processClicks();
-			processIntents();
-			processKeys();
+			try {
+				tick();
+				Thread.sleep(1); // prevent CPU burn
+			} catch (InterruptedException e) {
+				WynnSpells.LOGGER.error("Caster thread interrupted", e);
+			}
 		}
 	}
 
-	private boolean handleVanillaMelee() {
-		if (!shouldBlock()) {
-			return false;
-		}
+	private void tick() {
+		if (mc == null || mc.player == null)
+			return;
 
-		if (!Utils.isArcher(mc)) {
-			// keys.add(WynnSpellsClient.MELEE_KEY);
+		resetState();
+		processKeys();
+		processIntents();
+		processClicks();
+	}
+
+	// =========================
+	// Casting State
+	// =========================
+
+	private boolean isCasting() {
+		long now = System.nanoTime();
+		long delay = Utils.getClickDelay();
+		long tolerance = 10;
+		return !clicks.isEmpty() || now < lastClickTime + (delay * tolerance);
+	}
+
+	private boolean handleVanillaAction(boolean isAttack) {
+		if (!isCasting())
+			return false;
+
+		boolean isNormalAttack = isAttack && !Utils.isArcher(mc);
+		boolean isUseAttack = !isAttack && Utils.isArcher(mc);
+
+		if (isNormalAttack || isUseAttack) {
+			addKey(WynnSpellsClient.MELEE_KEY);
 		}
 
 		return true;
 	}
 
-	private boolean handleVanillaInteract() {
-		if (!shouldBlock()) {
-			return false;
-		}
+	// =========================
+	// Event Hooks
+	// =========================
 
-		if (Utils.isArcher(mc)) {
-			// keys.add(WynnSpellsClient.MELEE_KEY);
-		}
-
-		return true;
-	}
-
-	private boolean onPlayerStartAttackEvent(LocalPlayer localPlayer, InteractionHand hand) {
-		return handleVanillaMelee();
+	private boolean onPlayerStartAttackEvent(LocalPlayer player, InteractionHand hand) {
+		return handleVanillaAction(true);
 	}
 
 	private boolean onPlayerAttackEvent(Player player, Entity target) {
-		return handleVanillaMelee();
+		return handleVanillaAction(true);
 	}
 
-	private boolean onStartDestroyBlockEvent(BlockPos position, Direction direction) {
-		return handleVanillaMelee();
+	private boolean onStartDestroyBlockEvent(BlockPos pos, Direction dir) {
+		return handleVanillaAction(true);
 	}
 
-	private boolean onContinueDestroyBlockEvent(BlockPos position, Direction direction) {
-		return handleVanillaMelee();
+	private boolean onContinueDestroyBlockEvent(BlockPos pos, Direction dir) {
+		return handleVanillaAction(true);
 	}
 
 	private boolean onUseItemEvent(Player player, InteractionHand hand) {
-		return handleVanillaInteract();
+		return handleVanillaAction(false);
 	}
 
 	private boolean onUseItemOnEvent(LocalPlayer player, InteractionHand hand, BlockHitResult result) {
-		return handleVanillaInteract();
+		return handleVanillaAction(false);
 	}
 
 	private boolean onPlayerInteractEvent(Player player, Entity target, InteractionHand hand) {
-		return handleVanillaInteract();
+		return handleVanillaAction(false);
 	}
 
 	private boolean onPlayerInteractAtEvent(Player player, Entity target, EntityHitResult ray, InteractionHand hand) {
-		return handleVanillaInteract();
+		return handleVanillaAction(false);
 	}
+
+	// =========================
+	// State Reset
+	// =========================
 
 	private void resetState() {
-		if (mc == null || mc.player == null) {
-			return;
-		}
-
 		int currentSlot = mc.player.getInventory().getSelectedSlot();
 
-		if (previousSlot == currentSlot) {
+		if (previousSlot == currentSlot)
 			return;
-		}
 
 		previousSlot = currentSlot;
+
 		clicks.clear();
 		keys.clear();
+		lastClickTime = 0;
 	}
 
+	// =========================
+	// Click Processing
+	// =========================
+
 	private void processClicks() {
-		if (clicks.isEmpty()) {
+		if (clicks.isEmpty())
 			return;
-		}
 
 		long now = System.nanoTime();
 		long delay = Utils.getClickDelay();
-		if (now < lastClickTime + delay) {
+
+		if (now - lastClickTime < delay)
 			return;
-		}
 
 		boolean click = clicks.poll();
+
 		if (click) {
 			Utils.sendInteractPacket(mc); // right click
 		} else {
@@ -168,14 +181,16 @@ public class Caster {
 		lastClickTime = now;
 	}
 
-	private void processIntents() {
-		if (!clicks.isEmpty()) {
-			return;
-		}
+	// =========================
+	// Intent Processing
+	// =========================
 
-		if (keys.isEmpty()) {
+	private void processIntents() {
+		if (!clicks.isEmpty())
 			return;
-		}
+
+		if (keys.isEmpty())
+			return;
 
 		KeyMapping key = keys.poll();
 		boolean isArcher = Utils.isArcher(mc);
@@ -184,6 +199,10 @@ public class Caster {
 			clicks.add(click);
 		}
 	}
+
+	// =========================
+	// Key Handling
+	// =========================
 
 	private void addKey(KeyMapping key) {
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
@@ -198,22 +217,23 @@ public class Caster {
 			return;
 		}
 
-		keys.add(key);
+		keys.offer(key);
 	}
 
 	private void processKey(KeyMapping key) {
-		if (key == null) {
+		if (key == null)
 			return;
-		}
 
-		boolean shouldRepeatHeldKeys = WynnSpellsClient.getInstance().getConfig().getRepeatHeldKeys();
+		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
+		boolean repeat = config.getRepeatHeldKeys();
 
-		if (shouldRepeatHeldKeys) {
-			boolean isPressed = key.isDown();
-			long now = System.nanoTime();
+		long now = System.nanoTime();
 
-			// Key released → cleanup state
-			if (!isPressed) {
+		if (repeat) {
+			boolean pressed = key.isDown();
+
+			// Released
+			if (!pressed) {
 				if (previousPressedKeys.remove(key)) {
 					keysTimer.remove(key);
 				}
@@ -228,25 +248,19 @@ public class Caster {
 				return;
 			}
 
-			// Held key → check repeat threshold
-			Long lastPressTime = keysTimer.get(key);
-			if (lastPressTime == null) {
-				keysTimer.put(key, now);
-				return;
-			}
+			// Held repeat
+			long threshold = TimeUnit.MILLISECONDS.toNanos(config.getRepeatThreshold());
+			long last = keysTimer.getOrDefault(key, 0L);
 
-			long repeatThreshold = TimeUnit.MILLISECONDS
-					.toNanos(WynnSpellsClient.getInstance().getConfig().getRepeatThreshold());
-			if (now - lastPressTime >= repeatThreshold) {
+			if (now - last >= threshold) {
 				addKey(key);
-				keysTimer.put(key, now); // reset repeat timer
-			}
-		} else {
-			if (!key.consumeClick()) {
-				return;
+				keysTimer.put(key, now);
 			}
 
-			addKey(key);
+		} else {
+			if (key.consumeClick()) {
+				addKey(key);
+			}
 		}
 	}
 
