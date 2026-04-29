@@ -1,6 +1,5 @@
 package dev.zenix.wynnspells.client;
 
-import dev.zenix.wynnspells.WynnSpells;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -87,7 +86,6 @@ public class ConfigScreen {
 	}
 
 	private static void addKeybind(ConfigCategory category, ConfigEntryBuilder entryBuilder, KeyMapping keyBinding) {
-		WynnSpells.LOGGER.info("Keyname: " + keyBinding.getName());
 		category.addEntry(entryBuilder
 				.startKeyCodeField(Component.translatable(keyBinding.getName()),
 						KeyBindingHelper.getBoundKeyOf(keyBinding))
