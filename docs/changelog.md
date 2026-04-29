@@ -6,7 +6,7 @@ All the changes in WynnSpells.
 
 - Change from yarn to mojang backend
 - Fix edge cases for melee
-- Upgrade mod menu and cloth api.
+- Upgrade mod menu from 17.0.0-beta.2 to 17.0.0
 
 ## Release 1.2.4
 
