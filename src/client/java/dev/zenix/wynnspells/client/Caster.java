@@ -97,7 +97,7 @@ public class Caster {
 		boolean isUseAttack = !isAttack && Utils.isArcher(mc);
 
 		if (isNormalAttack || isUseAttack) {
-			addKey(WynnSpellsClient.MELEE_KEY);
+			keys.offer(WynnSpellsClient.MELEE_KEY);
 		}
 
 		return true;
