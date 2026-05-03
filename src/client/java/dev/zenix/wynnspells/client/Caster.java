@@ -85,8 +85,8 @@ public class Caster {
 	private boolean isCasting() {
 		long now = System.nanoTime();
 		long delay = Utils.getClickDelay();
-		long tolerance = 10;
-		return !clicks.isEmpty() || now < lastClickTime + (delay * tolerance);
+		long tolerance = 25;
+		return !clicks.isEmpty() || now < lastClickTime + (delay + tolerance);
 	}
 
 	private boolean handleVanillaAction(boolean isAttack) {
