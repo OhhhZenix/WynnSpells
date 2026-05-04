@@ -85,7 +85,7 @@ public class Caster {
 	private boolean isCasting() {
 		long now = System.nanoTime();
 		long delay = Utils.getClickDelay();
-		long tolerance = 25;
+		long tolerance = delay * 3;
 		return !clicks.isEmpty() || now < lastClickTime + (delay + tolerance);
 	}
 
@@ -132,11 +132,13 @@ public class Caster {
 	}
 
 	private boolean onPlayerInteractEvent(Player player, Entity target, InteractionHand hand) {
-		return handleVanillaAction(false);
+		// return handleVanillaAction(false);
+		return false;
 	}
 
 	private boolean onPlayerInteractAtEvent(Player player, Entity target, EntityHitResult ray, InteractionHand hand) {
-		return handleVanillaAction(false);
+		// return handleVanillaAction(false);
+		return false;
 	}
 
 	// =========================
