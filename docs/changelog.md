@@ -2,6 +2,10 @@
 
 All the changes in WynnSpells.
 
+## Release 2.2.0
+
+- Fix melee spam
+
 ## Release 2.1.0
 
 - Flesh out melee handling while casting
