@@ -11,5 +11,5 @@ Looking for a spell macro for Wynncraft? Tired of miscasting because of lag or c
   - Mod Version: 21.11.153
   - MC Version: 1.21.11
 - [Mod Menu](https://modrinth.com/mod/modmenu) (Optional)
-  - Mod Version: 17.0.0-beta.2
+  - Mod Version: 17.0.0
   - MC Version: 1.21.11
