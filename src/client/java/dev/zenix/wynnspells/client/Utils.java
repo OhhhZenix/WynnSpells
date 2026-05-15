@@ -58,7 +58,7 @@ public class Utils {
 		if (heldItem == null || heldItem.isEmpty())
 			return false;
 
-		List<Component> tooltip = heldItem.getTooltipLines(TooltipContext.of(client.level), client.player,
+		List<Component> tooltip = heldItem.getTooltipLines(Item.TooltipContext.EMPTY, client.player,
 				TooltipFlag.NORMAL);
 		if (tooltip == null || tooltip.isEmpty())
 			return false;
