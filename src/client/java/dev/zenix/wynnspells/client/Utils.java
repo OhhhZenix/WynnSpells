@@ -4,7 +4,6 @@ import dev.zenix.wynnspells.WynnSpells;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -46,16 +45,14 @@ public class Utils {
 	}
 
 	public static void sendInteractPacket(Minecraft client) {
-		Utils.sendPacket(client,
-				new ServerboundUseItemPacket(InteractionHand.MAIN_HAND, 0, client.player.getYRot(),
-						client.player.getXRot()));
+		Utils.sendPacket(client, new ServerboundUseItemPacket(InteractionHand.MAIN_HAND, 0, client.player.getYRot(),
+				client.player.getXRot()));
 	}
 
 	public static void sendSneakingPacket(Minecraft client, boolean isSneaking) {
-		Input playerInput = new Input(client.options.keyUp.isDown(),
-				client.options.keyDown.isDown(), client.options.keyLeft.isDown(),
-				client.options.keyRight.isDown(), client.options.keyJump.isDown(), isSneaking,
-				client.options.keySprint.isDown());
+		Input playerInput = new Input(client.options.keyUp.isDown(), client.options.keyDown.isDown(),
+				client.options.keyLeft.isDown(), client.options.keyRight.isDown(), client.options.keyJump.isDown(),
+				isSneaking, client.options.keySprint.isDown());
 
 		Utils.sendPacket(client, new ServerboundPlayerInputPacket(playerInput));
 	}
@@ -157,15 +154,15 @@ public class Utils {
 
 	public static boolean[] keyToClicks(KeyMapping key, boolean isArcher) {
 		if (key.same(WynnSpellsClient.MELEE_KEY)) {
-			return isArcher ? new boolean[] { true } : new boolean[] { false };
+			return isArcher ? new boolean[]{true} : new boolean[]{false};
 		} else if (key.same(WynnSpellsClient.FIRST_SPELL_KEY)) {
-			return isArcher ? new boolean[] { false, true, false } : new boolean[] { true, false, true };
+			return isArcher ? new boolean[]{false, true, false} : new boolean[]{true, false, true};
 		} else if (key.same(WynnSpellsClient.SECOND_SPELL_KEY)) {
-			return isArcher ? new boolean[] { false, false, false } : new boolean[] { true, true, true };
+			return isArcher ? new boolean[]{false, false, false} : new boolean[]{true, true, true};
 		} else if (key.same(WynnSpellsClient.THIRD_SPELL_KEY)) {
-			return isArcher ? new boolean[] { false, true, true } : new boolean[] { true, false, false };
+			return isArcher ? new boolean[]{false, true, true} : new boolean[]{true, false, false};
 		} else if (key.same(WynnSpellsClient.FOURTH_SPELL_KEY)) {
-			return isArcher ? new boolean[] { false, false, true } : new boolean[] { true, true, false };
+			return isArcher ? new boolean[]{false, false, true} : new boolean[]{true, true, false};
 		}
 
 		return new boolean[0];
