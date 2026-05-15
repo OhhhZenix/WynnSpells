@@ -3,11 +3,10 @@ package dev.zenix.wynnspells.client;
 import dev.zenix.wynnspells.WynnSpells;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
-import net.minecraft.client.gui.components.toasts.SystemToast.SystemToastId;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
@@ -15,7 +14,7 @@ import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Input;
-import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -23,25 +22,31 @@ public class Utils {
 
 	public static long MS_PER_TICK = 1000L / 20L;
 	public static int KEY_LIMIT = 1;
-
 	private static final Map<String, String> ITEM_ENCODINGS_BY_CLASS_TYPE = Map.of("Archer", "Archer/Hunter", "Warrior",
 			"Warrior/Knight", "Mage", "Mage/Dark Wizard", "Assassin", "Assassin/Ninja", "Shaman", "Shaman/Skyseer");
-
 	private static final Map<String, String> ITEM_ENCODINGS_BY_WEAPON_TYPE = Map.of("Archer", "󐀂󐀁󏿿󏿿󏿿󏿿󏿬",
 			"Warrior", "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿿󏿠", "Mage", "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿦", "Assassin",
 			"󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿿󏿿󏿚", "Shaman", "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿿󏿢");
 
 	public static void sendPacket(Minecraft client, Packet<?> packet) {
-		client.getConnection().send(packet);
+		if (client == null)
+			return;
+
+		ClientPacketListener networkHandler = client.getConnection();
+		if (networkHandler == null)
+			return;
+
+		networkHandler.send(packet);
 	}
 
 	public static void sendAttackPacket(Minecraft client) {
-		sendPacket(client, new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
+		Utils.sendPacket(client, new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
 	}
 
 	public static void sendInteractPacket(Minecraft client) {
-		sendPacket(client, new ServerboundUseItemPacket(InteractionHand.MAIN_HAND, 0, client.player.getYRot(),
-				client.player.getXRot()));
+		Utils.sendPacket(client,
+				new ServerboundUseItemPacket(InteractionHand.MAIN_HAND, 0, client.player.getYRot(),
+						client.player.getXRot()));
 	}
 
 	public static void sendSneakingPacket(Minecraft client, boolean isSneaking) {
@@ -149,16 +154,16 @@ public class Utils {
 	}
 
 	public static boolean[] keyToClicks(KeyMapping key, boolean isArcher) {
-		if (key.equals(WynnSpellsClient.MELEE_KEY)) {
-			return isArcher ? new boolean[]{true} : new boolean[]{false};
-		} else if (key.equals(WynnSpellsClient.FIRST_SPELL_KEY)) {
-			return isArcher ? new boolean[]{false, true, false} : new boolean[]{true, false, true};
-		} else if (key.equals(WynnSpellsClient.SECOND_SPELL_KEY)) {
-			return isArcher ? new boolean[]{false, false, false} : new boolean[]{true, true, true};
-		} else if (key.equals(WynnSpellsClient.THIRD_SPELL_KEY)) {
-			return isArcher ? new boolean[]{false, true, true} : new boolean[]{true, false, false};
-		} else if (key.equals(WynnSpellsClient.FOURTH_SPELL_KEY)) {
-			return isArcher ? new boolean[]{false, false, true} : new boolean[]{true, true, false};
+		if (key.same(WynnSpellsClient.MELEE_KEY)) {
+			return isArcher ? new boolean[] { true } : new boolean[] { false };
+		} else if (key.same(WynnSpellsClient.FIRST_SPELL_KEY)) {
+			return isArcher ? new boolean[] { false, true, false } : new boolean[] { true, false, true };
+		} else if (key.same(WynnSpellsClient.SECOND_SPELL_KEY)) {
+			return isArcher ? new boolean[] { false, false, false } : new boolean[] { true, true, true };
+		} else if (key.same(WynnSpellsClient.THIRD_SPELL_KEY)) {
+			return isArcher ? new boolean[] { false, true, true } : new boolean[] { true, false, false };
+		} else if (key.same(WynnSpellsClient.FOURTH_SPELL_KEY)) {
+			return isArcher ? new boolean[] { false, false, true } : new boolean[] { true, true, false };
 		}
 
 		return new boolean[0];
