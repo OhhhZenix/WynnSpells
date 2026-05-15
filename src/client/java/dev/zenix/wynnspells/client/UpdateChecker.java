@@ -90,7 +90,7 @@ public final class UpdateChecker {
 				.flatMap(mc -> mc.getMetadata().getContact().get("homepage"))
 				.orElse("https://github.com/OhhhZenix/WynnSpells");
 
-		Utils.sendNotification(Component.literal("New update available: " + latest),
+		Utils.sendNotification(Component.nullToEmpty("New update available: " + latest),
 				WynnSpellsClient.getInstance().getConfig().shouldNotifyUpdates());
 
 		WynnSpells.LOGGER.info("{} v{} is available (current: v{}). Download: {}", WynnSpells.MOD_NAME, latest, current,
