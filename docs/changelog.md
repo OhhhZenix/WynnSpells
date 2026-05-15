@@ -2,6 +2,11 @@
 
 All the changes in WynnSpells.
 
+## Release 2.3.0
+
+- Tidy up backend
+- Tighter melee block timings
+
 ## Release 2.2.0
 
 - Fix melee spam
