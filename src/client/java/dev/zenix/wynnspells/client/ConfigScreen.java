@@ -1,7 +1,6 @@
 package dev.zenix.wynnspells.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
-
 import dev.zenix.wynnspells.WynnSpells;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
@@ -23,18 +22,16 @@ public class ConfigScreen {
 
 		// General
 		ConfigCategory generalCategory = builder.getOrCreateCategory(Component.nullToEmpty("General"));
-		generalCategory
-				.addEntry(entryBuilder
-						.startBooleanToggle(Component.nullToEmpty("Notify Updates"), config.shouldNotifyUpdates())
+		generalCategory.addEntry(
+				entryBuilder.startBooleanToggle(Component.nullToEmpty("Notify Updates"), config.shouldNotifyUpdates())
 						.setTooltip(Component.nullToEmpty("To enable or disable update notifications."))
 						.setDefaultValue(ClothConfig.getDefaultNotifyUpdates())
 						.setSaveConsumer(config::setNotifyUpdates).build());
-		generalCategory
-				.addEntry(entryBuilder
-						.startBooleanToggle(Component.nullToEmpty("Notify Busy Cast"), config.shouldNotifyBusyCast())
-						.setTooltip(Component.nullToEmpty("To enable or disable busy cast notifications."))
-						.setDefaultValue(ClothConfig.getDefaultNotifyBusyCast())
-						.setSaveConsumer(config::setNotifyBusyCast).build());
+		generalCategory.addEntry(entryBuilder
+				.startBooleanToggle(Component.nullToEmpty("Notify Busy Cast"), config.shouldNotifyBusyCast())
+				.setTooltip(Component.nullToEmpty("To enable or disable busy cast notifications."))
+				.setDefaultValue(ClothConfig.getDefaultNotifyBusyCast()).setSaveConsumer(config::setNotifyBusyCast)
+				.build());
 		generalCategory.addEntry(
 				entryBuilder.startBooleanToggle(Component.nullToEmpty("Weapon Only"), config.isWeaponOnlyCasting())
 						.setTooltip(Component.nullToEmpty("Allow casting keybinds only when a weapon is held."))
@@ -49,9 +46,8 @@ public class ConfigScreen {
 						.setTooltip(Component.nullToEmpty("Automatically calculates the most optimal delay for you."))
 						.setDefaultValue(ClothConfig.getDefaultUseAutoDelay()).setSaveConsumer(config::setUseAutoDelay)
 						.build());
-		generalCategory
-				.addEntry(entryBuilder
-						.startBooleanToggle(Component.nullToEmpty("Repeat Held Keys"), config.getRepeatHeldKeys())
+		generalCategory.addEntry(
+				entryBuilder.startBooleanToggle(Component.nullToEmpty("Repeat Held Keys"), config.getRepeatHeldKeys())
 						.setTooltip(Component.nullToEmpty("Allow action of a held key to be repeated."))
 						.setDefaultValue(ClothConfig.getDefaultRepeatHeldKeys())
 						.setSaveConsumer(config::setRepeatHeldKeys).build());
