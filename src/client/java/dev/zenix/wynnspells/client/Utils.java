@@ -105,8 +105,8 @@ public class Utils {
 			return;
 		}
 
-		Minecraft.getInstance().getToastManager().addToast(
-				new SystemToast(SystemToastId.WORLD_BACKUP, Component.literal(WynnSpells.MOD_NAME), description));
+		SystemToast.add(Minecraft.getInstance().getToastManager(), SystemToast.SystemToastId.WORLD_BACKUP,
+				Component.nullToEmpty(WynnSpells.MOD_NAME), description);
 	}
 
 	public static long getAutoDelay() {
