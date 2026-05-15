@@ -45,9 +45,12 @@ public class Utils {
 	}
 
 	public static void sendSneakingPacket(Minecraft client, boolean isSneaking) {
-		// TODO: actually fix the inputs
-		Input input = new Input(false, false, false, false, false, isSneaking, false);
-		sendPacket(client, new ServerboundPlayerInputPacket(input));
+		Input playerInput = new Input(client.options.keyUp.isDown(),
+				client.options.keyDown.isDown(), client.options.keyLeft.isDown(),
+				client.options.keyRight.isDown(), client.options.keyJump.isDown(), isSneaking,
+				client.options.keySprint.isDown());
+
+		Utils.sendPacket(client, new ServerboundPlayerInputPacket(playerInput));
 	}
 
 	public static boolean mainHandItemHasTooltipText(Minecraft client, String searchText) {
