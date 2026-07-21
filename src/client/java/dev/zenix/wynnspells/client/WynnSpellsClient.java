@@ -10,7 +10,9 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.InteractionHand;
 import org.lwjgl.glfw.GLFW;
 
 public class WynnSpellsClient implements ClientModInitializer {
@@ -87,8 +89,26 @@ public class WynnSpellsClient implements ClientModInitializer {
 		caster.stop();
 	}
 
+	private void simulateLeftClick(Minecraft client) {
+		LocalPlayer player = client.player;
+		client.gameMode.attack(player, null);
+		player.swing(InteractionHand.MAIN_HAND);
+	}
+
+	private void simulateRightClick(Minecraft client) {
+		LocalPlayer player = client.player;
+		client.gameMode.interact(player, null, InteractionHand.MAIN_HAND);
+		player.swing(InteractionHand.MAIN_HAND);
+	}
+
 	private void onClientEndTick(Minecraft client) {
-		processConfigKey(client);
+		// processConfigKey(client);
+
+		if (CONFIG_KEY.consumeClick()) {
+			simulateRightClick(client);
+			simulateLeftClick(client);
+			simulateRightClick(client);
+		}
 	}
 
 	private void processConfigKey(Minecraft client) {
