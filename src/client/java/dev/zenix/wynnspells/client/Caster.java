@@ -17,6 +17,10 @@ import net.minecraft.world.phys.EntityHitResult;
 
 public class Caster {
 
+	private enum CastState {
+		IDLE, QUEUED, COOLDOWN
+	}
+
 	private final Minecraft mc;
 
 	private final Deque<Boolean> clicks = new ArrayDeque<>();
@@ -27,7 +31,8 @@ public class Caster {
 
 	private boolean running = true;
 	private int previousSlot = -1;
-	private long lastClickTime = 0;
+	private CastState castState = CastState.IDLE;
+	private long nextActionTime = 0;
 
 	public Caster(Minecraft mc) {
 		this.mc = mc;
@@ -73,14 +78,7 @@ public class Caster {
 	}
 
 	private boolean isInputBlocked() {
-		if (!clicks.isEmpty() || !keys.isEmpty()) {
-			return true;
-		}
-
-		long now = System.nanoTime();
-		long delay = Utils.getClickDelay();
-		long tolerance = delay * 3;
-		return now < lastClickTime + (delay + tolerance);
+		return castState != CastState.IDLE;
 	}
 
 	private boolean handleVanillaAction(boolean isAttack) {
@@ -149,7 +147,8 @@ public class Caster {
 
 		clicks.clear();
 		keys.clear();
-		lastClickTime = 0;
+		castState = CastState.IDLE;
+		nextActionTime = 0;
 	}
 
 	// =========================
@@ -157,13 +156,21 @@ public class Caster {
 	// =========================
 
 	private void processClicks() {
-		if (clicks.isEmpty())
+		if (clicks.isEmpty()) {
+			castState = CastState.IDLE;
 			return;
+		}
 
 		long now = System.nanoTime();
 		long delay = Utils.getClickDelay();
 
-		if (now - lastClickTime < delay)
+		if (castState == CastState.QUEUED) {
+			castState = CastState.COOLDOWN;
+			nextActionTime = now + delay;
+			return;
+		}
+
+		if (now < nextActionTime)
 			return;
 
 		boolean click = clicks.poll();
@@ -174,7 +181,12 @@ public class Caster {
 			Utils.sendAttackPacket(mc); // left click
 		}
 
-		lastClickTime = now;
+		if (clicks.isEmpty()) {
+			castState = CastState.IDLE;
+		} else {
+			castState = CastState.COOLDOWN;
+			nextActionTime = now + delay;
+		}
 	}
 
 	// =========================
@@ -182,10 +194,7 @@ public class Caster {
 	// =========================
 
 	private void processIntents() {
-		if (!clicks.isEmpty())
-			return;
-
-		if (keys.isEmpty())
+		if (castState != CastState.IDLE || !clicks.isEmpty() || keys.isEmpty())
 			return;
 
 		KeyMapping key = keys.poll();
@@ -194,6 +203,9 @@ public class Caster {
 		for (boolean click : Utils.keyToClicks(key, isArcher)) {
 			clicks.add(click);
 		}
+
+		castState = CastState.QUEUED;
+		nextActionTime = System.nanoTime();
 	}
 
 	// =========================
