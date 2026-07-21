@@ -23,6 +23,7 @@ public class Utils {
 
 	public static long MS_PER_TICK = 1000L / 20L;
 	public static int KEY_LIMIT = 1;
+	public static int MIN_MANUAL_DELAY_MS = 50;
 	private static final Map<String, String> ITEM_ENCODINGS_BY_CLASS_TYPE = Map.of("Archer", "Archer/Hunter", "Warrior",
 			"Warrior/Knight", "Mage", "Mage/Dark Wizard", "Assassin", "Assassin/Ninja", "Shaman", "Shaman/Skyseer");
 	private static final Map<String, String> ITEM_ENCODINGS_BY_WEAPON_TYPE = Map.of("Archer", "󐀂󐀁󏿿󏿿󏿿󏿿󏿬",
@@ -118,14 +119,21 @@ public class Utils {
 
 	public static long getAutoDelay() {
 		WynnSpellsClient client = WynnSpellsClient.getInstance();
-		long rtt = client.getPingTracker().getLastPing();
+		long rtt = client.getPingTracker().getSmoothedPing();
+		if (rtt <= 0) {
+			rtt = client.getPingTracker().getLastPing();
+		}
+		if (rtt <= 0) {
+			return Math.max(MIN_MANUAL_DELAY_MS, client.getConfig().getManualDelay());
+		}
+
 		long oneWay = rtt / 2;
 		long jitter = MS_PER_TICK / 2;
 		long tolerance = client.getConfig().getAutoDelayTolerance();
 		long margin = tolerance + (tolerance * (oneWay / MS_PER_TICK));
 		long delay = MS_PER_TICK + jitter + margin;
-		WynnSpells.LOGGER.debug("Auto Delay: {}", delay);
-		return delay;
+		WynnSpells.LOGGER.debug("Auto Delay: {} ms (rtt: {} ms)", delay, rtt);
+		return Math.max(MIN_MANUAL_DELAY_MS, delay);
 	}
 
 	// returns the delay in nanoseconds
@@ -150,6 +158,11 @@ public class Utils {
 	public static void refreshAndSaveKeyBindings() {
 		refreshKeyBindings();
 		saveKeyBindings();
+	}
+
+	public static boolean isSpellKey(KeyMapping key) {
+		return key.same(WynnSpellsClient.FIRST_SPELL_KEY) || key.same(WynnSpellsClient.SECOND_SPELL_KEY)
+				|| key.same(WynnSpellsClient.THIRD_SPELL_KEY) || key.same(WynnSpellsClient.FOURTH_SPELL_KEY);
 	}
 
 	public static boolean[] keyToClicks(KeyMapping key, boolean isArcher) {

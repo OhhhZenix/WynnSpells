@@ -78,13 +78,11 @@ public class WynnSpellsClient implements ClientModInitializer {
 		pingTracker.start();
 
 		caster = new Caster(client);
-		caster.start();
 	}
 
 	private void onClientStop(Minecraft client) {
 		updateChecker.stop();
 		pingTracker.stop();
-		caster.stop();
 	}
 
 	private void onClientEndTick(Minecraft client) {

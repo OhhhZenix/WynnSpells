@@ -1,9 +1,9 @@
 package dev.zenix.wynnspells.client;
 
-import dev.zenix.wynnspells.WynnSpells;
 import dev.zenix.wynnspells.client.event.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -26,7 +26,6 @@ public class Caster {
 	private final Set<KeyMapping> previousPressedKeys = new HashSet<>();
 	private final Map<KeyMapping, Long> keysTimer = new HashMap<>();
 
-	private volatile boolean running = true;
 	private int previousSlot = -1;
 	private long lastClickTime = 0;
 
@@ -41,36 +40,18 @@ public class Caster {
 		UseItemOnEvent.HANDLER.register(this::onUseItemOnEvent);
 		PlayerInteractEvent.HANDLER.register(this::onPlayerInteractEvent);
 		PlayerInteractAtEvent.HANDLER.register(this::onPlayerInteractAtEvent);
-	}
 
-	public void start() {
-		Thread thread = new Thread(this::run);
-		thread.setDaemon(true);
-		thread.start();
-	}
-
-	public void stop() {
-		running = false;
+		ClientTickEvents.END_CLIENT_TICK.register(client -> tick());
 	}
 
 	// =========================
 	// Core Loop
 	// =========================
 
-	private void run() {
-		while (running) {
-			try {
-				tick();
-				Thread.sleep(1); // prevent CPU burn
-			} catch (InterruptedException e) {
-				WynnSpells.LOGGER.error("Caster thread interrupted", e);
-			}
-		}
-	}
-
 	private void tick() {
-		if (mc == null || mc.player == null)
+		if (mc == null || mc.player == null || mc.isPaused()) {
 			return;
+		}
 
 		resetState();
 		processKeys();
@@ -89,18 +70,13 @@ public class Caster {
 		return !clicks.isEmpty() || now < lastClickTime + (delay + tolerance);
 	}
 
-	private boolean handleVanillaAction(boolean isAttack) {
-		if (!isCasting())
-			return false;
+	private boolean shouldBlockVanillaInput() {
+		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
+		return config.getBlockClicks() && isCasting();
+	}
 
-		boolean isNormalAttack = isAttack && !Utils.isArcher(mc);
-		boolean isUseAttack = !isAttack && Utils.isArcher(mc);
-
-		if (isNormalAttack || isUseAttack) {
-			addKey(WynnSpellsClient.MELEE_KEY);
-		}
-
-		return true;
+	private boolean handleVanillaAction() {
+		return shouldBlockVanillaInput();
 	}
 
 	// =========================
@@ -108,37 +84,35 @@ public class Caster {
 	// =========================
 
 	private boolean onPlayerStartAttackEvent(LocalPlayer player, InteractionHand hand) {
-		return handleVanillaAction(true);
+		return handleVanillaAction();
 	}
 
 	private boolean onPlayerAttackEvent(Player player, Entity target) {
-		return handleVanillaAction(true);
+		return handleVanillaAction();
 	}
 
 	private boolean onStartDestroyBlockEvent(BlockPos pos, Direction dir) {
-		return handleVanillaAction(true);
+		return handleVanillaAction();
 	}
 
 	private boolean onContinueDestroyBlockEvent(BlockPos pos, Direction dir) {
-		return handleVanillaAction(true);
+		return handleVanillaAction();
 	}
 
 	private boolean onUseItemEvent(Player player, InteractionHand hand) {
-		return handleVanillaAction(false);
+		return handleVanillaAction();
 	}
 
 	private boolean onUseItemOnEvent(LocalPlayer player, InteractionHand hand, BlockHitResult result) {
-		return handleVanillaAction(false);
+		return handleVanillaAction();
 	}
 
 	private boolean onPlayerInteractEvent(Player player, Entity target, InteractionHand hand) {
-		// return handleVanillaAction(false);
-		return false;
+		return handleVanillaAction();
 	}
 
 	private boolean onPlayerInteractAtEvent(Player player, Entity target, EntityHitResult ray, InteractionHand hand) {
-		// return handleVanillaAction(false);
-		return false;
+		return handleVanillaAction();
 	}
 
 	// =========================
@@ -148,8 +122,9 @@ public class Caster {
 	private void resetState() {
 		int currentSlot = mc.player.getInventory().getSelectedSlot();
 
-		if (previousSlot == currentSlot)
+		if (previousSlot == currentSlot) {
 			return;
+		}
 
 		previousSlot = currentSlot;
 
@@ -163,21 +138,23 @@ public class Caster {
 	// =========================
 
 	private void processClicks() {
-		if (clicks.isEmpty())
+		if (clicks.isEmpty()) {
 			return;
+		}
 
 		long now = System.nanoTime();
 		long delay = Utils.getClickDelay();
 
-		if (now - lastClickTime < delay)
+		if (now - lastClickTime < delay) {
 			return;
+		}
 
 		boolean click = clicks.poll();
 
 		if (click) {
-			Utils.sendInteractPacket(mc); // right click
+			Utils.sendInteractPacket(mc);
 		} else {
-			Utils.sendAttackPacket(mc); // left click
+			Utils.sendAttackPacket(mc);
 		}
 
 		lastClickTime = now;
@@ -188,11 +165,13 @@ public class Caster {
 	// =========================
 
 	private void processIntents() {
-		if (!clicks.isEmpty())
+		if (!clicks.isEmpty()) {
 			return;
+		}
 
-		if (keys.isEmpty())
+		if (keys.isEmpty()) {
 			return;
+		}
 
 		KeyMapping key = keys.poll();
 		boolean isArcher = Utils.isArcher(mc);
@@ -209,6 +188,14 @@ public class Caster {
 	private void addKey(KeyMapping key) {
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
 
+		if (isCasting()) {
+			if (Utils.isSpellKey(key)) {
+				Utils.sendNotification(Component.literal("Cast ignored: finish the current spell first."),
+						config.shouldNotifyBusyCast());
+			}
+			return;
+		}
+
 		if (keys.size() >= Utils.KEY_LIMIT) {
 			Utils.sendNotification(Component.literal("Cast ignored: try slowing down a bit."),
 					config.shouldNotifyBusyCast());
@@ -223,18 +210,18 @@ public class Caster {
 	}
 
 	private void processKey(KeyMapping key) {
-		if (key == null)
+		if (key == null) {
 			return;
+		}
 
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
-		boolean repeat = config.getRepeatHeldKeys();
+		boolean repeat = config.getRepeatHeldKeys() && key.same(WynnSpellsClient.MELEE_KEY);
 
 		long now = System.nanoTime();
 
 		if (repeat) {
 			boolean pressed = key.isDown();
 
-			// Released
 			if (!pressed) {
 				if (previousPressedKeys.remove(key)) {
 					keysTimer.remove(key);
@@ -242,7 +229,6 @@ public class Caster {
 				return;
 			}
 
-			// First press
 			if (!previousPressedKeys.contains(key)) {
 				previousPressedKeys.add(key);
 				keysTimer.put(key, now);
@@ -250,7 +236,6 @@ public class Caster {
 				return;
 			}
 
-			// Held repeat
 			long threshold = TimeUnit.MILLISECONDS.toNanos(config.getRepeatThreshold());
 			long last = keysTimer.getOrDefault(key, 0L);
 

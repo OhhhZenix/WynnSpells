@@ -35,7 +35,7 @@ public class ClothConfig implements ConfigData {
 	}
 
 	public static boolean getDefaultUseAutoDelay() {
-		return true;
+		return false;
 	}
 
 	public static boolean getDefaultRepeatHeldKeys() {

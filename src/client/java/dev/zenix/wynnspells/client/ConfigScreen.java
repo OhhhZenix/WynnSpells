@@ -39,16 +39,19 @@ public class ConfigScreen {
 						.setSaveConsumer(config::setWeaponOnlyCasting).build());
 		generalCategory.addEntry(entryBuilder
 				.startBooleanToggle(Component.nullToEmpty("Block Clicks"), config.getBlockClicks())
-				.setTooltip(Component.nullToEmpty("Block left or right clicks while a spell is casting."))
+				.setTooltip(Component.nullToEmpty(
+						"Block left or right mouse clicks while a spell sequence is in progress."))
 				.setDefaultValue(ClothConfig.getDefaultBlockClicks()).setSaveConsumer(config::setBlockClicks).build());
 		generalCategory.addEntry(
 				entryBuilder.startBooleanToggle(Component.nullToEmpty("Use Auto Delay"), config.shouldUseAutoDelay())
-						.setTooltip(Component.nullToEmpty("Automatically calculates the most optimal delay for you."))
+						.setTooltip(Component.nullToEmpty(
+								"Use ping-based timing instead of Manual Delay. Experimental; manual delay is recommended for now."))
 						.setDefaultValue(ClothConfig.getDefaultUseAutoDelay()).setSaveConsumer(config::setUseAutoDelay)
 						.build());
 		generalCategory.addEntry(
-				entryBuilder.startBooleanToggle(Component.nullToEmpty("Repeat Held Keys"), config.getRepeatHeldKeys())
-						.setTooltip(Component.nullToEmpty("Allow action of a held key to be repeated."))
+				entryBuilder.startBooleanToggle(Component.nullToEmpty("Repeat Held Melee Key"), config.getRepeatHeldKeys())
+						.setTooltip(Component.nullToEmpty(
+								"Hold the melee key to repeat attacks, similar to holding down the mouse button."))
 						.setDefaultValue(ClothConfig.getDefaultRepeatHeldKeys())
 						.setSaveConsumer(config::setRepeatHeldKeys).build());
 		generalCategory.addEntry(entryBuilder
@@ -61,10 +64,10 @@ public class ConfigScreen {
 				}).build());
 		generalCategory.addEntry(entryBuilder
 				.startIntField(Component.nullToEmpty("Manual Delay"), config.getManualDelay())
-				.setTooltip(Component
-						.nullToEmpty("The delay between clicks. This value is ignored if auto delay is enabled."))
+				.setTooltip(Component.nullToEmpty(
+						"Milliseconds between each click in a spell sequence. Start around 100 ms and adjust for your connection."))
 				.setDefaultValue(ClothConfig.getDefaultManualDelay()).setSaveConsumer(value -> {
-					int clamped = Math.max(0, value);
+					int clamped = Math.max(Utils.MIN_MANUAL_DELAY_MS, value);
 					config.setManualDelay(clamped);
 				}).build());
 		generalCategory.addEntry(entryBuilder
