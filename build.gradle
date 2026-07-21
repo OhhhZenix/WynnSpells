@@ -10,8 +10,14 @@ group = project.maven_group
 repositories {
     // Cloth Config Repo
     maven { url "https://maven.shedaniel.me/" }
-    // Mod Menu Repo
-    maven { url "https://maven.terraformersmc.com/releases/" }
+
+	// Mod Menu Repo
+    // maven { url "https://maven.terraformersmc.com/releases/" }
+
+    // Local libs
+    flatDir {
+        dirs 'lib'
+    }
 }
 
 spotless {
@@ -50,7 +56,8 @@ dependencies {
     }
 
 	// Mod Menu
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+	// modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modImplementation name: 'modmenu-17.0.0'
 }
 
 processResources {
