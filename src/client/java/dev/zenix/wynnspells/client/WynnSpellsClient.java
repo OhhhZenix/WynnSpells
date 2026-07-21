@@ -89,6 +89,9 @@ public class WynnSpellsClient implements ClientModInitializer {
 
 	private void onClientEndTick(Minecraft client) {
 		processConfigKey(client);
+		if (caster != null) {
+			caster.tick();
+		}
 	}
 
 	private void processConfigKey(Minecraft client) {

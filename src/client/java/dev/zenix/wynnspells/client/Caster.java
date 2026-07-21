@@ -1,6 +1,5 @@
 package dev.zenix.wynnspells.client;
 
-import dev.zenix.wynnspells.WynnSpells;
 import dev.zenix.wynnspells.client.event.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +25,7 @@ public class Caster {
 	private final Set<KeyMapping> previousPressedKeys = new HashSet<>();
 	private final Map<KeyMapping, Long> keysTimer = new HashMap<>();
 
-	private volatile boolean running = true;
+	private boolean running = true;
 	private int previousSlot = -1;
 	private long lastClickTime = 0;
 
@@ -44,9 +43,7 @@ public class Caster {
 	}
 
 	public void start() {
-		Thread thread = new Thread(this::run);
-		thread.setDaemon(true);
-		thread.start();
+		running = true;
 	}
 
 	public void stop() {
@@ -57,19 +54,8 @@ public class Caster {
 	// Core Loop
 	// =========================
 
-	private void run() {
-		while (running) {
-			try {
-				tick();
-				Thread.sleep(1); // prevent CPU burn
-			} catch (InterruptedException e) {
-				WynnSpells.LOGGER.error("Caster thread interrupted", e);
-			}
-		}
-	}
-
-	private void tick() {
-		if (mc == null || mc.player == null)
+	public void tick() {
+		if (!running || mc == null || mc.player == null)
 			return;
 
 		resetState();
@@ -83,10 +69,18 @@ public class Caster {
 	// =========================
 
 	private boolean isCasting() {
+		return isInputBlocked();
+	}
+
+	private boolean isInputBlocked() {
+		if (!clicks.isEmpty() || !keys.isEmpty()) {
+			return true;
+		}
+
 		long now = System.nanoTime();
 		long delay = Utils.getClickDelay();
 		long tolerance = delay * 3;
-		return !clicks.isEmpty() || now < lastClickTime + (delay + tolerance);
+		return now < lastClickTime + (delay + tolerance);
 	}
 
 	private boolean handleVanillaAction(boolean isAttack) {
@@ -209,6 +203,12 @@ public class Caster {
 	private void addKey(KeyMapping key) {
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
 
+		if (isInputBlocked()) {
+			Utils.sendNotification(Component.literal("Cast ignored: input is already busy."),
+					config.shouldNotifyBusyCast());
+			return;
+		}
+
 		if (keys.size() >= Utils.KEY_LIMIT) {
 			Utils.sendNotification(Component.literal("Cast ignored: try slowing down a bit."),
 					config.shouldNotifyBusyCast());
@@ -223,7 +223,7 @@ public class Caster {
 	}
 
 	private void processKey(KeyMapping key) {
-		if (key == null)
+		if (key == null || isInputBlocked())
 			return;
 
 		ClothConfig config = WynnSpellsClient.getInstance().getConfig();
