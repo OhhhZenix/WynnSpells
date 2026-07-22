@@ -2,14 +2,13 @@
 
 All the changes in WynnSpells.
 
-## Release 3.0.0 (WIP)
+## Release 4.0.0 (WIP)
 
 - Upgrade to MC 26.2
 
-## Release 2.3.0 (WIP)
+## Release 3.0.0 (WIP)
 
-- Tidy up backend
-- Tighter melee block timings
+- Revamp from scratch
 
 ## Release 2.2.0
 
