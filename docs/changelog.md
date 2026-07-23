@@ -9,6 +9,8 @@ All the changes in WynnSpells.
 ## Release 3.0.0 (WIP)
 
 - Revamp from scratch
+- Packet based to Input based
+- Better cast system
 
 ## Release 2.2.0
 
