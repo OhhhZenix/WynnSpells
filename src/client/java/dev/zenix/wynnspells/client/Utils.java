@@ -11,6 +11,14 @@ import net.minecraft.world.InteractionHand;
 
 public class Utils {
 
+    enum Spell {
+        FIRST,
+        SECOND,
+        THIRD,
+        FOURTH,
+        MELEE,
+    };
+
     enum Class {
         WARRIOR,
         MAGE,
