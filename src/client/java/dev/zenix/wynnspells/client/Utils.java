@@ -57,8 +57,12 @@ public class Utils {
     }
 
     public static void sendInteractPacket(Minecraft client) {
-        float yrot = client.player.getYRot();
-        float xrot = client.player.getXRot();
+        float yrot = 0;
+        float xrot = 0;
+        if (client.player != null) {
+            yrot = client.player.getYRot();
+            xrot = client.player.getXRot();
+        }
         Utils.sendPacket(client, new ServerboundUseItemPacket(InteractionHand.MAIN_HAND, 0, yrot, xrot));
     }
 }
