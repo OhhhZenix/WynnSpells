@@ -17,23 +17,23 @@ public class WynnSpellsClient implements ClientModInitializer {
 	private static final KeyMapping.Category KEY_CATEGORY = KeyMapping.Category
 			.register(Identifier.fromNamespaceAndPath(WynnSpells.MOD_ID, "all"));
 
-	public static final KeyMapping FIRST_SPELL_KEY = KeyMappingHelper.registerKeyMapping(
-			new KeyMapping("key.wynnspells.first", InputConstants.Type.KEYBOARD,  InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
+	public static final KeyMapping FIRST_SPELL_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+			"key.wynnspells.first", InputConstants.Type.KEYBOARD, InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
 
-	public static final KeyMapping SECOND_SPELL_KEY = KeyMappingHelper.registerKeyMapping(
-			new KeyMapping("key.wynnspells.second", InputConstants.Type.KEYBOARD,  InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
+	public static final KeyMapping SECOND_SPELL_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+			"key.wynnspells.second", InputConstants.Type.KEYBOARD, InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
 
-	public static final KeyMapping THIRD_SPELL_KEY = KeyMappingHelper.registerKeyMapping(
-			new KeyMapping("key.wynnspells.third", InputConstants.Type.KEYBOARD,  InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
+	public static final KeyMapping THIRD_SPELL_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+			"key.wynnspells.third", InputConstants.Type.KEYBOARD, InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
 
-	public static final KeyMapping FOURTH_SPELL_KEY = KeyMappingHelper.registerKeyMapping(
-			new KeyMapping("key.wynnspells.fourth", InputConstants.Type.KEYBOARD,  InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
+	public static final KeyMapping FOURTH_SPELL_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+			"key.wynnspells.fourth", InputConstants.Type.KEYBOARD, InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
 
-	public static final KeyMapping MELEE_KEY = KeyMappingHelper.registerKeyMapping(
-			new KeyMapping("key.wynnspells.melee", InputConstants.Type.KEYBOARD,  InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
+	public static final KeyMapping MELEE_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+			"key.wynnspells.melee", InputConstants.Type.KEYBOARD, InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
 
-	public static final KeyMapping CONFIG_KEY = KeyMappingHelper.registerKeyMapping(
-			new KeyMapping("key.wynnspells.config", InputConstants.Type.KEYBOARD, InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
+	public static final KeyMapping CONFIG_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+			"key.wynnspells.config", InputConstants.Type.KEYBOARD, InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
 
 	private static WynnSpellsClient instance = null;
 	private ClothConfig config;
