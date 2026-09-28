@@ -7,34 +7,33 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
-import org.lwjgl.glfw.GLFW;
 
 public class WynnSpellsClient implements ClientModInitializer {
 
 	private static final KeyMapping.Category KEY_CATEGORY = KeyMapping.Category
 			.register(Identifier.fromNamespaceAndPath(WynnSpells.MOD_ID, "all"));
 
-	public static final KeyMapping FIRST_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
-			new KeyMapping("key.wynnspells.first", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
+	public static final KeyMapping FIRST_SPELL_KEY = KeyMappingHelper.registerKeyMapping(
+			new KeyMapping("key.wynnspells.first", InputConstants.Type.KEYBOARD,  InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
 
-	public static final KeyMapping SECOND_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
-			new KeyMapping("key.wynnspells.second", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
+	public static final KeyMapping SECOND_SPELL_KEY = KeyMappingHelper.registerKeyMapping(
+			new KeyMapping("key.wynnspells.second", InputConstants.Type.KEYBOARD,  InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
 
-	public static final KeyMapping THIRD_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
-			new KeyMapping("key.wynnspells.third", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
+	public static final KeyMapping THIRD_SPELL_KEY = KeyMappingHelper.registerKeyMapping(
+			new KeyMapping("key.wynnspells.third", InputConstants.Type.KEYBOARD,  InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
 
-	public static final KeyMapping FOURTH_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
-			new KeyMapping("key.wynnspells.fourth", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
+	public static final KeyMapping FOURTH_SPELL_KEY = KeyMappingHelper.registerKeyMapping(
+			new KeyMapping("key.wynnspells.fourth", InputConstants.Type.KEYBOARD,  InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
 
-	public static final KeyMapping MELEE_KEY = KeyBindingHelper.registerKeyBinding(
-			new KeyMapping("key.wynnspells.melee", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
+	public static final KeyMapping MELEE_KEY = KeyMappingHelper.registerKeyMapping(
+			new KeyMapping("key.wynnspells.melee", InputConstants.Type.KEYBOARD,  InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
 
-	public static final KeyMapping CONFIG_KEY = KeyBindingHelper.registerKeyBinding(
-			new KeyMapping("key.wynnspells.config", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KEY_CATEGORY));
+	public static final KeyMapping CONFIG_KEY = KeyMappingHelper.registerKeyMapping(
+			new KeyMapping("key.wynnspells.config", InputConstants.Type.KEYBOARD, InputConstants.UNKNOWN.getValue(), KEY_CATEGORY));
 
 	private static WynnSpellsClient instance = null;
 	private ClothConfig config;
@@ -93,7 +92,7 @@ public class WynnSpellsClient implements ClientModInitializer {
 
 	private void processConfigKey(Minecraft client) {
 		if (CONFIG_KEY.consumeClick()) {
-			client.setScreen(ConfigScreen.create(client.screen));
+			client.setScreenAndShow(ConfigScreen.create(client.gui.screen()));
 		}
 	}
 
