@@ -11,7 +11,7 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
-import net.minecraft.network.protocol.game.ServerboundSwingPacket;
+import net.minecraft.network.protocol.game.ServerboundPunchPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Input;
@@ -41,7 +41,7 @@ public class Utils {
 	}
 
 	public static void sendAttackPacket(Minecraft client) {
-		Utils.sendPacket(client, new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
+		Utils.sendPacket(client, new ServerboundPunchPacket());
 	}
 
 	public static void sendInteractPacket(Minecraft client) {
@@ -112,7 +112,7 @@ public class Utils {
 			return;
 		}
 
-		SystemToast.add(Minecraft.getInstance().getToastManager(), SystemToast.SystemToastId.WORLD_BACKUP,
+		SystemToast.add(Minecraft.getInstance().gui.toastManager(), SystemToast.SystemToastId.WORLD_BACKUP,
 				Component.nullToEmpty(WynnSpells.MOD_NAME), description);
 	}
 
