@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
 
-  @Inject(method = "startAttack()Z", at = @At("HEAD"), cancellable = true)
+  @Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
   private void startAttack(CallbackInfoReturnable<Boolean> cir) {
-    MinecraftEvent.HANDLER.invoker().startAttack(cir);
+    MinecraftEvent.START_ATTACK.invoker().startAttack(cir);
   }
 
   @Inject(method = "startUseItem", at = @At("HEAD"), cancellable = true)
