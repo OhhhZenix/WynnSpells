@@ -15,6 +15,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 public class Caster {
 
@@ -32,6 +34,8 @@ public class Caster {
 
   public Caster(Minecraft mc) {
     this.mc = mc;
+    MinecraftEvents.START_ATTACK.register(this::onStartAttack);
+    MinecraftEvents.START_USE_ITEM.register(this::onStartUseItem);
   }
 
   public void start() {
@@ -95,6 +99,18 @@ public class Caster {
   // =========================
   // Event Hooks
   // =========================
+
+  private void onStartAttack(CallbackInfoReturnable<Boolean> cir) {
+    if (isCasting()) {
+      cir.setReturnValue(true);
+    }
+  }
+
+  private void onStartUseItem(CallbackInfo ci) {
+    if (isCasting()) {
+      ci.cancel();
+    }
+  }
 
   private boolean onPlayerStartAttackEvent(LocalPlayer player, InteractionHand hand) {
     return handleVanillaAction(true);
