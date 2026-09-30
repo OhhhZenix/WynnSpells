@@ -14,6 +14,10 @@ All the changes in WynnSpells.
 - Upgrade Cloth Config (26.3.159)
 - Upgrade Mod Menu (21.0.0)
 
+## Release 2.3.0
+
+- Backport improvements from version 3
+
 ## Release 2.2.0
 
 - Fix melee spam
