@@ -5,13 +5,13 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-public interface MinecraftEvent {
+public interface MinecraftEvents {
 
   Event<StartAttack> START_ATTACK =
       EventFactory.createArrayBacked(
           StartAttack.class,
-          (listeners) ->
-              (cir) -> {
+          listeners ->
+              cir -> {
                 for (StartAttack listener : listeners) {
                   listener.startAttack(cir);
                 }
@@ -20,8 +20,8 @@ public interface MinecraftEvent {
   Event<StartUseItem> START_USE_ITEM =
       EventFactory.createArrayBacked(
           StartUseItem.class,
-          (listeners) ->
-              (ci) -> {
+          listeners ->
+              ci -> {
                 for (StartUseItem listener : listeners) {
                   listener.startUseItem(ci);
                 }
