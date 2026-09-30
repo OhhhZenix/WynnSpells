@@ -1,19 +1,23 @@
 package dev.zenix.wynnspells.client.mixin;
 
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import dev.zenix.wynnspells.client.event.PlayerStartAttackEvent;
+import dev.zenix.wynnspells.client.event.MinecraftEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.InteractionHand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
 
-	@WrapWithCondition(method = "startAttack()Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;swing(Lnet/minecraft/world/InteractionHand;)V"))
-	private boolean startAttack(LocalPlayer localPlayer, InteractionHand hand) {
-		boolean result = PlayerStartAttackEvent.HANDLER.invoker().startAttack(localPlayer, hand);
-		return !result;
-	}
+  @Inject(method = "startAttack()Z", at = @At("HEAD"), cancellable = true)
+  private void startAttack(CallbackInfoReturnable<Boolean> cir) {
+    MinecraftEvent.HANDLER.invoker().startAttack(cir);
+  }
+
+  @Inject(method = "startUseItem", at = @At("HEAD"), cancellable = true)
+  private void startUseItem(CallbackInfo ci) {
+    MinecraftEvent.START_USE_ITEM.invoker().startUseItem(ci);
+  }
 }
