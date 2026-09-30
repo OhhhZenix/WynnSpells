@@ -1,6 +1,6 @@
 package dev.zenix.wynnspells.client.mixin;
 
-import dev.zenix.wynnspells.client.event.PongReceivedEvent;
+import dev.zenix.wynnspells.client.event.ClientPacketListenerEvents;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.ping.ClientboundPongResponsePacket;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPacketListener.class)
 public class ClientPacketListenerMixin {
 
-	@Inject(method = "handlePongResponse(Lnet/minecraft/network/protocol/ping/ClientboundPongResponsePacket;)V", at = @At("RETURN"))
-	private void handlePongResponse(ClientboundPongResponsePacket packet, CallbackInfo ci) {
-		PongReceivedEvent.HANDLER.invoker().handlePongResponse(packet.time());
-	}
+  @Inject(method = "handlePongResponse", at = @At("RETURN"))
+  public void handlePongResponse(ClientboundPongResponsePacket packet, CallbackInfo ci) {
+    ClientPacketListenerEvents.HANDLE_PONG_RESPONSE.invoker().handlePongResponse(packet, ci);
+  }
 }

@@ -2,6 +2,10 @@
 
 All the changes in WynnSpells.
 
+## Release 2.3.0
+
+- Backport improvements from version 3
+
 ## Release 2.2.0
 
 - Fix melee spam

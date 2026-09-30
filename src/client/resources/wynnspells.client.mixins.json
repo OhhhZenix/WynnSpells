@@ -4,8 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "ClientPacketListenerMixin",
-    "MinecraftMixin",
-    "MultiPlayerGameModeMixin"
+    "MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1
