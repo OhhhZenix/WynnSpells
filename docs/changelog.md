@@ -2,6 +2,11 @@
 
 All the changes in WynnSpells.
 
+## Release 3.1.0
+
+- Fix crashing on startup due to mixins
+- Improve event handling for casting logic
+
 ## Release 3.0.0
 
 - Upgrade to MC 26.3
