@@ -2,14 +2,12 @@
 
 All the changes in WynnSpells.
 
-## Release 3.0.0 (WIP)
+## Release 3.0.0
 
-- Upgrade to MC 26.2
-
-## Release 2.3.0 (WIP)
-
-- Tidy up backend
-- Tighter melee block timings
+- Upgrade to MC 26.3
+- Upgrade Fabric (0.161.0)
+- Upgrade Cloth Config (26.3.159)
+- Upgrade Mod Menu (21.0.0)
 
 ## Release 2.2.0
 
