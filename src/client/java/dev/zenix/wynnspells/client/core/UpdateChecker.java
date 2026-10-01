@@ -1,8 +1,9 @@
-package dev.zenix.wynnspells.client;
+package dev.zenix.wynnspells.client.core;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import dev.zenix.wynnspells.WynnSpells;
+import dev.zenix.wynnspells.client.WynnSpellsClient;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;

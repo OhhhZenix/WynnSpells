@@ -1,8 +1,10 @@
-package dev.zenix.wynnspells.client;
+package dev.zenix.wynnspells.client.core;
 
 import dev.zenix.wynnspells.WynnSpells;
+import dev.zenix.wynnspells.client.WynnSpellsClient;
+import dev.zenix.wynnspells.client.config.ClothConfig;
+import dev.zenix.wynnspells.client.spell.Classes;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -23,30 +25,6 @@ public class Utils {
 
   public static long MS_PER_TICK = 1000L / 20L;
   public static int KEY_LIMIT = 1;
-  private static final Map<String, String> ITEM_ENCODINGS_BY_CLASS_TYPE =
-      Map.of(
-          "Archer",
-          "Archer/Hunter",
-          "Warrior",
-          "Warrior/Knight",
-          "Mage",
-          "Mage/Dark Wizard",
-          "Assassin",
-          "Assassin/Ninja",
-          "Shaman",
-          "Shaman/Skyseer");
-  private static final Map<String, String> ITEM_ENCODINGS_BY_WEAPON_TYPE =
-      Map.of(
-          "Archer",
-          "󐀂󐀁󏿿󏿿󏿿󏿿󏿬",
-          "Warrior",
-          "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿿󏿠",
-          "Mage",
-          "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿦",
-          "Assassin",
-          "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿿󏿿󏿚",
-          "Shaman",
-          "󐀂󐀁󏿿󏿿󏿿󏿿󏿿󏿿󏿢");
 
   public static void sendPacket(Minecraft client, Packet<?> packet) {
     if (client == null) return;
@@ -61,11 +39,9 @@ public class Utils {
     Utils.sendPacket(client, new ServerboundPunchPacket());
   }
 
-  public static void sendInteractPacket(Minecraft client) {
+  public static void sendInteractPacket(Minecraft client, float yaw, float pitch) {
     Utils.sendPacket(
-        client,
-        new ServerboundUseItemPacket(
-            InteractionHand.MAIN_HAND, 0, client.player.getYRot(), client.player.getXRot()));
+        client, new ServerboundUseItemPacket(InteractionHand.MAIN_HAND, 0, yaw, pitch));
   }
 
   public static void sendSneakingPacket(Minecraft client, boolean isSneaking) {
@@ -87,11 +63,11 @@ public class Utils {
       return false;
 
     ItemStack heldItem = client.player.getMainHandItem();
-    if (heldItem == null || heldItem.isEmpty()) return false;
+    if (heldItem.isEmpty()) return false;
 
     List<Component> tooltip =
         heldItem.getTooltipLines(Item.TooltipContext.EMPTY, client.player, TooltipFlag.NORMAL);
-    if (tooltip == null || tooltip.isEmpty()) return false;
+    if (tooltip.isEmpty()) return false;
 
     for (Component line : tooltip) {
       if (line.getString().contains(searchText)) return true;
@@ -101,28 +77,28 @@ public class Utils {
   }
 
   public static boolean isArcher(Minecraft client) {
-    return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Archer"))
-        || mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Archer"));
+    return mainHandItemHasTooltipText(client, Classes.ARCHER.getClassEncoding())
+        || mainHandItemHasTooltipText(client, Classes.ARCHER.getItemEncoding());
   }
 
   public static boolean isWarrior(Minecraft client) {
-    return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Warrior"))
-        || mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Warrior"));
-  }
-
-  public static boolean isMage(Minecraft client) {
-    return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Mage"))
-        || mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Mage"));
+    return mainHandItemHasTooltipText(client, Classes.WARRIOR.getClassEncoding())
+        || mainHandItemHasTooltipText(client, Classes.WARRIOR.getItemEncoding());
   }
 
   public static boolean isAssassin(Minecraft client) {
-    return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Assassin"))
-        || mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Assassin"));
+    return mainHandItemHasTooltipText(client, Classes.ASSASSIN.getClassEncoding())
+        || mainHandItemHasTooltipText(client, Classes.ASSASSIN.getItemEncoding());
+  }
+
+  public static boolean isMage(Minecraft client) {
+    return mainHandItemHasTooltipText(client, Classes.MAGE.getClassEncoding())
+        || mainHandItemHasTooltipText(client, Classes.MAGE.getItemEncoding());
   }
 
   public static boolean isShaman(Minecraft client) {
-    return mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_CLASS_TYPE.get("Shaman"))
-        || mainHandItemHasTooltipText(client, ITEM_ENCODINGS_BY_WEAPON_TYPE.get("Shaman"));
+    return mainHandItemHasTooltipText(client, Classes.SHAMAN.getClassEncoding())
+        || mainHandItemHasTooltipText(client, Classes.SHAMAN.getItemEncoding());
   }
 
   public static boolean isWeapon(Minecraft client) {
@@ -179,21 +155,5 @@ public class Utils {
   public static void refreshAndSaveKeyBindings() {
     refreshKeyBindings();
     saveKeyBindings();
-  }
-
-  public static boolean[] keyToClicks(KeyMapping key, boolean isArcher) {
-    if (key.same(WynnSpellsClient.MELEE_KEY)) {
-      return isArcher ? new boolean[] {true} : new boolean[] {false};
-    } else if (key.same(WynnSpellsClient.FIRST_SPELL_KEY)) {
-      return isArcher ? new boolean[] {false, true, false} : new boolean[] {true, false, true};
-    } else if (key.same(WynnSpellsClient.SECOND_SPELL_KEY)) {
-      return isArcher ? new boolean[] {false, false, false} : new boolean[] {true, true, true};
-    } else if (key.same(WynnSpellsClient.THIRD_SPELL_KEY)) {
-      return isArcher ? new boolean[] {false, true, true} : new boolean[] {true, false, false};
-    } else if (key.same(WynnSpellsClient.FOURTH_SPELL_KEY)) {
-      return isArcher ? new boolean[] {false, false, true} : new boolean[] {true, true, false};
-    }
-
-    return new boolean[0];
   }
 }

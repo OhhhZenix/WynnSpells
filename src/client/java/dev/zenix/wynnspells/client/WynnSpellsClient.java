@@ -2,6 +2,11 @@ package dev.zenix.wynnspells.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.zenix.wynnspells.WynnSpells;
+import dev.zenix.wynnspells.client.config.ClothConfig;
+import dev.zenix.wynnspells.client.config.ConfigScreen;
+import dev.zenix.wynnspells.client.core.PingTracker;
+import dev.zenix.wynnspells.client.core.UpdateChecker;
+import dev.zenix.wynnspells.client.spell.SpellCaster;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
@@ -14,48 +19,8 @@ import net.minecraft.resources.Identifier;
 
 public class WynnSpellsClient implements ClientModInitializer {
 
-  private static final KeyMapping.Category KEY_CATEGORY =
+  public static final KeyMapping.Category KEY_CATEGORY =
       KeyMapping.Category.register(Identifier.fromNamespaceAndPath(WynnSpells.MOD_ID, "all"));
-
-  public static final KeyMapping FIRST_SPELL_KEY =
-      KeyMappingHelper.registerKeyMapping(
-          new KeyMapping(
-              "key.wynnspells.first",
-              InputConstants.Type.KEYBOARD,
-              InputConstants.UNKNOWN.getValue(),
-              KEY_CATEGORY));
-
-  public static final KeyMapping SECOND_SPELL_KEY =
-      KeyMappingHelper.registerKeyMapping(
-          new KeyMapping(
-              "key.wynnspells.second",
-              InputConstants.Type.KEYBOARD,
-              InputConstants.UNKNOWN.getValue(),
-              KEY_CATEGORY));
-
-  public static final KeyMapping THIRD_SPELL_KEY =
-      KeyMappingHelper.registerKeyMapping(
-          new KeyMapping(
-              "key.wynnspells.third",
-              InputConstants.Type.KEYBOARD,
-              InputConstants.UNKNOWN.getValue(),
-              KEY_CATEGORY));
-
-  public static final KeyMapping FOURTH_SPELL_KEY =
-      KeyMappingHelper.registerKeyMapping(
-          new KeyMapping(
-              "key.wynnspells.fourth",
-              InputConstants.Type.KEYBOARD,
-              InputConstants.UNKNOWN.getValue(),
-              KEY_CATEGORY));
-
-  public static final KeyMapping MELEE_KEY =
-      KeyMappingHelper.registerKeyMapping(
-          new KeyMapping(
-              "key.wynnspells.melee",
-              InputConstants.Type.KEYBOARD,
-              InputConstants.UNKNOWN.getValue(),
-              KEY_CATEGORY));
 
   public static final KeyMapping CONFIG_KEY =
       KeyMappingHelper.registerKeyMapping(
@@ -69,7 +34,7 @@ public class WynnSpellsClient implements ClientModInitializer {
   private ClothConfig config;
   private UpdateChecker updateChecker;
   private PingTracker pingTracker;
-  private Caster caster;
+  private SpellCaster spellCaster;
 
   public static WynnSpellsClient getInstance() {
     return instance;
@@ -78,10 +43,38 @@ public class WynnSpellsClient implements ClientModInitializer {
   @Override
   public void onInitializeClient() {
     instance = this;
+    ClientLifecycleEvents.CLIENT_STARTED.register(this::onStart);
+    ClientLifecycleEvents.CLIENT_STOPPING.register(this::onStop);
+    ClientTickEvents.END_CLIENT_TICK.register(this::processConfigKey);
+  }
+
+  private void onStart(Minecraft client) {
     loadConfig();
-    ClientLifecycleEvents.CLIENT_STARTED.register(this::onClientStart);
-    ClientLifecycleEvents.CLIENT_STOPPING.register(this::onClientStop);
-    ClientTickEvents.END_CLIENT_TICK.register(this::onClientEndTick);
+
+    updateChecker = new UpdateChecker();
+    updateChecker.start();
+
+    pingTracker = new PingTracker(client);
+    pingTracker.start();
+
+    spellCaster = new SpellCaster(client);
+    spellCaster.start();
+  }
+
+  private void onStop(Minecraft client) {
+    updateChecker.stop();
+    pingTracker.stop();
+    spellCaster.stop();
+  }
+
+  private void processConfigKey(Minecraft client) {
+    if (CONFIG_KEY.consumeClick()) {
+      client.setScreenAndShow(ConfigScreen.create(client.gui.screen()));
+    }
+  }
+
+  public ClothConfig getConfig() {
+    return config;
   }
 
   private void loadConfig() {
@@ -90,40 +83,9 @@ public class WynnSpellsClient implements ClientModInitializer {
     WynnSpells.LOGGER.info("Config loaded successfully");
   }
 
-  public ClothConfig getConfig() {
-    return config;
-  }
-
   public void saveConfig() {
     WynnSpells.LOGGER.debug("Saving configuration");
     AutoConfig.getConfigHolder(ClothConfig.class).save();
-  }
-
-  private void onClientStart(Minecraft client) {
-    updateChecker = new UpdateChecker();
-    updateChecker.start();
-
-    pingTracker = new PingTracker(client);
-    pingTracker.start();
-
-    caster = new Caster(client);
-    caster.start();
-  }
-
-  private void onClientStop(Minecraft client) {
-    updateChecker.stop();
-    pingTracker.stop();
-    caster.stop();
-  }
-
-  private void onClientEndTick(Minecraft client) {
-    processConfigKey(client);
-  }
-
-  private void processConfigKey(Minecraft client) {
-    if (CONFIG_KEY.consumeClick()) {
-      client.setScreenAndShow(ConfigScreen.create(client.gui.screen()));
-    }
   }
 
   public PingTracker getPingTracker() {

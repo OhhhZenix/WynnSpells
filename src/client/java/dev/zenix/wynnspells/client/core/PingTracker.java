@@ -1,4 +1,4 @@
-package dev.zenix.wynnspells.client;
+package dev.zenix.wynnspells.client.core;
 
 import dev.zenix.wynnspells.WynnSpells;
 import dev.zenix.wynnspells.client.event.ClientPacketListenerEvents;
