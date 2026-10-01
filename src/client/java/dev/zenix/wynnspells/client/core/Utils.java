@@ -51,6 +51,14 @@ public class Utils {
     Utils.sendPacket(mc, new ServerboundUseItemPacket(InteractionHand.MAIN_HAND, 0, yRot, xRot));
   }
 
+  public static void sendClick(Minecraft mc, boolean click) {
+    if (click ^ Utils.isArcher(mc)) {
+      Utils.sendInteractPacket(mc);
+    } else {
+      Utils.sendAttackPacket(mc);
+    }
+  }
+
   public static boolean mainHandItemHasTooltipText(Minecraft client, String searchText) {
     if (client == null || client.player == null || searchText == null || searchText.isEmpty())
       return false;
@@ -133,6 +141,21 @@ public class Utils {
       return TimeUnit.MILLISECONDS.toNanos(Utils.getAutoDelay());
     }
     return TimeUnit.MILLISECONDS.toNanos(config.getManualDelay());
+  }
+
+  public static List<Boolean> getClicks(KeyMapping keyMapping) {
+    if (keyMapping == WynnSpellsClient.FIRST_SPELL_KEY) {
+      return List.of(true, false, true);
+    } else if (keyMapping == WynnSpellsClient.SECOND_SPELL_KEY) {
+      return List.of(true, true, true);
+    } else if (keyMapping == WynnSpellsClient.THIRD_SPELL_KEY) {
+      return List.of(true, false, false);
+    } else if (keyMapping == WynnSpellsClient.FOURTH_SPELL_KEY) {
+      return List.of(true, true, false);
+    } else if (keyMapping == WynnSpellsClient.MELEE_KEY) {
+      return List.of(false);
+    }
+    return List.of();
   }
 
   public static void refreshKeyBindings() {
