@@ -2,6 +2,10 @@
 
 All the changes in WynnSpells.
 
+## Release 3.2.0
+
+- Improve update checker
+
 ## Release 3.1.0
 
 - Fix crashing on startup due to mixins
