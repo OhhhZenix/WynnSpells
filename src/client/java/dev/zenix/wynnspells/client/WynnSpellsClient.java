@@ -6,7 +6,7 @@ import dev.zenix.wynnspells.client.config.ClothConfig;
 import dev.zenix.wynnspells.client.config.ConfigScreen;
 import dev.zenix.wynnspells.client.core.PingTracker;
 import dev.zenix.wynnspells.client.core.UpdateChecker;
-import dev.zenix.wynnspells.client.spell.SpellCaster;
+import dev.zenix.wynnspells.client.spell.SpellQueue;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
@@ -34,7 +34,7 @@ public class WynnSpellsClient implements ClientModInitializer {
   private ClothConfig config;
   private UpdateChecker updateChecker;
   private PingTracker pingTracker;
-  private SpellCaster spellCaster;
+  private SpellQueue spellQueue;
 
   public static WynnSpellsClient getInstance() {
     return instance;
@@ -57,14 +57,14 @@ public class WynnSpellsClient implements ClientModInitializer {
     pingTracker = new PingTracker(client);
     pingTracker.start();
 
-    spellCaster = new SpellCaster(client);
-    spellCaster.start();
+    spellQueue = new SpellQueue(client);
+    spellQueue.start();
   }
 
   private void onStop(Minecraft client) {
     updateChecker.stop();
     pingTracker.stop();
-    spellCaster.stop();
+    spellQueue.stop();
   }
 
   private void processConfigKey(Minecraft client) {

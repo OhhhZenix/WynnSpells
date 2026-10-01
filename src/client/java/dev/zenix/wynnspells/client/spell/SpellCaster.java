@@ -1,33 +1,39 @@
 package dev.zenix.wynnspells.client.spell;
 
-import dev.zenix.wynnspells.client.event.MinecraftEvents;
 import net.minecraft.client.Minecraft;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-public final class SpellCaster {
+public class SpellCaster implements Runnable {
 
-  private Minecraft client;
+  private final Minecraft mc;
 
-  public SpellCaster(Minecraft client) {
-    this.client = client;
-    MinecraftEvents.START_ATTACK.register(this::onStartAttack);
-    MinecraftEvents.START_USE_ITEM.register(this::onStartUseItem);
+  public SpellCaster(Minecraft mc) {
+    this.mc = mc;
   }
 
-  public void start() {}
+  @Override
+  public void run() {}
 
-  public void stop() {}
-
-  private void onStartAttack(CallbackInfoReturnable<Boolean> cir) {
-    //        if (handleVanillaAction(true)) {
-    //            cir.setReturnValue(true);
-    //        }
-  }
-
-  private void onStartUseItem(CallbackInfo ci) {
-    //        if (handleVanillaAction(false)) {
-    //            ci.cancel();
-    //        }
-  }
+  //  private Minecraft client;
+  //
+  //  public SpellCaster(Minecraft client) {
+  //    this.client = client;
+  //    MinecraftEvents.START_ATTACK.register(this::onStartAttack);
+  //    MinecraftEvents.START_USE_ITEM.register(this::onStartUseItem);
+  //  }
+  //
+  //  public void start() {}
+  //
+  //  public void stop() {}
+  //
+  //  private void onStartAttack(CallbackInfoReturnable<Boolean> cir) {
+  //    //        if (handleVanillaAction(true)) {
+  //    //            cir.setReturnValue(true);
+  //    //        }
+  //  }
+  //
+  //  private void onStartUseItem(CallbackInfo ci) {
+  //    //        if (handleVanillaAction(false)) {
+  //    //            ci.cancel();
+  //    //        }
+  //  }
 }
