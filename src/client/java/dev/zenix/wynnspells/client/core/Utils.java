@@ -10,6 +10,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
@@ -35,13 +36,21 @@ public class Utils {
     networkHandler.send(packet);
   }
 
-  public static void sendAttackPacket(Minecraft client) {
-    Utils.sendPacket(client, new ServerboundPunchPacket());
+  public static void sendAttackPacket(Minecraft mc) {
+    Utils.sendPacket(mc, new ServerboundPunchPacket());
   }
 
-  public static void sendInteractPacket(Minecraft client, float yaw, float pitch) {
-    Utils.sendPacket(
-        client, new ServerboundUseItemPacket(InteractionHand.MAIN_HAND, 0, yaw, pitch));
+  public static void sendInteractPacket(Minecraft mc) {
+    float yRot = 0;
+    float xRot = 0;
+
+    LocalPlayer player = mc.player;
+    if (player != null) {
+      yRot = player.getYRot();
+      xRot = player.getXRot();
+    }
+
+    Utils.sendPacket(mc, new ServerboundUseItemPacket(InteractionHand.MAIN_HAND, 0, yRot, xRot));
   }
 
   public static void sendSneakingPacket(Minecraft client, boolean isSneaking) {
