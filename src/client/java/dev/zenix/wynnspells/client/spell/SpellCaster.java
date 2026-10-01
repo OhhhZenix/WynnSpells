@@ -1,17 +1,14 @@
 package dev.zenix.wynnspells.client.spell;
 
 import dev.zenix.wynnspells.client.WynnSpellsClient;
-import dev.zenix.wynnspells.client.config.ClothConfig;
 import dev.zenix.wynnspells.client.core.Utils;
 import dev.zenix.wynnspells.client.event.MinecraftEvents;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -43,28 +40,28 @@ public class SpellCaster {
   }
 
   private boolean handleVanillaAction(boolean isAttack) {
-//    if (!isCasting()) return false;
-//
-//    boolean isNormalAttack = isAttack && !Utils.isArcher(mc);
-//    boolean isUseAttack = !isAttack && Utils.isArcher(mc);
-//
-//    if (isNormalAttack || isUseAttack) {
-//      addKey(WynnSpellsClient.MELEE_KEY);
-//    }
+    //    if (!isCasting()) return false;
+    //
+    //    boolean isNormalAttack = isAttack && !Utils.isArcher(mc);
+    //    boolean isUseAttack = !isAttack && Utils.isArcher(mc);
+    //
+    //    if (isNormalAttack || isUseAttack) {
+    //      addKey(WynnSpellsClient.MELEE_KEY);
+    //    }
 
     return true;
   }
 
   private void onStartAttack(CallbackInfoReturnable<Boolean> cir) {
-    if (handleVanillaAction(true)) {
-      cir.setReturnValue(true);
-    }
+//    if (handleVanillaAction(true)) {
+//      cir.setReturnValue(true);
+//    }
   }
 
   private void onStartUseItem(CallbackInfo ci) {
-    if (handleVanillaAction(false)) {
-      ci.cancel();
-    }
+//    if (handleVanillaAction(false)) {
+//      ci.cancel();
+//    }
   }
 
   private void resetState() {
@@ -79,6 +76,27 @@ public class SpellCaster {
     keys.clear();
     clicks.clear();
     previousSlot = currentSlot;
+  }
+
+  private void processKeys(KeyMapping keyMapping) {
+    if (keyMapping.consumeClick()) {
+      keys.offer(keyMapping);
+    }
+  }
+
+  private void processKeys() {
+    processKeys(WynnSpellsClient.FIRST_SPELL_KEY);
+    processKeys(WynnSpellsClient.SECOND_SPELL_KEY);
+    processKeys(WynnSpellsClient.THIRD_SPELL_KEY);
+    processKeys(WynnSpellsClient.FOURTH_SPELL_KEY);
+    processKeys(WynnSpellsClient.MELEE_KEY);
+  }
+
+  private void convertKeysToClicks() {
+    KeyMapping keyMapping = keys.poll();
+    for (boolean click : Utils.getClicks(keyMapping)) {
+      clicks.offer(click);
+    }
   }
 
   private void processClicks() {
@@ -103,6 +121,8 @@ public class SpellCaster {
   private void run() {
     while (running.get()) {
       resetState();
+      processKeys();
+      convertKeysToClicks();
       processClicks();
     }
   }
