@@ -2,6 +2,10 @@
 
 All the changes in WynnSpells.
 
+## Release 2.4.0
+
+- Backport update checker improvements
+
 ## Release 2.3.0
 
 - Backport improvements from version 3
