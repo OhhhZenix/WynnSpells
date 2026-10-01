@@ -53,20 +53,6 @@ public class Utils {
     Utils.sendPacket(mc, new ServerboundUseItemPacket(InteractionHand.MAIN_HAND, 0, yRot, xRot));
   }
 
-  public static void sendSneakingPacket(Minecraft client, boolean isSneaking) {
-    Input playerInput =
-        new Input(
-            client.options.keyUp.isDown(),
-            client.options.keyDown.isDown(),
-            client.options.keyLeft.isDown(),
-            client.options.keyRight.isDown(),
-            client.options.keyJump.isDown(),
-            isSneaking,
-            client.options.keySprint.isDown());
-
-    Utils.sendPacket(client, new ServerboundPlayerInputPacket(playerInput));
-  }
-
   public static boolean mainHandItemHasTooltipText(Minecraft client, String searchText) {
     if (client == null || client.player == null || searchText == null || searchText.isEmpty())
       return false;
