@@ -13,11 +13,9 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
 import net.minecraft.network.protocol.game.ServerboundPunchPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -99,8 +97,8 @@ public class Utils {
   public static boolean isWeapon(Minecraft client) {
     return isArcher(client)
         || isWarrior(client)
-        || isMage(client)
         || isAssassin(client)
+        || isMage(client)
         || isShaman(client);
   }
 
