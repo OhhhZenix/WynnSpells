@@ -6,7 +6,7 @@ import dev.zenix.wynnspells.client.config.ClothConfig;
 import dev.zenix.wynnspells.client.config.ConfigScreen;
 import dev.zenix.wynnspells.client.core.PingTracker;
 import dev.zenix.wynnspells.client.core.UpdateChecker;
-import dev.zenix.wynnspells.client.spell.SpellQueue;
+import dev.zenix.wynnspells.client.spell.SpellCaster;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
@@ -19,8 +19,48 @@ import net.minecraft.resources.Identifier;
 
 public class WynnSpellsClient implements ClientModInitializer {
 
-  public static final KeyMapping.Category KEY_CATEGORY =
+  private static final KeyMapping.Category KEY_CATEGORY =
       KeyMapping.Category.register(Identifier.fromNamespaceAndPath(WynnSpells.MOD_ID, "all"));
+
+  public static final KeyMapping FIRST_SPELL_KEY =
+      KeyMappingHelper.registerKeyMapping(
+          new KeyMapping(
+              "key.wynnspells.first",
+              InputConstants.Type.KEYBOARD,
+              InputConstants.UNKNOWN.getValue(),
+              WynnSpellsClient.KEY_CATEGORY));
+
+  public static final KeyMapping SECOND_SPELL_KEY =
+      KeyMappingHelper.registerKeyMapping(
+          new KeyMapping(
+              "key.wynnspells.second",
+              InputConstants.Type.KEYBOARD,
+              InputConstants.UNKNOWN.getValue(),
+              WynnSpellsClient.KEY_CATEGORY));
+
+  public static final KeyMapping THIRD_SPELL_KEY =
+      KeyMappingHelper.registerKeyMapping(
+          new KeyMapping(
+              "key.wynnspells.third",
+              InputConstants.Type.KEYBOARD,
+              InputConstants.UNKNOWN.getValue(),
+              WynnSpellsClient.KEY_CATEGORY));
+
+  public static final KeyMapping FOURTH_SPELL_KEY =
+      KeyMappingHelper.registerKeyMapping(
+          new KeyMapping(
+              "key.wynnspells.fourth",
+              InputConstants.Type.KEYBOARD,
+              InputConstants.UNKNOWN.getValue(),
+              WynnSpellsClient.KEY_CATEGORY));
+
+  public static final KeyMapping MELEE_KEY =
+      KeyMappingHelper.registerKeyMapping(
+          new KeyMapping(
+              "key.wynnspells.melee",
+              InputConstants.Type.KEYBOARD,
+              InputConstants.UNKNOWN.getValue(),
+              WynnSpellsClient.KEY_CATEGORY));
 
   public static final KeyMapping CONFIG_KEY =
       KeyMappingHelper.registerKeyMapping(
@@ -34,7 +74,7 @@ public class WynnSpellsClient implements ClientModInitializer {
   private ClothConfig config;
   private UpdateChecker updateChecker;
   private PingTracker pingTracker;
-  private SpellQueue spellQueue;
+  private SpellCaster spellCaster;
 
   public static WynnSpellsClient getInstance() {
     return instance;
@@ -57,14 +97,14 @@ public class WynnSpellsClient implements ClientModInitializer {
     pingTracker = new PingTracker(client);
     pingTracker.start();
 
-    spellQueue = new SpellQueue(client);
-    spellQueue.start();
+    spellCaster = new SpellCaster(client);
+    spellCaster.start();
   }
 
   private void onStop(Minecraft client) {
     updateChecker.stop();
     pingTracker.stop();
-    spellQueue.stop();
+    spellCaster.stop();
   }
 
   private void processConfigKey(Minecraft client) {

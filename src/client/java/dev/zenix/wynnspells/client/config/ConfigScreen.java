@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.zenix.wynnspells.WynnSpells;
 import dev.zenix.wynnspells.client.WynnSpellsClient;
 import dev.zenix.wynnspells.client.core.Utils;
-import dev.zenix.wynnspells.client.spell.Spells;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -119,11 +118,11 @@ public class ConfigScreen {
     ConfigCategory keybindsCategory =
         builder.getOrCreateCategory(Component.nullToEmpty("Keybinds"));
     addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.CONFIG_KEY);
-    addKeybind(keybindsCategory, entryBuilder, Spells.MELEE.getKeyMapping());
-    addKeybind(keybindsCategory, entryBuilder, Spells.FIRST.getKeyMapping());
-    addKeybind(keybindsCategory, entryBuilder, Spells.SECOND.getKeyMapping());
-    addKeybind(keybindsCategory, entryBuilder, Spells.THIRD.getKeyMapping());
-    addKeybind(keybindsCategory, entryBuilder, Spells.FOURTH.getKeyMapping());
+    addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.MELEE_KEY);
+    addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.FIRST_SPELL_KEY);
+    addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.SECOND_SPELL_KEY);
+    addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.THIRD_SPELL_KEY);
+    addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.FOURTH_SPELL_KEY);
 
     return builder.build();
   }
