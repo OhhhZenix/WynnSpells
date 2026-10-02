@@ -18,8 +18,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class SpellCaster {
 
   private static final AtomicBoolean running = new AtomicBoolean(true);
-  private final Queue<KeyMapping> keys = new ArrayBlockingQueue<>(1);
-  private final Queue<Boolean> clicks = new ArrayBlockingQueue<>(3);
+  private final Queue<KeyMapping> keys = new ArrayBlockingQueue<>(Utils.KEY_LIMIT);
+  private final Queue<Boolean> clicks = new ArrayBlockingQueue<>(Utils.CLICK_LIMIT);
   private final Set<KeyMapping> previousPressedKeys = new HashSet<>();
   private final Map<KeyMapping, Long> keysTimer = new HashMap<>();
   private int previousSlot = -1;
@@ -161,8 +161,15 @@ public class SpellCaster {
     }
   }
 
+  private boolean isCasting() {
+    long now = System.nanoTime();
+    long delay = Utils.getClickDelay();
+    long tolerance = delay * Utils.CLICK_LIMIT;
+    return !clicks.isEmpty() || now < lastClickTime + (delay + tolerance);
+  }
+
   private boolean handleVanillaAction(boolean isAttack) {
-    if (clicks.isEmpty()) return false;
+    if (!isCasting()) return false;
 
     boolean isArcher = Utils.isArcher(mc);
     boolean isNormalAttack = isAttack && !isArcher;
