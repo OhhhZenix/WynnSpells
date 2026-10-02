@@ -6,16 +6,19 @@ import me.shedaniel.autoconfig.annotation.Config;
 @Config(name = "wynnspells")
 public class ClothConfig implements ConfigData {
 
+  // General
   private boolean notifyUpdates = getDefaultNotifyUpdates();
   private boolean notifyBusyCast = getDefaultNotifyBusyCast();
-
   private boolean weaponOnlyCasting = getDefaultWeaponOnlyCasting();
   private boolean blockClicks = getDefaultBlockClicks();
-  private boolean useAutoDelay = getDefaultUseAutoDelay();
-  private boolean repeatHeldKeys = getDefaultRepeatHeldKeys();
 
+  // Delay
+  private boolean useAutoDelay = getDefaultUseAutoDelay();
   private int autoDelayTolerance = getDefaultAutoDelayTolerance();
   private int manualDelay = getDefaultManualDelay();
+  
+  // Repeat
+  private boolean repeatHeldKeys = getDefaultRepeatHeldKeys();
   private int repeatThreshold = getDefaultRepeatThreshold();
 
   public static boolean getDefaultNotifyUpdates() {
