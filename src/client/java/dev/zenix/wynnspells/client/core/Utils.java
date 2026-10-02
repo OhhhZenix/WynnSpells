@@ -24,6 +24,7 @@ public class Utils {
 
   public static long MS_PER_TICK = 1000L / 20L;
   public static int KEY_LIMIT = 1;
+  public static int CLICK_LIMIT = 3;
 
   public static void sendPacket(Minecraft client, Packet<?> packet) {
     if (client == null) return;
