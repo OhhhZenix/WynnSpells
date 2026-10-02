@@ -2,6 +2,10 @@
 
 All the changes in WynnSpells.
 
+## Release 3.2.1 & 2.4.1
+
+- Clean up some caster backend
+
 ## Release 3.2.0
 
 - Improve update checker
