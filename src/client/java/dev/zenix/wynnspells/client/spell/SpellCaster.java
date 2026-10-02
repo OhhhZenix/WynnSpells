@@ -40,28 +40,28 @@ public class SpellCaster {
   }
 
   private boolean handleVanillaAction(boolean isAttack) {
-    //    if (!isCasting()) return false;
-    //
-    //    boolean isNormalAttack = isAttack && !Utils.isArcher(mc);
-    //    boolean isUseAttack = !isAttack && Utils.isArcher(mc);
-    //
-    //    if (isNormalAttack || isUseAttack) {
-    //      addKey(WynnSpellsClient.MELEE_KEY);
-    //    }
+    if (clicks.isEmpty()) return false;
 
+    boolean isArcher = Utils.isArcher(mc);
+    boolean isNormalAttack = isAttack && !isArcher;
+    boolean isUseAttack = !isAttack && isArcher;
+
+    if (!isNormalAttack && !isUseAttack) return false;
+
+    keys.offer(WynnSpellsClient.MELEE_KEY);
     return true;
   }
 
   private void onStartAttack(CallbackInfoReturnable<Boolean> cir) {
-//    if (handleVanillaAction(true)) {
-//      cir.setReturnValue(true);
-//    }
+    if (handleVanillaAction(true)) {
+      cir.setReturnValue(true);
+    }
   }
 
   private void onStartUseItem(CallbackInfo ci) {
-//    if (handleVanillaAction(false)) {
-//      ci.cancel();
-//    }
+    if (handleVanillaAction(false)) {
+      ci.cancel();
+    }
   }
 
   private void resetState() {
