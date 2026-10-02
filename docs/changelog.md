@@ -2,6 +2,12 @@
 
 All the changes in WynnSpells.
 
+## Release 3.4.0 & 2.6.0
+
+- Fix ping calculation
+- Add ping smooth settings
+- Improve settings menu
+
 ## Release 3.3.0 & 2.5.0
 
 - Fix a logic regression
