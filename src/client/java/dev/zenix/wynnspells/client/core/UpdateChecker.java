@@ -116,7 +116,7 @@ public final class UpdateChecker {
 
     Utils.sendNotification(
         Component.nullToEmpty("New update available: " + latest),
-        WynnSpellsClient.getInstance().getConfig().shouldNotifyUpdates());
+        WynnSpellsClient.getInstance().getConfig().isNotifyUpdates());
 
     WynnSpells.LOGGER.info(
         "{} v{} is available (current: v{}). Download: {}",
