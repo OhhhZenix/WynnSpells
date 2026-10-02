@@ -57,6 +57,6 @@ public class PingTracker {
     for (long ping : pings) {
       totalPing += ping;
     }
-    return totalPing / 5;
+    return totalPing / pings.size();
   }
 }
