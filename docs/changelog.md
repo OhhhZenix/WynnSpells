@@ -2,7 +2,7 @@
 
 All the changes in WynnSpells.
 
-## Release 3.2.2 & 2.4.2
+## Release 3.3.0 & 2.5.0
 
 - Fix a logic regression
 
