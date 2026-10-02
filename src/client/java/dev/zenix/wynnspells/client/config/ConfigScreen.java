@@ -28,50 +28,48 @@ public class ConfigScreen {
     ConfigCategory generalCategory = builder.getOrCreateCategory(Component.nullToEmpty("General"));
     generalCategory.addEntry(
         entryBuilder
-            .startBooleanToggle(
-                Component.nullToEmpty("Notify Updates"), config.shouldNotifyUpdates())
+            .startBooleanToggle(Component.nullToEmpty("Notify Updates"), config.isNotifyUpdates())
             .setTooltip(Component.nullToEmpty("To enable or disable update notifications."))
-            .setDefaultValue(ClothConfig.getDefaultNotifyUpdates())
+            .setDefaultValue(ClothConfig.Defaults.NOTIFY_UPDATES)
             .setSaveConsumer(config::setNotifyUpdates)
             .build());
     generalCategory.addEntry(
         entryBuilder
             .startBooleanToggle(
-                Component.nullToEmpty("Notify Busy Cast"), config.shouldNotifyBusyCast())
+                Component.nullToEmpty("Notify Busy Cast"), config.isNotifyBusyCast())
             .setTooltip(Component.nullToEmpty("To enable or disable busy cast notifications."))
-            .setDefaultValue(ClothConfig.getDefaultNotifyBusyCast())
+            .setDefaultValue(ClothConfig.Defaults.NOTIFY_BUSY_CAST)
             .setSaveConsumer(config::setNotifyBusyCast)
             .build());
     generalCategory.addEntry(
         entryBuilder
             .startBooleanToggle(Component.nullToEmpty("Weapon Only"), config.isWeaponOnlyCasting())
             .setTooltip(Component.nullToEmpty("Allow casting keybinds only when a weapon is held."))
-            .setDefaultValue(ClothConfig.getDefaultWeaponOnlyCasting())
+            .setDefaultValue(ClothConfig.Defaults.WEAPON_ONLY_CASTING)
             .setSaveConsumer(config::setWeaponOnlyCasting)
             .build());
     generalCategory.addEntry(
         entryBuilder
-            .startBooleanToggle(Component.nullToEmpty("Block Clicks"), config.getBlockClicks())
+            .startBooleanToggle(Component.nullToEmpty("Block Clicks"), config.isBlockClicks())
             .setTooltip(
                 Component.nullToEmpty("Block left or right clicks while a spell is casting."))
-            .setDefaultValue(ClothConfig.getDefaultBlockClicks())
+            .setDefaultValue(ClothConfig.Defaults.BLOCK_CLICKS)
             .setSaveConsumer(config::setBlockClicks)
             .build());
     generalCategory.addEntry(
         entryBuilder
-            .startBooleanToggle(
-                Component.nullToEmpty("Use Auto Delay"), config.shouldUseAutoDelay())
+            .startBooleanToggle(Component.nullToEmpty("Use Auto Delay"), config.isUseAutoDelay())
             .setTooltip(
                 Component.nullToEmpty("Automatically calculates the most optimal delay for you."))
-            .setDefaultValue(ClothConfig.getDefaultUseAutoDelay())
+            .setDefaultValue(ClothConfig.Defaults.USE_AUTO_DELAY)
             .setSaveConsumer(config::setUseAutoDelay)
             .build());
     generalCategory.addEntry(
         entryBuilder
             .startBooleanToggle(
-                Component.nullToEmpty("Repeat Held Keys"), config.getRepeatHeldKeys())
+                Component.nullToEmpty("Repeat Held Keys"), config.isRepeatHeldKeys())
             .setTooltip(Component.nullToEmpty("Allow action of a held key to be repeated."))
-            .setDefaultValue(ClothConfig.getDefaultRepeatHeldKeys())
+            .setDefaultValue(ClothConfig.Defaults.REPEAT_HELD_KEYS)
             .setSaveConsumer(config::setRepeatHeldKeys)
             .build());
     generalCategory.addEntry(
@@ -81,7 +79,7 @@ public class ConfigScreen {
             .setTooltip(
                 Component.nullToEmpty(
                     "Milliseconds of error allowed per calculation. More is accurate. Less is faster."))
-            .setDefaultValue(ClothConfig.getDefaultAutoDelayTolerance())
+            .setDefaultValue(ClothConfig.Defaults.AUTO_DELAY_TOLERANCE)
             .setSaveConsumer(
                 value -> {
                   int clamped = Math.max(0, value);
@@ -94,7 +92,7 @@ public class ConfigScreen {
             .setTooltip(
                 Component.nullToEmpty(
                     "The delay between clicks. This value is ignored if auto delay is enabled."))
-            .setDefaultValue(ClothConfig.getDefaultManualDelay())
+            .setDefaultValue(ClothConfig.Defaults.MANUAL_DELAY)
             .setSaveConsumer(
                 value -> {
                   int clamped = Math.max(0, value);
@@ -107,7 +105,7 @@ public class ConfigScreen {
             .setTooltip(
                 Component.nullToEmpty(
                     "The delay in milliseconds before the pressed key is counted as held key to repeat same action."))
-            .setDefaultValue(ClothConfig.getDefaultRepeatThreshold())
+            .setDefaultValue(ClothConfig.Defaults.REPEAT_THRESHOLD)
             .setSaveConsumer(
                 value -> {
                   int clamped = Math.max(0, value);
