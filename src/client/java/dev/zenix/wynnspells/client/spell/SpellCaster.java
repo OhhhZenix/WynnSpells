@@ -5,7 +5,6 @@ import dev.zenix.wynnspells.client.config.ClothConfig;
 import dev.zenix.wynnspells.client.core.Utils;
 import dev.zenix.wynnspells.client.event.MinecraftEvents;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.client.KeyMapping;
@@ -18,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class SpellCaster {
 
   private static final AtomicBoolean running = new AtomicBoolean(true);
-  private final Queue<KeyMapping> keys = new ArrayBlockingQueue<>(Utils.KEY_LIMIT);
-  private final Queue<Boolean> clicks = new ArrayBlockingQueue<>(Utils.CLICK_LIMIT);
+  private final Queue<KeyMapping> keys = new ArrayDeque<>();
+  private final Queue<Boolean> clicks = new ArrayDeque<>();
   private final Set<KeyMapping> previousPressedKeys = new HashSet<>();
   private final Map<KeyMapping, Long> keysTimer = new HashMap<>();
   private int previousSlot = -1;
@@ -54,6 +53,7 @@ public class SpellCaster {
     keys.clear();
     clicks.clear();
     previousSlot = currentSlot;
+    lastClickTime = 0;
   }
 
   private void addKey(KeyMapping key) {
