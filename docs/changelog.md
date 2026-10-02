@@ -2,6 +2,11 @@
 
 All the changes in WynnSpells.
 
+## Release 3.3.0 & 2.5.0
+
+- Fix a logic regression
+- Improve auto delay
+
 ## Release 3.2.1 & 2.4.1
 
 - Clean up some caster backend

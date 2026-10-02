@@ -125,6 +125,10 @@ public class SpellCaster {
   }
 
   private void convertKeysToClicks() {
+    if (!clicks.isEmpty()) return;
+
+    if (keys.isEmpty()) return;
+
     KeyMapping keyMapping = keys.poll();
     for (boolean click : Utils.getClicks(keyMapping)) {
       clicks.offer(click);

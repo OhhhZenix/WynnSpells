@@ -2,6 +2,8 @@ package dev.zenix.wynnspells.client.core;
 
 import dev.zenix.wynnspells.WynnSpells;
 import dev.zenix.wynnspells.client.event.ClientPacketListenerEvents;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +17,7 @@ public class PingTracker {
 
   private final Minecraft mc;
   private final ScheduledExecutorService scheduler;
-  private volatile long lastPing = 0;
+  private final Queue<Long> pings = new ArrayDeque<>();
 
   public PingTracker(Minecraft mc) {
     this.mc = mc;
@@ -37,14 +39,24 @@ public class PingTracker {
 
   private void onPongReceivedEvent(ClientboundPongResponsePacket packet, CallbackInfo ci) {
     long currentTime = Util.getMillis();
-    long startTime = packet.time();
+    long packetTime = packet.time();
+    long ping = currentTime - packetTime;
+
     WynnSpells.LOGGER.debug("Current Time: {}", currentTime);
-    WynnSpells.LOGGER.debug("Start Time: {}", startTime);
-    WynnSpells.LOGGER.debug("Ping: {}", currentTime - startTime);
-    lastPing = currentTime - startTime;
+    WynnSpells.LOGGER.debug("Packet Time: {}", packetTime);
+    WynnSpells.LOGGER.debug("Ping: {}", ping);
+
+    pings.add(ping);
+    if (pings.size() > 5) {
+      pings.remove();
+    }
   }
 
-  public long getLastPing() {
-    return lastPing;
+  public long getAvgPing() {
+    long totalPing = 0;
+    for (long ping : pings) {
+      totalPing += ping;
+    }
+    return totalPing / 5;
   }
 }
