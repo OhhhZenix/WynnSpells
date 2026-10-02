@@ -11,6 +11,7 @@ public class ClothConfig implements ConfigData {
   private boolean notifyBusyCast = getDefaultNotifyBusyCast();
   private boolean weaponOnlyCasting = getDefaultWeaponOnlyCasting();
   private boolean blockClicks = getDefaultBlockClicks();
+  private int pingLookBack = 0;
 
   // Timings
   private boolean useAutoDelay = getDefaultUseAutoDelay();
