@@ -12,12 +12,12 @@ public class ClothConfig implements ConfigData {
   private boolean weaponOnlyCasting = getDefaultWeaponOnlyCasting();
   private boolean blockClicks = getDefaultBlockClicks();
 
-  // Delay
+  // Timings
   private boolean useAutoDelay = getDefaultUseAutoDelay();
   private int autoDelayTolerance = getDefaultAutoDelayTolerance();
   private int manualDelay = getDefaultManualDelay();
-  
-  // Repeat
+
+  // Inputs
   private boolean repeatHeldKeys = getDefaultRepeatHeldKeys();
   private int repeatThreshold = getDefaultRepeatThreshold();
 
