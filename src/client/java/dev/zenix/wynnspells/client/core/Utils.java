@@ -13,7 +13,7 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ServerboundPunchPacket;
+import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
@@ -36,7 +36,7 @@ public class Utils {
   }
 
   public static void sendAttackPacket(Minecraft mc) {
-    Utils.sendPacket(mc, new ServerboundPunchPacket());
+    Utils.sendPacket(mc, new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
   }
 
   public static void sendInteractPacket(Minecraft mc) {
@@ -114,7 +114,7 @@ public class Utils {
     }
 
     SystemToast.add(
-        Minecraft.getInstance().gui.toastManager(),
+        Minecraft.getInstance().getToastManager(),
         SystemToast.SystemToastId.WORLD_BACKUP,
         Component.nullToEmpty(WynnSpells.MOD_NAME),
         description);
