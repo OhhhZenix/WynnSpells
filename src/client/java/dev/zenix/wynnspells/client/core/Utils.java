@@ -26,10 +26,10 @@ public class Utils {
   public static int KEY_LIMIT = 1;
   public static int CLICK_LIMIT = 3;
 
-  public static void sendPacket(Minecraft client, Packet<?> packet) {
-    if (client == null) return;
+  public static void sendPacket(Minecraft mc, Packet<?> packet) {
+    if (mc == null) return;
 
-    ClientPacketListener networkHandler = client.getConnection();
+    ClientPacketListener networkHandler = mc.getConnection();
     if (networkHandler == null) return;
 
     networkHandler.send(packet);
@@ -60,15 +60,16 @@ public class Utils {
     }
   }
 
-  public static boolean mainHandItemHasTooltipText(Minecraft client, String searchText) {
-    if (client == null || client.player == null || searchText == null || searchText.isEmpty())
-      return false;
+  public static boolean mainHandItemHasTooltipText(Minecraft mc, String searchText) {
+    LocalPlayer player = mc.player;
 
-    ItemStack heldItem = client.player.getMainHandItem();
+    if (player == null || searchText == null || searchText.isEmpty()) return false;
+
+    ItemStack heldItem = player.getMainHandItem();
     if (heldItem.isEmpty()) return false;
 
     List<Component> tooltip =
-        heldItem.getTooltipLines(Item.TooltipContext.EMPTY, client.player, TooltipFlag.NORMAL);
+        heldItem.getTooltipLines(Item.TooltipContext.EMPTY, player, TooltipFlag.NORMAL);
     if (tooltip.isEmpty()) return false;
 
     for (Component line : tooltip) {
@@ -78,37 +79,33 @@ public class Utils {
     return false;
   }
 
-  public static boolean isArcher(Minecraft client) {
-    return mainHandItemHasTooltipText(client, Classes.ARCHER.getClassEncoding())
-        || mainHandItemHasTooltipText(client, Classes.ARCHER.getItemEncoding());
+  public static boolean isArcher(Minecraft mc) {
+    return mainHandItemHasTooltipText(mc, Classes.ARCHER.getClassEncoding())
+        || mainHandItemHasTooltipText(mc, Classes.ARCHER.getItemEncoding());
   }
 
-  public static boolean isWarrior(Minecraft client) {
-    return mainHandItemHasTooltipText(client, Classes.WARRIOR.getClassEncoding())
-        || mainHandItemHasTooltipText(client, Classes.WARRIOR.getItemEncoding());
+  public static boolean isWarrior(Minecraft mc) {
+    return mainHandItemHasTooltipText(mc, Classes.WARRIOR.getClassEncoding())
+        || mainHandItemHasTooltipText(mc, Classes.WARRIOR.getItemEncoding());
   }
 
-  public static boolean isAssassin(Minecraft client) {
-    return mainHandItemHasTooltipText(client, Classes.ASSASSIN.getClassEncoding())
-        || mainHandItemHasTooltipText(client, Classes.ASSASSIN.getItemEncoding());
+  public static boolean isAssassin(Minecraft mc) {
+    return mainHandItemHasTooltipText(mc, Classes.ASSASSIN.getClassEncoding())
+        || mainHandItemHasTooltipText(mc, Classes.ASSASSIN.getItemEncoding());
   }
 
-  public static boolean isMage(Minecraft client) {
-    return mainHandItemHasTooltipText(client, Classes.MAGE.getClassEncoding())
-        || mainHandItemHasTooltipText(client, Classes.MAGE.getItemEncoding());
+  public static boolean isMage(Minecraft mc) {
+    return mainHandItemHasTooltipText(mc, Classes.MAGE.getClassEncoding())
+        || mainHandItemHasTooltipText(mc, Classes.MAGE.getItemEncoding());
   }
 
-  public static boolean isShaman(Minecraft client) {
-    return mainHandItemHasTooltipText(client, Classes.SHAMAN.getClassEncoding())
-        || mainHandItemHasTooltipText(client, Classes.SHAMAN.getItemEncoding());
+  public static boolean isShaman(Minecraft mc) {
+    return mainHandItemHasTooltipText(mc, Classes.SHAMAN.getClassEncoding())
+        || mainHandItemHasTooltipText(mc, Classes.SHAMAN.getItemEncoding());
   }
 
-  public static boolean isWeapon(Minecraft client) {
-    return isArcher(client)
-        || isWarrior(client)
-        || isAssassin(client)
-        || isMage(client)
-        || isShaman(client);
+  public static boolean isWeapon(Minecraft mc) {
+    return isArcher(mc) || isWarrior(mc) || isAssassin(mc) || isMage(mc) || isShaman(mc);
   }
 
   public static void sendNotification(Component description, Boolean shouldSend) {
