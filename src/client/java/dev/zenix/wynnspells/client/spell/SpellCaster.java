@@ -61,8 +61,7 @@ public class SpellCaster {
 
     if (keys.size() >= Utils.KEY_LIMIT) {
       Utils.sendNotification(
-          Component.literal("Cast ignored: try slowing down a bit."),
-          config.shouldNotifyBusyCast());
+          Component.literal("Cast ignored: try slowing down a bit."), config.isNotifyBusyCast());
       return;
     }
 
@@ -77,7 +76,7 @@ public class SpellCaster {
     if (key == null) return;
 
     ClothConfig config = WynnSpellsClient.getInstance().getConfig();
-    boolean repeat = config.getRepeatHeldKeys();
+    boolean repeat = config.isRepeatHeldKeys();
 
     long now = System.nanoTime();
 

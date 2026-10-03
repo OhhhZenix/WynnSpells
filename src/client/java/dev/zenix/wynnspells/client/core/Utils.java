@@ -134,7 +134,7 @@ public class Utils {
 
   public static long getClickDelay() {
     ClothConfig config = WynnSpellsClient.getInstance().getConfig();
-    if (config.shouldUseAutoDelay()) {
+    if (config.isUseAutoDelay()) {
       return TimeUnit.MILLISECONDS.toNanos(Utils.getAutoDelay());
     }
     return TimeUnit.MILLISECONDS.toNanos(config.getManualDelay());
