@@ -20,50 +20,56 @@ import net.minecraft.resources.Identifier;
 
 public class WynnSpellsClient implements ClientModInitializer {
 
-  private static final KeyMapping.Category KEY_CATEGORY = KeyMapping.Category
-      .register(Identifier.fromNamespaceAndPath(WynnSpells.MOD_ID, "all"));
+  private static final KeyMapping.Category KEY_CATEGORY =
+      KeyMapping.Category.register(Identifier.fromNamespaceAndPath(WynnSpells.MOD_ID, "all"));
 
-  public static final KeyMapping FIRST_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
-      new KeyMapping(
-          "key.wynnspells.first",
-          InputConstants.Type.KEYSYM,
-          InputConstants.UNKNOWN.getValue(),
-          WynnSpellsClient.KEY_CATEGORY));
+  public static final KeyMapping FIRST_SPELL_KEY =
+      KeyBindingHelper.registerKeyBinding(
+          new KeyMapping(
+              "key.wynnspells.first",
+              InputConstants.Type.KEYSYM,
+              InputConstants.UNKNOWN.getValue(),
+              WynnSpellsClient.KEY_CATEGORY));
 
-  public static final KeyMapping SECOND_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
-      new KeyMapping(
-          "key.wynnspells.second",
-          InputConstants.Type.KEYSYM,
-          InputConstants.UNKNOWN.getValue(),
-          WynnSpellsClient.KEY_CATEGORY));
+  public static final KeyMapping SECOND_SPELL_KEY =
+      KeyBindingHelper.registerKeyBinding(
+          new KeyMapping(
+              "key.wynnspells.second",
+              InputConstants.Type.KEYSYM,
+              InputConstants.UNKNOWN.getValue(),
+              WynnSpellsClient.KEY_CATEGORY));
 
-  public static final KeyMapping THIRD_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
-      new KeyMapping(
-          "key.wynnspells.third",
-          InputConstants.Type.KEYSYM,
-          InputConstants.UNKNOWN.getValue(),
-          WynnSpellsClient.KEY_CATEGORY));
+  public static final KeyMapping THIRD_SPELL_KEY =
+      KeyBindingHelper.registerKeyBinding(
+          new KeyMapping(
+              "key.wynnspells.third",
+              InputConstants.Type.KEYSYM,
+              InputConstants.UNKNOWN.getValue(),
+              WynnSpellsClient.KEY_CATEGORY));
 
-  public static final KeyMapping FOURTH_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
-      new KeyMapping(
-          "key.wynnspells.fourth",
-          InputConstants.Type.KEYSYM,
-          InputConstants.UNKNOWN.getValue(),
-          WynnSpellsClient.KEY_CATEGORY));
+  public static final KeyMapping FOURTH_SPELL_KEY =
+      KeyBindingHelper.registerKeyBinding(
+          new KeyMapping(
+              "key.wynnspells.fourth",
+              InputConstants.Type.KEYSYM,
+              InputConstants.UNKNOWN.getValue(),
+              WynnSpellsClient.KEY_CATEGORY));
 
-  public static final KeyMapping MELEE_KEY = KeyBindingHelper.registerKeyBinding(
-      new KeyMapping(
-          "key.wynnspells.melee",
-          InputConstants.Type.KEYSYM,
-          InputConstants.UNKNOWN.getValue(),
-          WynnSpellsClient.KEY_CATEGORY));
+  public static final KeyMapping MELEE_KEY =
+      KeyBindingHelper.registerKeyBinding(
+          new KeyMapping(
+              "key.wynnspells.melee",
+              InputConstants.Type.KEYSYM,
+              InputConstants.UNKNOWN.getValue(),
+              WynnSpellsClient.KEY_CATEGORY));
 
-  public static final KeyMapping CONFIG_KEY = KeyBindingHelper.registerKeyBinding(
-      new KeyMapping(
-          "key.wynnspells.config",
-          InputConstants.Type.KEYSYM,
-          InputConstants.UNKNOWN.getValue(),
-          KEY_CATEGORY));
+  public static final KeyMapping CONFIG_KEY =
+      KeyBindingHelper.registerKeyBinding(
+          new KeyMapping(
+              "key.wynnspells.config",
+              InputConstants.Type.KEYSYM,
+              InputConstants.UNKNOWN.getValue(),
+              KEY_CATEGORY));
 
   private static final AtomicBoolean running = new AtomicBoolean(true);
   private static WynnSpellsClient instance = null;
@@ -105,7 +111,7 @@ public class WynnSpellsClient implements ClientModInitializer {
 
   private void processConfigKey(Minecraft mc) {
     if (CONFIG_KEY.consumeClick()) {
-      client.setScreenAndShow(ConfigScreen.create(client.screen));
+      mc.setScreenAndShow(ConfigScreen.create(mc.screen));
     }
   }
 
