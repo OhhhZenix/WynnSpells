@@ -2,6 +2,11 @@
 
 All the changes in WynnSpells.
 
+## Release 3.4.1 & 2.6.1
+
+- Fix threading issues
+- Fix spell lock up
+
 ## Release 3.4.0 & 2.6.0
 
 - Fix ping calculation
