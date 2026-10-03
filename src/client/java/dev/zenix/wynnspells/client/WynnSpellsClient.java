@@ -7,6 +7,7 @@ import dev.zenix.wynnspells.client.config.ConfigScreen;
 import dev.zenix.wynnspells.client.core.PingTracker;
 import dev.zenix.wynnspells.client.core.UpdateChecker;
 import dev.zenix.wynnspells.client.spell.SpellCaster;
+import java.util.concurrent.atomic.AtomicBoolean;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
@@ -70,14 +71,17 @@ public class WynnSpellsClient implements ClientModInitializer {
               InputConstants.UNKNOWN.getValue(),
               KEY_CATEGORY));
 
+  private static final AtomicBoolean running = new AtomicBoolean(true);
   private static WynnSpellsClient instance = null;
   private ClothConfig config;
-  private UpdateChecker updateChecker;
   private PingTracker pingTracker;
-  private SpellCaster spellCaster;
 
   public static WynnSpellsClient getInstance() {
     return instance;
+  }
+
+  public static boolean isRunning() {
+    return running.get();
   }
 
   @Override
@@ -88,28 +92,26 @@ public class WynnSpellsClient implements ClientModInitializer {
     ClientTickEvents.END_CLIENT_TICK.register(this::processConfigKey);
   }
 
-  private void onStart(Minecraft client) {
+  private void onStart(Minecraft mc) {
     loadConfig();
 
-    updateChecker = new UpdateChecker();
-    updateChecker.start();
-
-    pingTracker = new PingTracker(client);
+    pingTracker = new PingTracker(mc);
     pingTracker.start();
 
-    spellCaster = new SpellCaster(client);
+    SpellCaster spellCaster = new SpellCaster(mc);
     spellCaster.start();
+
+    UpdateChecker updateChecker = new UpdateChecker();
+    updateChecker.start();
   }
 
-  private void onStop(Minecraft client) {
-    updateChecker.stop();
-    pingTracker.stop();
-    spellCaster.stop();
+  private void onStop(Minecraft mc) {
+    running.set(false);
   }
 
-  private void processConfigKey(Minecraft client) {
+  private void processConfigKey(Minecraft mc) {
     if (CONFIG_KEY.consumeClick()) {
-      client.setScreenAndShow(ConfigScreen.create(client.gui.screen()));
+      mc.setScreenAndShow(ConfigScreen.create(mc.gui.screen()));
     }
   }
 
