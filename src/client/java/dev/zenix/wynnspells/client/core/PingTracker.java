@@ -48,7 +48,9 @@ public class PingTracker {
     WynnSpells.LOGGER.debug("Ping: {}", ping);
 
     pings.add(ping);
-    if (pings.size() > WynnSpellsClient.getInstance().getConfig().getPingLookBack()) {
+
+    int lookBack = WynnSpellsClient.getInstance().getConfig().getPingLookBack();
+    if (pings.size() > lookBack) {
       pings.remove();
     }
   }
