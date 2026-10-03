@@ -1,6 +1,7 @@
 package dev.zenix.wynnspells.client.core;
 
 import dev.zenix.wynnspells.WynnSpells;
+import dev.zenix.wynnspells.client.WynnSpellsClient;
 import dev.zenix.wynnspells.client.event.ClientPacketListenerEvents;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -47,7 +48,7 @@ public class PingTracker {
     WynnSpells.LOGGER.debug("Ping: {}", ping);
 
     pings.add(ping);
-    if (pings.size() > 5) {
+    if (pings.size() > WynnSpellsClient.getInstance().getConfig().getPingLookBack()) {
       pings.remove();
     }
   }
