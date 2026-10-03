@@ -56,7 +56,9 @@ public class ConfigScreen {
             .setDefaultValue(ClothConfig.Defaults.BLOCK_CLICKS)
             .setSaveConsumer(config::setBlockClicks)
             .build());
-    generalCategory.addEntry(
+
+    ConfigCategory timingsCategory = builder.getOrCreateCategory(Component.nullToEmpty("Timings"));
+    timingsCategory.addEntry(
         entryBuilder
             .startBooleanToggle(Component.nullToEmpty("Use Auto Delay"), config.isUseAutoDelay())
             .setTooltip(
@@ -64,15 +66,7 @@ public class ConfigScreen {
             .setDefaultValue(ClothConfig.Defaults.USE_AUTO_DELAY)
             .setSaveConsumer(config::setUseAutoDelay)
             .build());
-    generalCategory.addEntry(
-        entryBuilder
-            .startBooleanToggle(
-                Component.nullToEmpty("Repeat Held Keys"), config.isRepeatHeldKeys())
-            .setTooltip(Component.nullToEmpty("Allow action of a held key to be repeated."))
-            .setDefaultValue(ClothConfig.Defaults.REPEAT_HELD_KEYS)
-            .setSaveConsumer(config::setRepeatHeldKeys)
-            .build());
-    generalCategory.addEntry(
+    timingsCategory.addEntry(
         entryBuilder
             .startIntField(
                 Component.nullToEmpty("Auto Delay Tolerance"), config.getAutoDelayTolerance())
@@ -86,7 +80,7 @@ public class ConfigScreen {
                   config.setAutoDelayTolerance(clamped);
                 })
             .build());
-    generalCategory.addEntry(
+    timingsCategory.addEntry(
         entryBuilder
             .startIntField(Component.nullToEmpty("Manual Delay"), config.getManualDelay())
             .setTooltip(
@@ -99,7 +93,30 @@ public class ConfigScreen {
                   config.setManualDelay(clamped);
                 })
             .build());
-    generalCategory.addEntry(
+    timingsCategory.addEntry(
+        entryBuilder
+            .startIntField(Component.nullToEmpty("Ping Look Back"), config.getPingLookBack())
+            .setTooltip(
+                Component.nullToEmpty(
+                    "This value determines how your average ping is calculated. The higher the smoother."))
+            .setDefaultValue(ClothConfig.Defaults.PING_LOOK_BACK)
+            .setSaveConsumer(
+                value -> {
+                  int clamped = Math.max(1, value);
+                  config.setPingLookBack(clamped);
+                })
+            .build());
+
+    ConfigCategory inputsCategory = builder.getOrCreateCategory(Component.nullToEmpty("Inputs"));
+    inputsCategory.addEntry(
+        entryBuilder
+            .startBooleanToggle(
+                Component.nullToEmpty("Repeat Held Keys"), config.isRepeatHeldKeys())
+            .setTooltip(Component.nullToEmpty("Allow action of a held key to be repeated."))
+            .setDefaultValue(ClothConfig.Defaults.REPEAT_HELD_KEYS)
+            .setSaveConsumer(config::setRepeatHeldKeys)
+            .build());
+    inputsCategory.addEntry(
         entryBuilder
             .startIntField(Component.nullToEmpty("Repeat Threshold"), config.getRepeatThreshold())
             .setTooltip(
@@ -112,15 +129,12 @@ public class ConfigScreen {
                   config.setRepeatThreshold(clamped);
                 })
             .build());
-
-    ConfigCategory keybindsCategory =
-        builder.getOrCreateCategory(Component.nullToEmpty("Keybinds"));
-    addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.CONFIG_KEY);
-    addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.MELEE_KEY);
-    addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.FIRST_SPELL_KEY);
-    addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.SECOND_SPELL_KEY);
-    addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.THIRD_SPELL_KEY);
-    addKeybind(keybindsCategory, entryBuilder, WynnSpellsClient.FOURTH_SPELL_KEY);
+    addKeybind(inputsCategory, entryBuilder, WynnSpellsClient.CONFIG_KEY);
+    addKeybind(inputsCategory, entryBuilder, WynnSpellsClient.MELEE_KEY);
+    addKeybind(inputsCategory, entryBuilder, WynnSpellsClient.FIRST_SPELL_KEY);
+    addKeybind(inputsCategory, entryBuilder, WynnSpellsClient.SECOND_SPELL_KEY);
+    addKeybind(inputsCategory, entryBuilder, WynnSpellsClient.THIRD_SPELL_KEY);
+    addKeybind(inputsCategory, entryBuilder, WynnSpellsClient.FOURTH_SPELL_KEY);
 
     return builder.build();
   }
