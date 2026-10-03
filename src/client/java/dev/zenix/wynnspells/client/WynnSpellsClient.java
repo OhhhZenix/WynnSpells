@@ -7,6 +7,7 @@ import dev.zenix.wynnspells.client.config.ConfigScreen;
 import dev.zenix.wynnspells.client.core.PingTracker;
 import dev.zenix.wynnspells.client.core.UpdateChecker;
 import dev.zenix.wynnspells.client.spell.SpellCaster;
+import java.util.concurrent.atomic.AtomicBoolean;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
@@ -19,65 +20,62 @@ import net.minecraft.resources.Identifier;
 
 public class WynnSpellsClient implements ClientModInitializer {
 
-  private static final KeyMapping.Category KEY_CATEGORY =
-      KeyMapping.Category.register(Identifier.fromNamespaceAndPath(WynnSpells.MOD_ID, "all"));
+  private static final KeyMapping.Category KEY_CATEGORY = KeyMapping.Category
+      .register(Identifier.fromNamespaceAndPath(WynnSpells.MOD_ID, "all"));
 
-  public static final KeyMapping FIRST_SPELL_KEY =
-      KeyBindingHelper.registerKeyBinding(
-          new KeyMapping(
-              "key.wynnspells.first",
-              InputConstants.Type.KEYSYM,
-              InputConstants.UNKNOWN.getValue(),
-              WynnSpellsClient.KEY_CATEGORY));
+  public static final KeyMapping FIRST_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
+      new KeyMapping(
+          "key.wynnspells.first",
+          InputConstants.Type.KEYSYM,
+          InputConstants.UNKNOWN.getValue(),
+          WynnSpellsClient.KEY_CATEGORY));
 
-  public static final KeyMapping SECOND_SPELL_KEY =
-      KeyBindingHelper.registerKeyBinding(
-          new KeyMapping(
-              "key.wynnspells.second",
-              InputConstants.Type.KEYSYM,
-              InputConstants.UNKNOWN.getValue(),
-              WynnSpellsClient.KEY_CATEGORY));
+  public static final KeyMapping SECOND_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
+      new KeyMapping(
+          "key.wynnspells.second",
+          InputConstants.Type.KEYSYM,
+          InputConstants.UNKNOWN.getValue(),
+          WynnSpellsClient.KEY_CATEGORY));
 
-  public static final KeyMapping THIRD_SPELL_KEY =
-      KeyBindingHelper.registerKeyBinding(
-          new KeyMapping(
-              "key.wynnspells.third",
-              InputConstants.Type.KEYSYM,
-              InputConstants.UNKNOWN.getValue(),
-              WynnSpellsClient.KEY_CATEGORY));
+  public static final KeyMapping THIRD_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
+      new KeyMapping(
+          "key.wynnspells.third",
+          InputConstants.Type.KEYSYM,
+          InputConstants.UNKNOWN.getValue(),
+          WynnSpellsClient.KEY_CATEGORY));
 
-  public static final KeyMapping FOURTH_SPELL_KEY =
-      KeyBindingHelper.registerKeyBinding(
-          new KeyMapping(
-              "key.wynnspells.fourth",
-              InputConstants.Type.KEYSYM,
-              InputConstants.UNKNOWN.getValue(),
-              WynnSpellsClient.KEY_CATEGORY));
+  public static final KeyMapping FOURTH_SPELL_KEY = KeyBindingHelper.registerKeyBinding(
+      new KeyMapping(
+          "key.wynnspells.fourth",
+          InputConstants.Type.KEYSYM,
+          InputConstants.UNKNOWN.getValue(),
+          WynnSpellsClient.KEY_CATEGORY));
 
-  public static final KeyMapping MELEE_KEY =
-      KeyBindingHelper.registerKeyBinding(
-          new KeyMapping(
-              "key.wynnspells.melee",
-              InputConstants.Type.KEYSYM,
-              InputConstants.UNKNOWN.getValue(),
-              WynnSpellsClient.KEY_CATEGORY));
+  public static final KeyMapping MELEE_KEY = KeyBindingHelper.registerKeyBinding(
+      new KeyMapping(
+          "key.wynnspells.melee",
+          InputConstants.Type.KEYSYM,
+          InputConstants.UNKNOWN.getValue(),
+          WynnSpellsClient.KEY_CATEGORY));
 
-  public static final KeyMapping CONFIG_KEY =
-      KeyBindingHelper.registerKeyBinding(
-          new KeyMapping(
-              "key.wynnspells.config",
-              InputConstants.Type.KEYSYM,
-              InputConstants.UNKNOWN.getValue(),
-              KEY_CATEGORY));
+  public static final KeyMapping CONFIG_KEY = KeyBindingHelper.registerKeyBinding(
+      new KeyMapping(
+          "key.wynnspells.config",
+          InputConstants.Type.KEYSYM,
+          InputConstants.UNKNOWN.getValue(),
+          KEY_CATEGORY));
 
+  private static final AtomicBoolean running = new AtomicBoolean(true);
   private static WynnSpellsClient instance = null;
   private ClothConfig config;
-  private UpdateChecker updateChecker;
   private PingTracker pingTracker;
-  private SpellCaster spellCaster;
 
   public static WynnSpellsClient getInstance() {
     return instance;
+  }
+
+  public static boolean isRunning() {
+    return running.get();
   }
 
   @Override
@@ -88,26 +86,24 @@ public class WynnSpellsClient implements ClientModInitializer {
     ClientTickEvents.END_CLIENT_TICK.register(this::processConfigKey);
   }
 
-  private void onStart(Minecraft client) {
+  private void onStart(Minecraft mc) {
     loadConfig();
 
-    updateChecker = new UpdateChecker();
-    updateChecker.start();
-
-    pingTracker = new PingTracker(client);
+    pingTracker = new PingTracker(mc);
     pingTracker.start();
 
-    spellCaster = new SpellCaster(client);
+    SpellCaster spellCaster = new SpellCaster(mc);
     spellCaster.start();
+
+    UpdateChecker updateChecker = new UpdateChecker();
+    updateChecker.start();
   }
 
-  private void onStop(Minecraft client) {
-    updateChecker.stop();
-    pingTracker.stop();
-    spellCaster.stop();
+  private void onStop(Minecraft mc) {
+    running.set(false);
   }
 
-  private void processConfigKey(Minecraft client) {
+  private void processConfigKey(Minecraft mc) {
     if (CONFIG_KEY.consumeClick()) {
       client.setScreenAndShow(ConfigScreen.create(client.screen));
     }

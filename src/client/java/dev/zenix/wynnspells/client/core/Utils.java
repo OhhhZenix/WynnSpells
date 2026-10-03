@@ -15,6 +15,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemPacket;
+import net.minecraft.network.protocol.ping.ServerboundPingRequestPacket;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -58,6 +60,10 @@ public class Utils {
     } else {
       Utils.sendAttackPacket(mc);
     }
+  }
+
+  public static void sendPingPacket(Minecraft mc) {
+    Utils.sendPacket(mc, new ServerboundPingRequestPacket(Util.getMillis()));
   }
 
   public static boolean mainHandItemHasTooltipText(Minecraft mc, String searchText) {

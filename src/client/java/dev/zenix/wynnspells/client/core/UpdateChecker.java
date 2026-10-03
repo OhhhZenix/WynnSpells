@@ -16,66 +16,14 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 
-public final class UpdateChecker {
+public final class UpdateChecker extends Thread {
 
   private static final String MODRINTH_PROJECT = WynnSpells.MOD_ID;
   private static final String GITHUB_URL = "https://github.com/OhhhZenix/" + WynnSpells.MOD_NAME;
-  private final ScheduledExecutorService scheduler;
   private final HttpClient httpClient;
 
   public UpdateChecker() {
-    this.scheduler = Executors.newSingleThreadScheduledExecutor();
     this.httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
-  }
-
-  /* ============================= */
-  /* Lifecycle */
-  /* ============================= */
-
-  public void start() {
-    scheduler.scheduleAtFixedRate(this::checkForUpdates, 0, 1, TimeUnit.HOURS);
-  }
-
-  public void stop() {
-    scheduler.shutdown();
-  }
-
-  /* ============================= */
-  /* Update Logic */
-  /* ============================= */
-
-  private void checkForUpdates() {
-    try {
-      String gameVersions =
-          URLEncoder.encode(
-              "[\"" + SharedConstants.getCurrentVersion().name() + "\"]", StandardCharsets.UTF_8);
-      String loaders = URLEncoder.encode("[\"fabric\"]", StandardCharsets.UTF_8);
-      String apiUrl =
-          String.format(
-              "https://api.modrinth.com/v2/project/%s/version?game_versions=%s&loaders=%s",
-              MODRINTH_PROJECT, gameVersions, loaders);
-
-      HttpRequest request =
-          HttpRequest.newBuilder()
-              .uri(URI.create(apiUrl))
-              .header("Accept", "application/json")
-              .header("User-Agent", String.format("%s (%s)", WynnSpells.MOD_NAME, GITHUB_URL))
-              .timeout(Duration.ofSeconds(10))
-              .GET()
-              .build();
-
-      httpClient
-          .sendAsync(request, HttpResponse.BodyHandlers.ofString())
-          .orTimeout(15, TimeUnit.SECONDS)
-          .thenAccept(this::handleResponse)
-          .exceptionally(
-              ex -> {
-                WynnSpells.LOGGER.debug("Update check failed: {}", ex.getMessage());
-                return null;
-              });
-    } catch (Exception e) {
-      WynnSpells.LOGGER.debug("Failed to start update check", e);
-    }
   }
 
   private void handleResponse(HttpResponse<String> response) {
@@ -103,10 +51,6 @@ public final class UpdateChecker {
     }
   }
 
-  /* ============================= */
-  /* Notification */
-  /* ============================= */
-
   private void notifyPlayer(String latest, String current) {
     String homepageUrl =
         FabricLoader.getInstance()
@@ -125,10 +69,6 @@ public final class UpdateChecker {
         current,
         homepageUrl);
   }
-
-  /* ============================= */
-  /* Semver Comparison */
-  /* ============================= */
 
   private boolean isNewer(String latest, String current) {
     return compareSemver(latest, current) > 0;
@@ -181,6 +121,48 @@ public final class UpdateChecker {
       return Integer.parseInt(value);
     } catch (NumberFormatException e) {
       return 0;
+    }
+  }
+
+  private void checkUpdate() {
+    String gameVersions =
+        URLEncoder.encode(
+            "[\"" + SharedConstants.getCurrentVersion().name() + "\"]", StandardCharsets.UTF_8);
+    String loaders = URLEncoder.encode("[\"fabric\"]", StandardCharsets.UTF_8);
+    String apiUrl =
+        String.format(
+            "https://api.modrinth.com/v2/project/%s/version?game_versions=%s&loaders=%s",
+            MODRINTH_PROJECT, gameVersions, loaders);
+
+    HttpRequest request =
+        HttpRequest.newBuilder()
+            .uri(URI.create(apiUrl))
+            .header("Accept", "application/json")
+            .header("User-Agent", String.format("%s (%s)", WynnSpells.MOD_NAME, GITHUB_URL))
+            .timeout(Duration.ofSeconds(10))
+            .GET()
+            .build();
+
+    httpClient
+        .sendAsync(request, HttpResponse.BodyHandlers.ofString())
+        .orTimeout(15, TimeUnit.SECONDS)
+        .thenAccept(this::handleResponse)
+        .exceptionally(
+            ex -> {
+              WynnSpells.LOGGER.debug("Update check failed: {}", ex.getMessage());
+              return null;
+            });
+  }
+
+  @Override
+  public void run() {
+    while (WynnSpellsClient.isRunning()) {
+      try {
+        checkUpdate();
+        Thread.sleep(TimeUnit.HOURS.toMillis(1));
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 }
