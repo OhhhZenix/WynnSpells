@@ -17,7 +17,7 @@ public class ClothConfig implements ConfigData {
     public static final boolean USE_AUTO_DELAY = true;
     public static final int AUTO_DELAY_TOLERANCE = 10;
     public static final int MANUAL_DELAY = 100;
-    public static final int PING_LOOK_BACK = 0;
+    public static final int PING_LOOK_BACK = 5;
 
     // Inputs
     public static final boolean REPEAT_HELD_KEYS = true;
